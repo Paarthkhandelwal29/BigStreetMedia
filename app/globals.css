@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
+/*
+  Big Street Media — "Editorial Infrastructure" design system
+  Amber is data-ink: it only ever means ACTION (CTAs) or PROOF (stats/active state).
+  Never decoration. Premium through restraint and precision.
+*/
+
+@theme {
+  /* Brand palette — locked */
+  --color-amber: #ffc107;
+  --color-amber-deep: #ffb300;
+  --color-ink: #111111;
+  --color-body: #444444;
+  --color-muted: #888888;
+  --color-hairline: #f0f0f0;
+  --color-surface: #ffffff;
+  --color-surface-2: #fafafa;
+  --color-success: #22c55e;
+
+  /* Typography — Sora display, Geist body, Geist Mono data */
+  --font-display: var(--font-sora), var(--font-geist-sans), system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Motion — physical, spring-like easing (no linear/ease-in-out) */
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Radii — squircle rhythm */
+  --radius-card: 1.5rem;
+  --radius-pill: 9999px;
+
+  /* Section rhythm — the layout breathes */
+  --space-section: 7rem;
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  border-color: var(--color-hairline);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-body);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Headings use the display font + ink color by default */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  letter-spacing: -0.02em;
+}
+
+/* Selection in brand amber */
+::selection {
+  background: var(--color-amber);
+  color: var(--color-ink);
+}
+
+/* Utilities ----------------------------------------------------------- */
+
+/* Eyebrow tag — microscopic uppercase pill preceding major headings */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-2);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Section container */
+.container-bsm {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) {
+  .container-bsm {
+    padding-inline: 2rem;
+  }
+}
+
+/* Amber marquee mask edges */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+.marquee-track:hover .animate-marquee {
+  animation-play-state: paused;
 }
