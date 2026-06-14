@@ -9,11 +9,18 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/layout/Logo";
 import { cn } from "@/lib/utils";
 
+// Routes whose top section is a LIGHT background (no dark hero). The nav uses
+// dark text at the top on these; every other route leads with a dark hero.
+const LIGHT_TOP_ROUTES = new Set(["/contact", "/privacy-policy", "/sitemap"]);
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const reduce = useReducedMotion();
+
+  // Light nav text only when floating transparently over a dark hero.
+  const lightText = !scrolled && !LIGHT_TOP_ROUTES.has(pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -44,7 +51,7 @@ export function Navbar() {
         )}
       >
         <Link href="/" className="flex items-center gap-2 pl-1" aria-label={`Home — Big Street Media`}>
-          <Logo className="h-7 w-auto" light={!scrolled} />
+          <Logo className="h-7 w-auto" light={lightText} />
         </Link>
 
         {/* desktop links */}
@@ -57,13 +64,13 @@ export function Navbar() {
                   href={link.href}
                   className={cn(
                     "rounded-full px-3 py-2 text-sm transition-colors duration-200",
-                    scrolled
+                    lightText
                       ? active
-                        ? "text-ink font-medium"
-                        : "text-body hover:text-ink"
-                      : active
                         ? "text-white font-medium"
                         : "text-white/70 hover:text-white"
+                      : active
+                        ? "text-ink font-medium"
+                        : "text-body hover:text-ink"
                   )}
                 >
                   {link.label}
