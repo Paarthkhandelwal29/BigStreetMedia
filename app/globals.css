@@ -40,20 +40,39 @@
   --foreground: #111111;
 }
 
-* {
-  border-color: var(--color-hairline);
-}
+/*
+  Base styles MUST live in @layer base so Tailwind utilities (text-white,
+  text-amber, border-white/10, etc.) override them. Unlayered rules beat
+  every Tailwind layer in v4 — which would force all headings dark.
+*/
+@layer base {
+  * {
+    border-color: var(--color-hairline);
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  html {
+    scroll-behavior: smooth;
+  }
 
-body {
-  background: var(--background);
-  color: var(--color-body);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  body {
+    background: var(--background);
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings use the display font + ink color by default (utilities override) */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: var(--color-amber);
+    color: var(--color-ink);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -66,19 +85,6 @@ body {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
-}
-
-/* Headings use the display font + ink color by default */
-h1, h2, h3, h4 {
-  font-family: var(--font-display);
-  color: var(--color-ink);
-  letter-spacing: -0.02em;
-}
-
-/* Selection in brand amber */
-::selection {
-  background: var(--color-amber);
-  color: var(--color-ink);
 }
 
 /* Utilities ----------------------------------------------------------- */

@@ -44,7 +44,7 @@ export function Navbar() {
         )}
       >
         <Link href="/" className="flex items-center gap-2 pl-1" aria-label={`Home — Big Street Media`}>
-          <Logo className="h-7 w-auto" />
+          <Logo className="h-7 w-auto" light={!scrolled} />
         </Link>
 
         {/* desktop links */}
@@ -57,7 +57,13 @@ export function Navbar() {
                   href={link.href}
                   className={cn(
                     "rounded-full px-3 py-2 text-sm transition-colors duration-200",
-                    active ? "text-ink font-medium" : "text-body hover:text-ink"
+                    scrolled
+                      ? active
+                        ? "text-ink font-medium"
+                        : "text-body hover:text-ink"
+                      : active
+                        ? "text-white font-medium"
+                        : "text-white/70 hover:text-white"
                   )}
                 >
                   {link.label}
