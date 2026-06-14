@@ -85,7 +85,7 @@ export function LeadForm({
       )}
     >
       {fields.map((f) => (
-        <div key={f.name} className={cn("flex flex-col gap-1.5", isInline && "flex-1")}>
+        <div key={f.name} className={cn("flex flex-col gap-1.5", isInline && "min-w-0 flex-1")}>
           <label
             htmlFor={`lead-${f.name}`}
             className={cn("text-xs font-medium text-body", isInline && "sr-only")}
@@ -113,7 +113,7 @@ export function LeadForm({
               placeholder={f.placeholder}
               value={values[f.name] ?? ""}
               onChange={(e) => setValues((v) => ({ ...v, [f.name]: e.target.value }))}
-              className="h-12 rounded-xl border border-[#e6e6e6] bg-surface px-4 text-sm text-ink outline-none transition-colors placeholder:text-muted focus:border-ink focus-visible:ring-2 focus-visible:ring-amber"
+              className="h-12 w-full rounded-xl border border-[#e6e6e6] bg-surface px-4 text-sm text-ink outline-none transition-colors placeholder:text-muted focus:border-ink focus-visible:ring-2 focus-visible:ring-amber"
             />
           )}
         </div>
