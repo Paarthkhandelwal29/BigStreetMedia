@@ -42,3 +42,8 @@ next-env.d.ts
 
 # Local Netlify folder
 .netlify
+
+# Agent context (local only, not for public repo)
+AGENTS.md
+CLAUDE.md
+docs/PROJECT_STATUS.md
