@@ -1,10 +1,46 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ButtonLink } from "@/components/ui/Button";
 import { CaretDown } from "@phosphor-icons/react/dist/ssr";
 
 const ease = [0.16, 1, 0.3, 1] as const;
+
+/** Counts up from 0 to target immediately on mount — no scroll trigger */
+function HeroCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const [display, setDisplay] = useState(0);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (reduce) { setDisplay(value); return; }
+    const duration = 1800;
+    const start = performance.now();
+    let raf: number;
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setDisplay(Math.round(eased * value));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    // Slight delay so the page paints first
+    const timer = setTimeout(() => { raf = requestAnimationFrame(tick); }, 600);
+    return () => { clearTimeout(timer); cancelAnimationFrame(raf); };
+  }, [value, reduce]);
+
+  return (
+    <span className="text-xl font-extrabold leading-none text-white tabular-nums sm:text-2xl md:text-[28px]">
+      {display.toLocaleString("en-IN")}{suffix}
+    </span>
+  );
+}
+
+const stats = [
+  { value: 20, suffix: "+", label: "Years Experience" },
+  { value: 400, suffix: "+", label: "Cities Covered" },
+  { value: 1000, suffix: "+", label: "Campaigns" },
+  { value: 100, suffix: "+", label: "Brands Served" },
+];
 
 export function HeroSection() {
   const reduce = useReducedMotion();
@@ -13,18 +49,17 @@ export function HeroSection() {
     reduce
       ? {}
       : {
-          initial: { opacity: 0, y: 24, filter: "blur(8px)" },
+          initial: { opacity: 0, y: 20, filter: "blur(6px)" },
           animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-          transition: { duration: 0.9, delay, ease },
+          transition: { duration: 0.8, delay, ease },
         };
 
   return (
-    <section className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden">
-      {/* Placeholder hero visual — swap for looping campaign reel <video> later.
-          Layered: ink base + subtle amber glow + soft grid, with dark overlay. */}
+    <section className="relative flex min-h-[100dvh] flex-col items-center justify-between overflow-hidden">
+      {/* Backgrounds */}
       <div className="absolute inset-0 bg-ink" aria-hidden />
       <div
-        className="absolute inset-0 opacity-[0.5]"
+        className="absolute inset-0 opacity-50"
         aria-hidden
         style={{
           backgroundImage:
@@ -43,17 +78,15 @@ export function HeroSection() {
       />
       <div className="absolute inset-0 bg-black/30" aria-hidden />
 
-      <div className="container-bsm relative z-10 flex flex-col items-center pt-24 text-center">
-        <motion.span
-          {...rise(0)}
-          className="eyebrow border-white/15 bg-white/5 text-white/80"
-        >
+      {/* Main content */}
+      <div className="container-bsm relative z-10 flex flex-1 flex-col items-center justify-center px-4 pt-20 pb-4 text-center">
+        <motion.span {...rise(0)} className="eyebrow border-white/15 bg-white/5 text-white/80">
           Established 2004 · PAN India
         </motion.span>
 
         <motion.h1
           {...rise(0.08)}
-          className="mt-6 max-w-4xl text-balance text-5xl font-extrabold leading-[1.02] text-white sm:text-6xl md:text-7xl"
+          className="mt-4 max-w-4xl text-balance text-4xl font-extrabold leading-[1.05] text-white sm:text-5xl md:text-6xl lg:text-7xl"
         >
           Creating Visibility.
           <br />
@@ -62,14 +95,14 @@ export function HeroSection() {
 
         <motion.p
           {...rise(0.16)}
-          className="mt-6 max-w-xl text-pretty text-base leading-relaxed text-white/70 md:text-lg"
+          className="mt-4 max-w-xl text-pretty text-sm leading-relaxed text-white/70 sm:text-base md:text-lg"
         >
           From a single hoarding to a 400-city campaign — Big Street Media
           executes advertising that reaches your customer wherever they live,
           work, and travel.
         </motion.p>
 
-        <motion.div {...rise(0.24)} className="mt-9 flex flex-col gap-3 sm:flex-row">
+        <motion.div {...rise(0.24)} className="mt-6 flex flex-col gap-3 sm:flex-row">
           <ButtonLink href="/services">Explore Services</ButtonLink>
           <ButtonLink href="/contact" variant="ghost-light">
             Get Free Media Plan
@@ -77,15 +110,35 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      {/* scroll indicator */}
+      {/* Stats row — always visible at bottom of viewport */}
+      <motion.div
+        {...rise(0.32)}
+        className="container-bsm relative z-10 w-full px-4 pb-10"
+      >
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+          {stats.map((stat) => (
+            <div
+              key={stat.label}
+              className="flex flex-col items-center justify-center rounded-[8px] border border-white/20 bg-white/10 px-3 py-3 backdrop-blur-sm sm:px-5 sm:py-4"
+            >
+              <HeroCounter value={stat.value} suffix={stat.suffix} />
+              <span className="mt-1.5 text-center text-[10px] font-medium uppercase tracking-[0.08em] text-amber sm:text-[11px]">
+                {stat.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Scroll caret */}
       {!reduce && (
         <motion.div
-          className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2 text-white/50"
-          animate={{ y: [0, 8, 0] }}
+          className="absolute bottom-[4.5rem] left-1/2 z-10 hidden -translate-x-1/2 text-white/30 sm:block"
+          animate={{ y: [0, 6, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           aria-hidden
         >
-          <CaretDown size={22} />
+          <CaretDown size={18} />
         </motion.div>
       )}
     </section>

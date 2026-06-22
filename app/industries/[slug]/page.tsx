@@ -64,7 +64,16 @@ export default async function IndustryPage({
 
   return (
     <>
-      <PageHero eyebrow={ind.name} title={ind.headline} subhead={ind.outcome}>
+      <PageHero
+        eyebrow={ind.name}
+        title={ind.headline}
+        subhead={ind.outcome}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Industries", href: "/industries" },
+          { label: ind.name },
+        ]}
+      >
         <ButtonLink href="/contact">Plan a campaign for {ind.name}</ButtonLink>
       </PageHero>
 

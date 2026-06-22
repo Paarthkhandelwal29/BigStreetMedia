@@ -8,7 +8,7 @@ export function ServiceCard({ service }: { service: Service }) {
   return (
     <Link
       href={`/services/${service.slug}`}
-      className="group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-[#f0f0f0] bg-surface p-6 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.06)]"
+      className="group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-[#f0f0f0] bg-surface p-6 transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:border-amber hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
     >
       {/* amber underline reveal */}
       <span className="absolute inset-x-6 bottom-0 h-0.5 origin-left scale-x-0 bg-amber transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-x-100" />

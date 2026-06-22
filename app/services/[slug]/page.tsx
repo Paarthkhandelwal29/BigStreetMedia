@@ -88,6 +88,11 @@ export default async function ServicePage({
         eyebrow={service.title}
         title={service.headline}
         subhead={service.outcome}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Services", href: "/services" },
+          { label: service.title },
+        ]}
       >
         <ButtonLink href="/contact" variant="primary">
           Get a Media Plan for {service.title}

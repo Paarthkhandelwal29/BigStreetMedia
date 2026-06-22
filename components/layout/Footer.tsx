@@ -16,12 +16,12 @@ const company = [
 
 export function Footer() {
   return (
-    <footer className="bg-ink text-white/70">
+    <footer className="border-t-4 border-amber bg-ink text-white/70">
       <div className="container-bsm py-16">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           {/* brand */}
           <div className="lg:col-span-2">
-            <Logo light className="text-xl" />
+            <Logo light className="h-12 w-auto" />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
               {site.tagline} A 360° advertising agency executing campaigns across{" "}
               {site.stats.cities} cities since {site.established}.
@@ -90,8 +90,8 @@ export function Footer() {
       </div>
 
       {/* bottom bar */}
-      <div className="border-t border-white/10">
-        <div className="container-bsm flex flex-col gap-3 py-5 text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-t border-[#333333]">
+        <div className="container-bsm flex flex-col gap-3 py-6 text-[13px] text-[#666666] sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {site.established}–{new Date().getFullYear()} {site.name}. All rights reserved.
           </p>
@@ -112,8 +112,8 @@ export function Footer() {
 function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h4 className="text-xs font-semibold uppercase tracking-[0.18em] text-white">{title}</h4>
-      <ul className="mt-4 flex flex-col gap-2.5 text-sm">{children}</ul>
+      <h4 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-amber mb-4">{title}</h4>
+      <ul className="flex flex-col gap-2.5 text-sm leading-[2.2]">{children}</ul>
     </div>
   );
 }
@@ -121,7 +121,7 @@ function FooterCol({ title, children }: { title: string; children: React.ReactNo
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <li>
-      <Link href={href} className="text-white/60 transition-colors hover:text-amber">
+      <Link href={href} className="text-[#999999] transition-colors duration-200 hover:text-amber">
         {children}
       </Link>
     </li>

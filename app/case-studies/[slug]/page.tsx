@@ -44,6 +44,11 @@ export default async function CaseStudyPage({
         eyebrow={`${cs.brand} · ${cs.campaignType}`}
         title={`${cs.brand} — ${cs.campaignType} Campaign`}
         subhead={cs.industry}
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Case Studies", href: "/case-studies" },
+          { label: cs.brand },
+        ]}
       />
 
       {/* Challenge + Brief */}

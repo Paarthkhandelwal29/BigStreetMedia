@@ -16,6 +16,10 @@ export default function PortfolioPage() {
         eyebrow="Portfolio"
         title="Our work across India"
         subhead="Every image is a real campaign, executed by Big Street Media. Filter by format to explore."
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Portfolio" },
+        ]}
       />
       <div className="py-12">
         <PortfolioGallery />

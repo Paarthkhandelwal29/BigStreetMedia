@@ -1,11 +1,11 @@
 import { HeroSection } from "@/components/home/HeroSection";
-import { StatsStrip } from "@/components/home/StatsStrip";
-import { BrandChallenge } from "@/components/home/BrandChallenge";
-import { WhyBSM } from "@/components/home/WhyBSM";
-import { ServicesGrid } from "@/components/home/ServicesGrid";
-import { IndustriesGrid } from "@/components/home/IndustriesGrid";
 import { BrandsCarousel } from "@/components/home/BrandsCarousel";
+import { ServicesGrid } from "@/components/home/ServicesGrid";
+import { CampaignGallery } from "@/components/home/CampaignGallery";
+import { WhyBSM } from "@/components/home/WhyBSM";
+import { IndustriesGrid } from "@/components/home/IndustriesGrid";
 import { ROIEstimator } from "@/components/home/ROIEstimator";
+import { StatsStrip } from "@/components/home/StatsStrip";
 import { ImpactNumbers } from "@/components/home/ImpactNumbers";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { LocalBusinessSchema } from "@/components/shared/Schema";
@@ -15,13 +15,13 @@ export default function HomePage() {
     <>
       <LocalBusinessSchema />
       <HeroSection />
-      <StatsStrip />
-      <BrandChallenge />
-      <WhyBSM />
-      <ServicesGrid />
-      <IndustriesGrid />
       <BrandsCarousel />
+      <ServicesGrid />
+      <CampaignGallery />
+      <WhyBSM />
+      <IndustriesGrid />
       <ROIEstimator />
+      <StatsStrip />
       <ImpactNumbers />
       <FinalCTA />
     </>

@@ -1,10 +1,12 @@
 import { Reveal } from "@/components/ui/Reveal";
+import { Breadcrumbs, type Crumb } from "@/components/shared/Breadcrumbs";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
  * Standard inner-page hero. Dark ink background with amber glow,
  * clears the fixed navbar via top padding.
+ * Optionally renders a breadcrumb trail inside the dark hero below the navbar.
  */
 export function PageHero({
   eyebrow,
@@ -12,12 +14,14 @@ export function PageHero({
   subhead,
   children,
   align = "left",
+  breadcrumbs,
 }: {
   eyebrow?: string;
   title: ReactNode;
   subhead?: string;
   children?: ReactNode;
   align?: "left" | "center";
+  breadcrumbs?: Crumb[];
 }) {
   return (
     <section className="relative overflow-hidden bg-ink">
@@ -31,10 +35,15 @@ export function PageHero({
       />
       <div
         className={cn(
-          "container-bsm relative z-10 flex flex-col gap-5 pb-20 pt-36",
+          "container-bsm relative z-10 flex flex-col gap-5 pb-20 pt-28",
           align === "center" && "items-center text-center"
         )}
       >
+        {/* Breadcrumbs sit at the top of the dark hero, inside navbar clearance */}
+        {breadcrumbs && breadcrumbs.length > 0 && (
+          <Breadcrumbs crumbs={breadcrumbs} dark />
+        )}
+
         {eyebrow && (
           <Reveal>
             <span className="eyebrow border-white/15 bg-white/5 text-white/80">{eyebrow}</span>

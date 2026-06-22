@@ -7,7 +7,7 @@ import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 
 export function IndustriesGrid() {
   return (
-    <section className="bg-surface-2">
+    <section className="bg-surface">
       <div className="container-bsm py-24">
         <SectionHeader
           eyebrow="Industries"
@@ -25,7 +25,7 @@ export function IndustriesGrid() {
               <RevealItem key={ind.slug} className="h-full">
                 <Link
                   href={`/industries/${ind.slug}`}
-                  className="group flex h-full items-start gap-4 rounded-[1.25rem] border border-[#f0f0f0] bg-surface p-6 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.06)]"
+                  className="group flex h-full items-start gap-4 rounded-[1.25rem] border border-[#f0f0f0] bg-surface p-6 transition-all duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:border-amber hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)]"
                 >
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-amber/15 text-amber-deep">
                     <Icon size={22} />

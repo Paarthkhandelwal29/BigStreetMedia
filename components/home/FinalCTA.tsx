@@ -24,6 +24,7 @@ export function FinalCTA() {
                 { name: "name", label: "Your Name", required: true, placeholder: "Your name" },
                 { name: "company", label: "Company", placeholder: "Company" },
                 { name: "phone", label: "Phone", type: "tel", required: true, placeholder: "Phone" },
+                { name: "email", label: "Email", type: "email", placeholder: "Email address" },
               ]}
             />
           </div>

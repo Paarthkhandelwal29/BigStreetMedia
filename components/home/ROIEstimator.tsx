@@ -184,9 +184,9 @@ function Metric({
 }
 
 export function ROIEstimator() {
-  const [campaignType, setCampaignType] = useState<CampaignType>("Combined 360°");
-  const [budget, setBudget] = useState<Budget>(25);
-  const [cityTier, setCityTier] = useState<CityTier>("Tier 2");
+  const [campaignType, setCampaignType] = useState<CampaignType>("OOH Hoardings");
+  const [budget, setBudget] = useState<Budget>(10);
+  const [cityTier, setCityTier] = useState<CityTier>("Tier 1");
   const [duration, setDuration] = useState<Duration>("1 Month");
 
   const estimate = useMemo(
@@ -205,7 +205,7 @@ export function ROIEstimator() {
   );
 
   return (
-    <section id="roi-estimator" className="bg-surface py-24">
+    <section id="roi-estimator" className="bg-surface-2 py-20">
       <div className="container-bsm">
         <Reveal className="max-w-3xl">
           <span className="eyebrow">Campaign ROI Estimator</span>
@@ -321,7 +321,7 @@ export function ROIEstimator() {
                   </a>
                 </div>
                 <p className="mt-4 text-xs leading-5 text-muted">
-                  Estimates only — not a commitment. Actual reach varies by inventory and location.
+                  *Estimates are indicative. Actual reach depends on location, season, and creative quality.
                 </p>
               </div>
             </aside>
