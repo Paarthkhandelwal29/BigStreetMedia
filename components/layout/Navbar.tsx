@@ -55,18 +55,19 @@ export function Navbar() {
   const aboutActive = pathname === "/about";
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 flex justify-center px-4">
-      <nav
-        className={cn(
-          "mt-4 flex w-full max-w-6xl items-center justify-between gap-4 rounded-full px-5 py-3 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
-          scrolled
-            ? "border border-[#ececec] bg-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl"
-            : "border border-transparent bg-white/0"
-        )}
-      >
+    <header className="fixed inset-x-0 top-0 z-40">
+      <div className="container-bsm pt-4">
+        <nav
+          className={cn(
+            "flex w-full items-center justify-between gap-4 rounded-full px-4 py-2.5 sm:px-5 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+            scrolled
+              ? "border border-[#ececec] bg-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl"
+              : "border border-transparent bg-white/0"
+          )}
+        >
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center pl-1" aria-label="Home — Big Street Media">
-          <Logo className="h-9 w-auto" light={lightText} />
+          <Logo className="h-8 w-auto sm:h-9" light={lightText} />
         </Link>
 
         {/* Desktop nav links — all in one flex row, vertically centred */}
@@ -174,16 +175,22 @@ export function Navbar() {
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#ececec] bg-white/70 lg:hidden cursor-pointer"
+            className={cn(
+              "relative flex h-10 w-10 items-center justify-center rounded-full border lg:hidden cursor-pointer transition-colors",
+              lightText
+                ? "border-white/20 bg-white/10 backdrop-blur-sm"
+                : "border-[#ececec] bg-white/70"
+            )}
           >
             <span className="sr-only">Menu</span>
             <span className="relative block h-3.5 w-5">
-              <span className={cn("absolute left-0 top-0 h-0.5 w-5 bg-ink transition-all duration-300", open && "top-1.5 rotate-45")} />
-              <span className={cn("absolute bottom-0 left-0 h-0.5 w-5 bg-ink transition-all duration-300", open && "bottom-1.5 -rotate-45")} />
+              <span className={cn("absolute left-0 top-0 h-0.5 w-5 transition-all duration-300", lightText ? "bg-white" : "bg-ink", open && "top-1.5 rotate-45")} />
+              <span className={cn("absolute bottom-0 left-0 h-0.5 w-5 transition-all duration-300", lightText ? "bg-white" : "bg-ink", open && "bottom-1.5 -rotate-45")} />
             </span>
           </button>
         </div>
       </nav>
+      </div>
 
       {/* Mobile overlay */}
       <AnimatePresence>

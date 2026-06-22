@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ButtonLink } from "@/components/ui/Button";
 import { CaretDown } from "@phosphor-icons/react/dist/ssr";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-/** Counts up from 0 to target immediately on mount — no scroll trigger */
 function HeroCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
   const [display, setDisplay] = useState(0);
   const reduce = useReducedMotion();
@@ -23,13 +22,12 @@ function HeroCounter({ value, suffix = "" }: { value: number; suffix?: string })
       setDisplay(Math.round(eased * value));
       if (t < 1) raf = requestAnimationFrame(tick);
     };
-    // Slight delay so the page paints first
     const timer = setTimeout(() => { raf = requestAnimationFrame(tick); }, 600);
     return () => { clearTimeout(timer); cancelAnimationFrame(raf); };
   }, [value, reduce]);
 
   return (
-    <span className="text-xl font-extrabold leading-none text-white tabular-nums sm:text-2xl md:text-[28px]">
+    <span className="text-lg font-bold leading-none text-white tabular-nums sm:text-xl md:text-2xl">
       {display.toLocaleString("en-IN")}{suffix}
     </span>
   );
@@ -56,7 +54,6 @@ export function HeroSection() {
 
   return (
     <section className="relative flex min-h-[100dvh] flex-col items-center justify-between overflow-hidden">
-      {/* Backgrounds */}
       <div className="absolute inset-0 bg-ink" aria-hidden />
       <div
         className="absolute inset-0 opacity-50"
@@ -76,17 +73,16 @@ export function HeroSection() {
           maskImage: "radial-gradient(circle at 50% 40%, black, transparent 75%)",
         }}
       />
-      <div className="absolute inset-0 bg-black/30" aria-hidden />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50" aria-hidden />
 
-      {/* Main content */}
-      <div className="container-bsm relative z-10 flex flex-1 flex-col items-center justify-center px-4 pt-20 pb-4 text-center">
+      <div className="container-bsm relative z-10 flex flex-1 flex-col items-center justify-center pt-28 pb-6 text-center">
         <motion.span {...rise(0)} className="eyebrow border-white/15 bg-white/5 text-white/80">
           Established 2004 · PAN India
         </motion.span>
 
         <motion.h1
           {...rise(0.08)}
-          className="mt-4 max-w-4xl text-balance text-4xl font-extrabold leading-[1.05] text-white sm:text-5xl md:text-6xl lg:text-7xl"
+          className="mt-5 max-w-4xl text-balance text-4xl font-extrabold leading-[1.05] text-white sm:text-5xl md:text-6xl lg:text-7xl"
         >
           Creating Visibility.
           <br />
@@ -95,14 +91,14 @@ export function HeroSection() {
 
         <motion.p
           {...rise(0.16)}
-          className="mt-4 max-w-xl text-pretty text-sm leading-relaxed text-white/70 sm:text-base md:text-lg"
+          className="mt-5 max-w-xl text-pretty text-sm leading-relaxed text-white/70 sm:text-base md:text-lg"
         >
           From a single hoarding to a 400-city campaign — Big Street Media
           executes advertising that reaches your customer wherever they live,
           work, and travel.
         </motion.p>
 
-        <motion.div {...rise(0.24)} className="mt-6 flex flex-col gap-3 sm:flex-row">
+        <motion.div {...rise(0.24)} className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <ButtonLink href="/services">Explore Services</ButtonLink>
           <ButtonLink href="/contact" variant="ghost-light">
             Get Free Media Plan
@@ -110,19 +106,19 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Stats row — always visible at bottom of viewport */}
       <motion.div
         {...rise(0.32)}
-        className="container-bsm relative z-10 w-full px-4 pb-10"
+        className="container-bsm relative z-10 pb-10 md:pb-12"
       >
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+        <div className="section-divider mb-5 opacity-30" aria-hidden />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="flex flex-col items-center justify-center rounded-[8px] border border-white/20 bg-white/10 px-3 py-3 backdrop-blur-sm sm:px-5 sm:py-4"
+              className="glass-dark flex flex-col items-center justify-center px-3 py-3.5 sm:px-4 sm:py-4"
             >
               <HeroCounter value={stat.value} suffix={stat.suffix} />
-              <span className="mt-1.5 text-center text-[10px] font-medium uppercase tracking-[0.08em] text-amber sm:text-[11px]">
+              <span className="mt-1.5 text-center text-[10px] font-medium uppercase tracking-[0.1em] text-amber/90 sm:text-[11px]">
                 {stat.label}
               </span>
             </div>
@@ -130,7 +126,6 @@ export function HeroSection() {
         </div>
       </motion.div>
 
-      {/* Scroll caret */}
       {!reduce && (
         <motion.div
           className="absolute bottom-[4.5rem] left-1/2 z-10 hidden -translate-x-1/2 text-white/30 sm:block"
