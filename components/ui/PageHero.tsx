@@ -15,6 +15,7 @@ export function PageHero({
   children,
   align = "left",
   breadcrumbs,
+  compact = false,
 }: {
   eyebrow?: string;
   title: ReactNode;
@@ -22,6 +23,7 @@ export function PageHero({
   children?: ReactNode;
   align?: "left" | "center";
   breadcrumbs?: Crumb[];
+  compact?: boolean;
 }) {
   return (
     <section className="relative overflow-hidden bg-ink">
@@ -35,7 +37,8 @@ export function PageHero({
       />
       <div
         className={cn(
-          "container-bsm relative z-10 flex flex-col gap-5 pb-20 pt-28",
+          "container-bsm relative z-10 flex flex-col",
+          compact ? "gap-3 pb-8 pt-32" : "gap-5 pb-20 pt-28",
           align === "center" && "items-center text-center"
         )}
       >
@@ -50,13 +53,24 @@ export function PageHero({
           </Reveal>
         )}
         <Reveal delay={0.06}>
-          <h1 className="max-w-3xl text-balance text-4xl font-extrabold leading-[1.05] text-white md:text-5xl lg:text-6xl">
+          <h1
+            className={cn(
+              "max-w-3xl text-balance font-extrabold leading-[1.05] text-white",
+              compact ? "text-3xl md:text-4xl" : "text-4xl md:text-5xl lg:text-6xl"
+            )}
+          >
             {title}
           </h1>
         </Reveal>
         {subhead && (
           <Reveal delay={0.12}>
-            <p className={cn("max-w-2xl text-base leading-relaxed text-white/65 md:text-lg", align === "center" && "mx-auto")}>
+            <p
+              className={cn(
+                "max-w-2xl text-base leading-relaxed text-white/65",
+                !compact && "md:text-lg",
+                align === "center" && "mx-auto"
+              )}
+            >
               {subhead}
             </p>
           </Reveal>

@@ -4,6 +4,7 @@ export type MediaType =
   | "Unipoles"
   | "Mall Branding"
   | "Metro Stations"
+  | "Airport Media"
   | "Railway Stations"
   | "Boat Media";
 
@@ -32,6 +33,7 @@ export const mediaTypes: MediaType[] = [
   "Unipoles",
   "Mall Branding",
   "Metro Stations",
+  "Airport Media",
   "Railway Stations",
   "Boat Media",
 ];

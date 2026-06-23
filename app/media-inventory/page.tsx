@@ -3,7 +3,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { MediaInventoryClient } from "@/components/inventory/MediaInventoryClient";
 
 export const metadata: Metadata = {
-  title: "Media Inventory — Browse Available Spaces",
+  title: "Media Inventory - Browse Available Spaces",
   description:
     "Find available hoardings, bus shelters, unipoles, mall and transit media across India. Browse media inventory and check availability before your competitor does.",
 };
@@ -13,10 +13,11 @@ export default function MediaInventoryPage() {
     <>
       <PageHero
         eyebrow="Media Inventory"
-        title="Browse our media inventory"
-        subhead="Find available media spaces across India — before your competitor does."
+        title="Media Inventory"
+        subhead="Find available media spaces across India - before your competitor does."
+        compact
       />
-      <div className="py-12">
+      <div className="py-6 md:py-8">
         <MediaInventoryClient />
       </div>
     </>
