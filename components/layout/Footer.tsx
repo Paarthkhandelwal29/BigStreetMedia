@@ -9,8 +9,6 @@ const company = [
   { label: "About", href: "/about" },
   { label: "Case Studies", href: "/case-studies" },
   { label: "Media Inventory", href: "/media-inventory" },
-  { label: "Blog", href: "/blog" },
-  { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
 ];
 

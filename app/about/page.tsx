@@ -53,6 +53,7 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
+        compact
         eyebrow="About Us"
         title="20 years. 400 cities. One mission."
         subhead="We started Big Street Media in 2004 with a belief that great advertising shouldn't require a giant budget — it requires the right execution partner."

@@ -15,7 +15,7 @@ export function PageHero({
   children,
   align = "left",
   breadcrumbs,
-  compact = false,
+  compact = true,
 }: {
   eyebrow?: string;
   title: ReactNode;
@@ -38,7 +38,7 @@ export function PageHero({
       <div
         className={cn(
           "container-bsm relative z-10 flex flex-col",
-          compact ? "gap-3 pb-8 pt-32" : "gap-5 pb-20 pt-28",
+          compact ? "gap-2 pb-8 pt-24" : "gap-5 pb-20 pt-28",
           align === "center" && "items-center text-center"
         )}
       >
@@ -56,7 +56,7 @@ export function PageHero({
           <h1
             className={cn(
               "max-w-3xl text-balance font-extrabold leading-[1.05] text-white",
-              compact ? "text-3xl md:text-4xl" : "text-4xl md:text-5xl lg:text-6xl"
+              compact ? "text-2xl md:text-3xl" : "text-4xl md:text-5xl lg:text-6xl"
             )}
           >
             {title}
@@ -66,7 +66,7 @@ export function PageHero({
           <Reveal delay={0.12}>
             <p
               className={cn(
-                "max-w-2xl text-base leading-relaxed text-white/65",
+                "max-w-2xl text-sm leading-relaxed text-white/65",
                 !compact && "md:text-lg",
                 align === "center" && "mx-auto"
               )}

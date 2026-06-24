@@ -14,6 +14,7 @@ export default function PortfolioPage() {
   return (
     <>
       <PageHero
+        compact
         eyebrow="Portfolio"
         title="Our work across India"
         subhead="Every image is a real campaign, executed by Big Street Media. Filter by format to explore."
@@ -21,7 +22,6 @@ export default function PortfolioPage() {
           { label: "Home", href: "/" },
           { label: "Portfolio" },
         ]}
-        compact
       />
       <div className="py-6 md:py-8">
         <Suspense fallback={null}>

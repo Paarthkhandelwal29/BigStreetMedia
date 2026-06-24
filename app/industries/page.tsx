@@ -17,6 +17,7 @@ export default function IndustriesPage() {
   return (
     <>
       <PageHero
+        compact
         eyebrow="Industries"
         title="We've executed campaigns in your industry"
         subhead="Pick your sector to see how Big Street Media plans and runs campaigns built around its specific buyers, seasons, and markets."

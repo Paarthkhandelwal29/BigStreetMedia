@@ -65,6 +65,7 @@ export default async function IndustryPage({
   return (
     <>
       <PageHero
+        compact
         eyebrow={ind.name}
         title={ind.headline}
         subhead={ind.outcome}

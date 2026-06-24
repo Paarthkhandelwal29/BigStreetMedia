@@ -12,6 +12,7 @@ export default function MediaInventoryPage() {
   return (
     <>
       <PageHero
+        compact
         eyebrow="Media Inventory"
         title="Media Inventory"
         subhead="Find available media spaces across India - before your competitor does."

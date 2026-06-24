@@ -85,6 +85,7 @@ export default async function ServicePage({
   return (
     <>
       <PageHero
+        compact
         eyebrow={service.title}
         title={service.headline}
         subhead={service.outcome}

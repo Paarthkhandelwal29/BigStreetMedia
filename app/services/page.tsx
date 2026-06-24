@@ -15,6 +15,7 @@ export default function ServicesPage() {
   return (
     <>
       <PageHero
+        compact
         eyebrow="Services"
         title="360° advertising across every format and city"
         subhead="Choose a service to see how Big Street Media executes it at scale — with ground teams, not just plans."

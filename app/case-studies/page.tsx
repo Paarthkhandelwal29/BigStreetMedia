@@ -16,10 +16,10 @@ export default function CaseStudiesPage() {
   return (
     <>
       <PageHero
+        compact
         eyebrow="Case Studies"
         title="Real campaigns. Real results."
         subhead="Here's how we helped some of India's top brands achieve their objectives — starting with their problem, not our activity."
-        compact
       />
 
       <section className="container-bsm py-8 md:py-10">

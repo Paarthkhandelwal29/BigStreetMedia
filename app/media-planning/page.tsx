@@ -44,6 +44,7 @@ export default function MediaPlanningPage() {
   return (
     <>
       <PageHero
+        compact
         eyebrow="Media Planning"
         title="Data-driven media planning across India"
         subhead="We don't just place ads. We build media plans that your budget can justify to your board."

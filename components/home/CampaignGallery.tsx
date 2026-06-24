@@ -124,7 +124,7 @@ export function CampaignGallery() {
 
         <div className="mt-10 text-center">
           <Link
-            href="/portfolio"
+            href="/case-studies"
             className="group inline-flex items-center gap-2 rounded-full border border-[#ececec] bg-surface px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-200 hover:border-amber hover:shadow-[0_4px_16px_rgba(255,193,7,0.15)]"
           >
             See All Campaigns

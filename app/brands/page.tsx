@@ -13,6 +13,7 @@ export default function BrandsPage() {
   return (
     <>
       <PageHero
+        compact
         eyebrow="Brands"
         title="Brands that trust Big Street Media"
         subhead="Filter by industry to see the brands we've executed for in your sector."

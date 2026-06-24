@@ -15,8 +15,6 @@ export const routeGroups = [
       { label: "Portfolio", href: "/portfolio" },
       { label: "Case Studies", href: "/case-studies" },
       { label: "Brands", href: "/brands" },
-      { label: "Blog", href: "/blog" },
-      { label: "Careers", href: "/careers" },
     ],
   },
   {

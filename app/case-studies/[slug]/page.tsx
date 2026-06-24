@@ -41,6 +41,7 @@ export default async function CaseStudyPage({
   return (
     <>
       <PageHero
+        compact
         eyebrow={`${cs.brand} · ${cs.campaignType}`}
         title={`${cs.brand} — ${cs.campaignType} Campaign`}
         subhead={cs.industry}
