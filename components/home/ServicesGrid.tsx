@@ -39,7 +39,7 @@ function ServiceTile({ service, index }: { service: (typeof services)[number]; i
 
 export function ServicesGrid() {
   return (
-    <section className="bg-surface">
+    <section id="services" className="scroll-mt-28 bg-surface">
       <div className="container-bsm py-24">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <SectionHeader

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { PageHero } from "@/components/ui/PageHero";
 import { PortfolioGallery } from "@/components/portfolio/PortfolioGallery";
 import { FinalCTA } from "@/components/home/FinalCTA";
@@ -20,9 +21,12 @@ export default function PortfolioPage() {
           { label: "Home", href: "/" },
           { label: "Portfolio" },
         ]}
+        compact
       />
-      <div className="py-12">
-        <PortfolioGallery />
+      <div className="py-6 md:py-8">
+        <Suspense fallback={null}>
+          <PortfolioGallery />
+        </Suspense>
       </div>
       <FinalCTA />
     </>

@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   portfolio,
   portfolioCategories,
   type PortfolioCategory,
-  type PortfolioItem,
 } from "@/data/portfolio";
 import { cn } from "@/lib/utils";
 import { X, CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
@@ -14,7 +14,22 @@ import { X, CaretLeft, CaretRight } from "@phosphor-icons/react/dist/ssr";
 export function PortfolioGallery() {
   const [active, setActive] = useState<PortfolioCategory | "All">("All");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const searchParams = useSearchParams();
   const reduce = useReducedMotion();
+
+  useEffect(() => {
+    const category = searchParams.get("category");
+    const nextCategory = portfolioCategories.find((cat) => cat === category);
+
+    if (nextCategory) {
+      const frame = requestAnimationFrame(() => {
+        setActive(nextCategory);
+        setLightboxIndex(null);
+      });
+
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [searchParams]);
 
   const filtered = useMemo(
     () => (active === "All" ? portfolio : portfolio.filter((p) => p.category === active)),

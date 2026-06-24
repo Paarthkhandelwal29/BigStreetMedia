@@ -19,9 +19,10 @@ export default function CaseStudiesPage() {
         eyebrow="Case Studies"
         title="Real campaigns. Real results."
         subhead="Here's how we helped some of India's top brands achieve their objectives — starting with their problem, not our activity."
+        compact
       />
 
-      <section className="container-bsm py-20">
+      <section className="container-bsm py-8 md:py-10">
         <RevealGroup className="grid grid-cols-1 gap-5 md:grid-cols-2" stagger={0.06}>
           {caseStudies.map((cs) => (
             <RevealItem key={cs.slug} className="h-full">
@@ -59,3 +60,4 @@ export default function CaseStudiesPage() {
     </>
   );
 }
+

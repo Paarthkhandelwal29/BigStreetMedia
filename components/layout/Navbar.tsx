@@ -11,6 +11,19 @@ import { services } from "@/data/services";
 import { CaretDown } from "@phosphor-icons/react/dist/ssr";
 
 const LIGHT_TOP_ROUTES = new Set(["/contact", "/privacy-policy", "/sitemap"]);
+const servicePortfolioFilters: Record<string, string> = {
+  "ooh-media": "OOH",
+  "transit-media": "Transit",
+  "btl-activations": "Events",
+  "retail-branding": "Store Launch",
+  "events-launches": "Events",
+  exhibitions: "Exhibitions",
+};
+
+function serviceHref(slug: string) {
+  const category = servicePortfolioFilters[slug];
+  return category ? `/portfolio?category=${encodeURIComponent(category)}` : `/services/${slug}`;
+}
 
 // Shared link class — uses relative + after pseudo for underline (no pb that shifts baseline)
 function navLinkClass(active: boolean, light: boolean) {
@@ -42,16 +55,19 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setOpen(false));
+    return () => cancelAnimationFrame(frame);
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  const servicesActive = pathname.startsWith("/services") || pathname === "/media-inventory";
+  const servicesActive = pathname.startsWith("/services");
   const workActive = pathname === "/portfolio" || pathname.startsWith("/case-studies");
-  const industriesActive = pathname.startsWith("/industries");
+  const mediaInventoryActive = pathname === "/media-inventory";
   const aboutActive = pathname === "/about";
 
   return (
@@ -79,9 +95,9 @@ export function Navbar() {
             onMouseEnter={() => setHoveredDropdown("services")}
             onMouseLeave={() => setHoveredDropdown(null)}
           >
-            <button type="button" className={navLinkClass(servicesActive, lightText)}>
+            <Link href="/#services" className={navLinkClass(servicesActive, lightText)}>
               Services <CaretDown size={13} />
-            </button>
+            </Link>
             <AnimatePresence>
               {hoveredDropdown === "services" && (
                 <motion.div
@@ -95,7 +111,7 @@ export function Navbar() {
                     {services.map((s) => (
                       <Link
                         key={s.slug}
-                        href={`/services/${s.slug}`}
+                        href={serviceHref(s.slug)}
                         className="rounded-lg px-3 py-2 text-sm font-medium text-body transition-colors hover:bg-surface-2 hover:text-ink"
                       >
                         {s.title}
@@ -115,10 +131,10 @@ export function Navbar() {
             </AnimatePresence>
           </li>
 
-          {/* Industries */}
+          {/* Media Inventory */}
           <li>
-            <Link href="/industries" className={navLinkClass(industriesActive, lightText)}>
-              Industries
+            <Link href="/media-inventory" className={navLinkClass(mediaInventoryActive, lightText)}>
+              Media Inventory
             </Link>
           </li>
 
@@ -204,8 +220,8 @@ export function Navbar() {
           >
             <ul className="flex flex-col gap-1">
               {[
-                { label: "Services", href: "/services" },
-                { label: "Industries", href: "/industries" },
+                { label: "Services", href: "/#services" },
+                { label: "Media Inventory", href: "/media-inventory" },
                 { label: "Portfolio", href: "/portfolio" },
                 { label: "Case Studies", href: "/case-studies" },
                 { label: "About", href: "/about" },
