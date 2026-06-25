@@ -16,7 +16,6 @@ export default function MediaInventoryPage() {
         eyebrow="Media Inventory"
         title="Media Inventory"
         subhead="Find available media spaces across India - before your competitor does."
-        compact
       />
       <div className="py-6 md:py-8">
         <MediaInventoryClient />
