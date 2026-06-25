@@ -62,7 +62,94 @@ export function PortfolioGallery() {
   return (
     <>
       <div className="container-bsm pb-12">
-        <div className="mb-6 md:mb-8">
+        <div className="mb-6 rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-4 lg:hidden">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+            Filters
+          </p>
+          <div className="space-y-5">
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                Categories
+              </p>
+              <div className="flex flex-col gap-2">
+                {portfolioCategories.map((cat) => {
+                  const isActive = activeCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      aria-pressed={isActive}
+                      onClick={() => {
+                        setActiveCategory(cat);
+                        setActiveFormat("All Formats");
+                        setLightboxIndex(null);
+                      }}
+                      className={cn(
+                        "min-h-11 w-full cursor-pointer rounded-2xl border px-4 py-3 text-left text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                        isActive
+                          ? "border-amber bg-amber text-ink"
+                          : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20"
+                      )}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                Formats
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  aria-pressed={activeFormat === "All Formats"}
+                  onClick={() => {
+                    setActiveFormat("All Formats");
+                    setLightboxIndex(null);
+                  }}
+                  className={cn(
+                    "min-h-9 whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                    activeFormat === "All Formats"
+                      ? "border-ink bg-ink text-white"
+                      : "border-[#f0f0f0] bg-white text-body",
+                    activeCategory === "All" && "cursor-not-allowed opacity-50"
+                  )}
+                  disabled={activeCategory === "All"}
+                >
+                  All Formats
+                </button>
+
+                {formatOptions.map((format) => {
+                  const isActive = activeFormat === format;
+                  return (
+                    <button
+                      key={format}
+                      type="button"
+                      aria-pressed={isActive}
+                      onClick={() => {
+                        setActiveFormat(format);
+                        setLightboxIndex(null);
+                      }}
+                      className={cn(
+                        "min-h-9 whitespace-nowrap cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                        isActive
+                          ? "border-ink bg-ink text-white"
+                          : "border-[#f0f0f0] bg-white text-body hover:border-ink/20 hover:text-ink"
+                      )}
+                    >
+                      {format}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-6 hidden lg:block lg:mb-8">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
             Formats
           </p>
@@ -113,7 +200,7 @@ export function PortfolioGallery() {
 
         <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
           {/* filters */}
-          <aside className="lg:sticky lg:top-24">
+          <aside className="hidden lg:sticky lg:top-24 lg:block">
             <div className="rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-5">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                 Categories
