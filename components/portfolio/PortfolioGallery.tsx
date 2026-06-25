@@ -61,151 +61,157 @@ export function PortfolioGallery() {
 
   return (
     <>
-      {/* filters */}
-      <div className="container-bsm space-y-6">
-        <div>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-            Categories
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {portfolioCategories.map((cat) => {
-              const isActive = activeCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  aria-pressed={isActive}
-                  onClick={() => {
-                    setActiveCategory(cat);
-                    setActiveFormat("All Formats");
-                    setLightboxIndex(null);
-                  }}
-                  className={cn(
-                    "min-h-11 cursor-pointer rounded-full border px-5 py-2 text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
-                    isActive
-                      ? "border-amber bg-amber text-ink"
-                      : "border-[#f0f0f0] bg-surface text-ink hover:border-ink/20"
-                  )}
-                >
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div>
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-              Formats
-            </p>
-            <p className="text-sm text-muted">
-              {activeCategory === "All"
-                ? "Select a category to narrow by format."
-                : `${formatOptions.length} formats under ${activeCategory}`}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              aria-pressed={activeFormat === "All Formats"}
-              onClick={() => {
-                setActiveFormat("All Formats");
-                setLightboxIndex(null);
-              }}
-              className={cn(
-                "min-h-9 rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
-                activeFormat === "All Formats"
-                  ? "border-ink bg-ink text-white"
-                  : "border-[#f0f0f0] bg-surface text-body",
-                activeCategory === "All" && "cursor-not-allowed opacity-50"
-              )}
-              disabled={activeCategory === "All"}
-            >
-              All Formats
-            </button>
-
-            {formatOptions.map((format) => {
-              const isActive = activeFormat === format;
-              return (
-                <button
-                  key={format}
-                  type="button"
-                  aria-pressed={isActive}
-                  onClick={() => {
-                    setActiveFormat(format);
-                    setLightboxIndex(null);
-                  }}
-                  className={cn(
-                    "min-h-9 cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
-                    isActive
-                      ? "border-ink bg-ink text-white"
-                      : "border-[#f0f0f0] bg-surface text-body hover:border-ink/20 hover:text-ink"
-                  )}
-                >
-                  {format}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* masonry */}
       <div className="container-bsm py-12">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-muted">
-            {filtered.length} work{filtered.length === 1 ? "" : "s"} found
-          </p>
-          {activeCategory !== "All" && (
-            <p className="text-sm text-muted">
-              Showing <span className="font-medium text-ink">{activeCategory}</span>
-              {activeFormat !== "All Formats" ? (
-                <>
-                  {" "}
-                  · <span className="font-medium text-ink">{activeFormat}</span>
-                </>
-              ) : null}
-            </p>
-          )}
-        </div>
+        <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
+          {/* filters */}
+          <aside className="lg:sticky lg:top-24">
+            <div className="space-y-6 rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-5">
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                  Categories
+                </p>
+                <div className="flex flex-col gap-2">
+                  {portfolioCategories.map((cat) => {
+                    const isActive = activeCategory === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        aria-pressed={isActive}
+                        onClick={() => {
+                          setActiveCategory(cat);
+                          setActiveFormat("All Formats");
+                          setLightboxIndex(null);
+                        }}
+                        className={cn(
+                          "min-h-11 w-full cursor-pointer rounded-2xl border px-4 py-3 text-left text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                          isActive
+                            ? "border-amber bg-amber text-ink"
+                            : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20"
+                        )}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
-        {filtered.length > 0 ? (
-          <div className="columns-2 gap-4 md:columns-3 lg:columns-4 [&>*]:mb-4">
-            {filtered.map((item, i) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setLightboxIndex(i)}
-                className={cn(
-                  "group relative block w-full overflow-hidden rounded-[1.25rem] border border-[#f0f0f0] bg-surface-2 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.08)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber",
-                  item.tall ? "aspect-[3/4]" : "aspect-[4/3]"
-                )}
-              >
-                <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
-                  {item.category}
-                </span>
-                <span className="absolute inset-0 flex items-center justify-center px-6 text-center text-xs uppercase tracking-widest text-muted">
-                  {item.format}
-                </span>
-                <span className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-ink/80 to-transparent p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  <span className="block font-display text-sm font-semibold text-white">{item.brand}</span>
-                  <span className="block text-xs text-white/70">
-                    {item.format} · {item.city} · {item.year}
-                  </span>
-                </span>
-              </button>
-            ))}
+              <div>
+                <div className="mb-3 space-y-1">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                    Formats
+                  </p>
+                  <p className="text-sm text-muted">
+                    {activeCategory === "All"
+                      ? "Select a category to narrow by format."
+                      : `${formatOptions.length} formats under ${activeCategory}`}
+                  </p>
+                </div>
+
+                <div className="flex max-h-[28rem] flex-col gap-2 overflow-y-auto pr-1">
+                  <button
+                    type="button"
+                    aria-pressed={activeFormat === "All Formats"}
+                    onClick={() => {
+                      setActiveFormat("All Formats");
+                      setLightboxIndex(null);
+                    }}
+                    className={cn(
+                      "min-h-9 w-full rounded-xl border px-4 py-2 text-left text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                      activeFormat === "All Formats"
+                        ? "border-ink bg-ink text-white"
+                        : "border-[#f0f0f0] bg-white text-body",
+                      activeCategory === "All" && "cursor-not-allowed opacity-50"
+                    )}
+                    disabled={activeCategory === "All"}
+                  >
+                    All Formats
+                  </button>
+
+                  {formatOptions.map((format) => {
+                    const isActive = activeFormat === format;
+                    return (
+                      <button
+                        key={format}
+                        type="button"
+                        aria-pressed={isActive}
+                        onClick={() => {
+                          setActiveFormat(format);
+                          setLightboxIndex(null);
+                        }}
+                        className={cn(
+                          "min-h-9 w-full cursor-pointer rounded-xl border px-4 py-2 text-left text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                          isActive
+                            ? "border-ink bg-ink text-white"
+                            : "border-[#f0f0f0] bg-white text-body hover:border-ink/20 hover:text-ink"
+                        )}
+                      >
+                        {format}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* masonry */}
+          <div>
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-muted">
+                {filtered.length} work{filtered.length === 1 ? "" : "s"} found
+              </p>
+              {activeCategory !== "All" && (
+                <p className="text-sm text-muted">
+                  Showing <span className="font-medium text-ink">{activeCategory}</span>
+                  {activeFormat !== "All Formats" ? (
+                    <>
+                      {" "}
+                      · <span className="font-medium text-ink">{activeFormat}</span>
+                    </>
+                  ) : null}
+                </p>
+              )}
+            </div>
+
+            {filtered.length > 0 ? (
+              <div className="columns-2 gap-4 md:columns-3 xl:columns-4 [&>*]:mb-4">
+                {filtered.map((item, i) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setLightboxIndex(i)}
+                    className={cn(
+                      "group relative block w-full overflow-hidden rounded-[1.25rem] border border-[#f0f0f0] bg-surface-2 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.08)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber",
+                      item.tall ? "aspect-[3/4]" : "aspect-[4/3]"
+                    )}
+                  >
+                    <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
+                      {item.category}
+                    </span>
+                    <span className="absolute inset-0 flex items-center justify-center px-6 text-center text-xs uppercase tracking-widest text-muted">
+                      {item.format}
+                    </span>
+                    <span className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-ink/80 to-transparent p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                      <span className="block font-display text-sm font-semibold text-white">{item.brand}</span>
+                      <span className="block text-xs text-white/70">
+                        {item.format} · {item.city} · {item.year}
+                      </span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[1.5rem] border border-dashed border-[#e6e6e6] bg-surface px-6 py-12 text-center">
+                <p className="text-base font-medium text-ink">No works found for this format yet.</p>
+                <p className="mt-2 text-sm text-muted">
+                  Try another format or switch the primary category above.
+                </p>
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="rounded-[1.5rem] border border-dashed border-[#e6e6e6] bg-surface px-6 py-12 text-center">
-            <p className="text-base font-medium text-ink">No works found for this format yet.</p>
-            <p className="mt-2 text-sm text-muted">
-              Try another format or switch the primary category above.
-            </p>
-          </div>
-        )}
+        </div>
       </div>
 
       {/* lightbox */}
