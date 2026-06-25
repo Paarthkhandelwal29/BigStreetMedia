@@ -109,7 +109,7 @@ export function PortfolioGallery() {
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex gap-2 overflow-x-auto pb-1">
                   <button
                     type="button"
                     aria-pressed={activeFormat === "All Formats"}
@@ -118,7 +118,7 @@ export function PortfolioGallery() {
                       setLightboxIndex(null);
                     }}
                     className={cn(
-                      "min-h-9 rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                      "min-h-9 shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                       activeFormat === "All Formats"
                         ? "border-ink bg-ink text-white"
                         : "border-[#f0f0f0] bg-white text-body",
@@ -141,7 +141,7 @@ export function PortfolioGallery() {
                           setLightboxIndex(null);
                         }}
                         className={cn(
-                          "min-h-9 cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                          "min-h-9 shrink-0 whitespace-nowrap cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                           isActive
                             ? "border-ink bg-ink text-white"
                             : "border-[#f0f0f0] bg-white text-body hover:border-ink/20 hover:text-ink"
