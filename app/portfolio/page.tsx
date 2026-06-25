@@ -17,7 +17,7 @@ export default function PortfolioPage() {
         compact
         eyebrow="Portfolio"
         title="Our work across India"
-        subhead="Every image is a real campaign, executed by Big Street Media. Filter by format to explore."
+        subhead="Every image is a real campaign, executed by Big Street Media. Filter by main category and then drill down into formats."
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Portfolio" },

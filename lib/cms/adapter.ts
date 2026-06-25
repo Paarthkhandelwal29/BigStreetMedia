@@ -1,5 +1,10 @@
 import type { InventoryItem, MediaType } from "@/data/inventory";
-import type { PortfolioItem, PortfolioCategory } from "@/data/portfolio";
+import {
+  portfolioFormatsByCategory,
+  type PortfolioItem,
+  type PortfolioCategory,
+  type PortfolioFormat,
+} from "@/data/portfolio";
 import type { CaseStudy } from "@/data/caseStudies";
 import type { CaseStudyRecord, MediaInventoryRecord, PortfolioProjectRecord } from "./types";
 
@@ -23,14 +28,31 @@ export function inventoryFromCms(records: MediaInventoryRecord[]): InventoryItem
 }
 
 export function portfolioFromCms(records: PortfolioProjectRecord[]): PortfolioItem[] {
-  return records.map((record) => ({
-    id: record.id,
-    brand: record.title,
-    category: (record.serviceType || "OOH") as PortfolioCategory,
-    city: record.location || "India",
-    year: record.projectDate ? new Date(record.projectDate).getFullYear().toString() : "2025",
-    tall: record.featured,
-  }));
+  const formatEntries = Object.entries(portfolioFormatsByCategory) as Array<
+    [PortfolioCategory, readonly PortfolioFormat[]]
+  >;
+
+  return records.map((record) => {
+    const serviceType = record.serviceType || "OOH";
+    const matchedCategory = formatEntries.find(
+      ([category, formats]) =>
+        category === serviceType || formats.includes(serviceType as PortfolioFormat)
+    );
+    const category = matchedCategory?.[0] ?? "OOH";
+    const format =
+      matchedCategory?.[1].find((item) => item === serviceType) ??
+      portfolioFormatsByCategory[category][0];
+
+    return {
+      id: record.id,
+      brand: record.title,
+      category,
+      format,
+      city: record.location || "India",
+      year: record.projectDate ? new Date(record.projectDate).getFullYear().toString() : "2025",
+      tall: record.featured,
+    };
+  });
 }
 
 export function caseStudiesFromCms(records: CaseStudyRecord[]): CaseStudy[] {
