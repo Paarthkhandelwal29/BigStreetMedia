@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { isAdminAuthenticated } from "@/lib/cms/auth";
 import { listInventory, deleteInventory } from "@/lib/cms/store";
 
@@ -17,8 +19,18 @@ export default async function InventoryAdminPage() {
           <h1 className="mt-3 text-3xl font-bold text-ink">Media inventory</h1>
         </div>
         <div className="flex gap-3">
-          <Link href="/admin" className="text-sm font-semibold text-ink underline underline-offset-4">Dashboard</Link>
-          <Link href="/admin/inventory/new" className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white">Add inventory</Link>
+          <Link
+            href="/admin"
+            className="text-sm font-semibold text-ink underline underline-offset-4"
+          >
+            Dashboard
+          </Link>
+          <Link
+            href="/admin/inventory/new"
+            className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white"
+          >
+            Add inventory
+          </Link>
         </div>
       </div>
 
@@ -39,18 +51,49 @@ export default async function InventoryAdminPage() {
             {inventory.map((item) => (
               <tr key={item.id} className="border-t border-[#ececec]">
                 <td className="px-4 py-3">
-                  {item.imageUrl ? <img src={item.imageUrl} alt={item.title} className="h-12 w-16 rounded object-cover" /> : <span className="text-muted">No image</span>}
+                  {item.imageUrl ? (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      width={64}
+                      height={48}
+                      className="h-12 w-16 rounded object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <span className="text-muted">No image</span>
+                  )}
                 </td>
-                <td className="px-4 py-3 font-semibold text-ink">{item.title}</td>
+                <td className="px-4 py-3 font-semibold text-ink">
+                  {item.title}
+                </td>
                 <td className="px-4 py-3">{item.city}</td>
                 <td className="px-4 py-3">{item.mediaType}</td>
-                <td className="px-4 py-3">{item.availability ? "Available" : "Hidden"}</td>
+                <td className="px-4 py-3">
+                  {item.availability ? "Available" : "Hidden"}
+                </td>
                 <td className="px-4 py-3">{item.featured ? "Yes" : "No"}</td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
-                    <Link href={`/admin/inventory/${item.id}`} className="text-sm font-semibold text-ink underline underline-offset-4">Edit</Link>
-                    <form action={async () => { "use server"; await deleteInventory(item.id); }}>
-                      <button className="text-sm font-semibold text-red-600">Delete</button>
+                    <Link
+                      href={`/admin/inventory/${item.id}`}
+                      className="text-sm font-semibold text-ink underline underline-offset-4"
+                    >
+                      Edit
+                    </Link>
+                    <form
+                      action={async () => {
+                        "use server";
+                        await deleteInventory(item.id);
+                        revalidatePath("/admin/inventory");
+                      }}
+                    >
+                      <button
+                        type="submit"
+                        className="text-sm font-semibold text-red-600"
+                      >
+                        Delete
+                      </button>
                     </form>
                   </div>
                 </td>

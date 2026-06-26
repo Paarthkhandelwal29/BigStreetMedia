@@ -8,7 +8,19 @@ agency (est. 2004). Premium, conversion-focused, built to win advertising client
 ## Tech
 
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · Motion · Phosphor icons.
-Static export — deploys to any static host.
+Public marketing pages are straightforward Next.js pages, while the admin upload portal uses server actions, cookies, and API routes.
+
+## Admin portal
+
+The admin area is intentionally scoped to managing:
+
+- media inventory
+- portfolio/work uploads
+- case study uploads
+
+Authentication uses a password from `ADMIN_PASSWORD`. You can hardcode that in your environment for now, but sessions are stored as signed cookies rather than the raw password.
+
+For stronger security in production, also set `ADMIN_SESSION_SECRET`.
 
 ## Develop
 

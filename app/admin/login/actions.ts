@@ -1,11 +1,20 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { setAdminSession } from "@/lib/cms/auth";
 
-export async function loginAction(_prevState: { error: string; success?: boolean }, formData: FormData) {
-  const password = formData.get("password");
-  if (password === process.env.ADMIN_PASSWORD) {
+type LoginState = { error: string; success?: boolean };
+
+export async function loginAction(
+  _prevState: LoginState,
+  formData: FormData,
+): Promise<LoginState> {
+  const configuredPassword = process.env.ADMIN_PASSWORD?.trim() || "";
+  if (!configuredPassword) {
+    return { success: false, error: "Admin password is not configured." };
+  }
+
+  const password = String(formData.get("password") || "");
+  if (password === configuredPassword) {
     await setAdminSession();
     return { success: true, error: "" };
   }

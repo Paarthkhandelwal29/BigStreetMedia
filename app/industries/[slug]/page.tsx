@@ -8,7 +8,6 @@ import { ServiceCard } from "@/components/shared/ServiceCard";
 import { industries, industryBySlug } from "@/data/industries";
 import { services } from "@/data/services";
 import { brands } from "@/data/brands";
-import { icons } from "@/lib/icons";
 import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
 
 export function generateStaticParams() {
@@ -36,9 +35,19 @@ const recommended: Record<string, string[]> = {
   "real-estate": ["ooh-media", "btl-activations", "digital", "events-launches"],
   bfsi: ["ooh-media", "retail-branding", "radio", "digital"],
   healthcare: ["ooh-media", "btl-activations", "radio", "digital"],
-  "telecom-tech": ["retail-branding", "transit-media", "btl-activations", "digital"],
+  "telecom-tech": [
+    "retail-branding",
+    "transit-media",
+    "btl-activations",
+    "digital",
+  ],
   education: ["ooh-media", "digital", "btl-activations", "radio"],
-  "retail-hospitality": ["retail-branding", "events-launches", "ooh-media", "btl-activations"],
+  "retail-hospitality": [
+    "retail-branding",
+    "events-launches",
+    "ooh-media",
+    "btl-activations",
+  ],
   government: ["ooh-media", "rural", "radio", "transit-media"],
 };
 
@@ -57,7 +66,12 @@ export default async function IndustryPage({
   const ind = industryBySlug(slug);
   if (!ind) notFound();
 
-  const recSlugs = recommended[ind.slug] ?? ["ooh-media", "transit-media", "btl-activations", "digital"];
+  const recSlugs = recommended[ind.slug] ?? [
+    "ooh-media",
+    "transit-media",
+    "btl-activations",
+    "digital",
+  ];
   const recServices = recSlugs
     .map((s) => services.find((x) => x.slug === s))
     .filter((x): x is NonNullable<typeof x> => Boolean(x));
@@ -88,7 +102,11 @@ export default async function IndustryPage({
           {challenges.map((c, i) => (
             <RevealItem key={i}>
               <div className="h-full rounded-[1.25rem] border border-[#f0f0f0] bg-surface p-7">
-                <CheckCircle size={26} weight="fill" className="text-amber-deep" />
+                <CheckCircle
+                  size={26}
+                  weight="fill"
+                  className="text-amber-deep"
+                />
                 <p className="mt-4 text-sm leading-relaxed text-body">{c}</p>
               </div>
             </RevealItem>
@@ -104,7 +122,10 @@ export default async function IndustryPage({
             title="Formats that work for this sector"
             subhead="A starting mix — we tailor the exact plan to your product, budget, and markets."
           />
-          <RevealGroup className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.05}>
+          <RevealGroup
+            className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+            stagger={0.05}
+          >
             {recServices.map((s) => (
               <RevealItem key={s.slug} className="h-full">
                 <ServiceCard service={s} />
@@ -116,7 +137,10 @@ export default async function IndustryPage({
 
       {/* Brands */}
       <section className="container-bsm py-20">
-        <SectionHeader eyebrow="Track Record" title="Brands we've worked with" />
+        <SectionHeader
+          eyebrow="Track Record"
+          title="Brands we've worked with"
+        />
         <RevealGroup className="mt-10 flex flex-wrap gap-3" stagger={0.03}>
           {brands.slice(0, 12).map((b) => (
             <RevealItem key={b.name}>
@@ -131,8 +155,15 @@ export default async function IndustryPage({
       {/* Gallery placeholder */}
       <section className="bg-surface-2">
         <div className="container-bsm py-20">
-          <SectionHeader eyebrow="Campaign Gallery" title={`${ind.name} campaigns`} subhead="Real campaign photography drops in here once assets are added." />
-          <RevealGroup className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3" stagger={0.05}>
+          <SectionHeader
+            eyebrow="Campaign Gallery"
+            title={`${ind.name} campaigns`}
+            subhead="Real campaign photography drops in here once assets are added."
+          />
+          <RevealGroup
+            className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3"
+            stagger={0.05}
+          >
             {Array.from({ length: 6 }).map((_, i) => (
               <RevealItem key={i}>
                 <div className="flex aspect-[4/3] items-center justify-center rounded-[1.25rem] border border-[#f0f0f0] bg-surface text-xs uppercase tracking-widest text-muted">

@@ -15,7 +15,11 @@ type AnimatedCounterProps = {
  * Counts up from 0 to the numeric portion of `value` once it enters view.
  * Preserves any prefix/suffix (₹, +, L, Cr). Non-numeric values render as-is.
  */
-export function AnimatedCounter({ value, className, durationMs = 1600 }: AnimatedCounterProps) {
+export function AnimatedCounter({
+  value,
+  className,
+  durationMs = 1600,
+}: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const reduce = useReducedMotion();
@@ -25,18 +29,15 @@ export function AnimatedCounter({ value, className, durationMs = 1600 }: Animate
   const target = match ? parseInt(match[2].replace(/,/g, ""), 10) : NaN;
   const suffix = match?.[3] ?? "";
 
-  const [display, setDisplay] = useState(Number.isNaN(target) ? value : `${prefix}0${suffix}`);
+  const [display, setDisplay] = useState(() => {
+    if (Number.isNaN(target)) return value;
+    if (reduce && inView)
+      return `${prefix}${target.toLocaleString("en-IN")}${suffix}`;
+    return `${prefix}0${suffix}`;
+  });
 
   useEffect(() => {
-    if (Number.isNaN(target)) {
-      setDisplay(value);
-      return;
-    }
-    if (!inView) return;
-    if (reduce) {
-      setDisplay(`${prefix}${target.toLocaleString("en-IN")}${suffix}`);
-      return;
-    }
+    if (Number.isNaN(target) || !inView || reduce) return;
 
     let raf = 0;
     const start = performance.now();
