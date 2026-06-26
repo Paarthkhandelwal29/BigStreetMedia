@@ -16,6 +16,7 @@ export function PageHero({
   align = "left",
   breadcrumbs,
   compact = true,
+  density = "default",
 }: {
   eyebrow?: string;
   title: ReactNode;
@@ -24,6 +25,7 @@ export function PageHero({
   align?: "left" | "center";
   breadcrumbs?: Crumb[];
   compact?: boolean;
+  density?: "default" | "tight";
 }) {
   return (
     <section className="relative overflow-hidden bg-ink">
@@ -38,7 +40,11 @@ export function PageHero({
       <div
         className={cn(
           "container-bsm relative z-10 flex flex-col",
-          compact ? "gap-2 pb-8 pt-24" : "gap-5 pb-20 pt-28",
+          compact
+            ? density === "tight"
+              ? "gap-2 pb-6 pt-20 md:pb-7 md:pt-[5.5rem]"
+              : "gap-2 pb-8 pt-24"
+            : "gap-5 pb-20 pt-28",
           align === "center" && "items-center text-center"
         )}
       >
