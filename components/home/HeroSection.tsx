@@ -7,12 +7,19 @@ import { CaretDown } from "@phosphor-icons/react/dist/ssr";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-function HeroCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
-  const [display, setDisplay] = useState(0);
+function HeroCounter({
+  value,
+  suffix = "",
+}: {
+  value: number;
+  suffix?: string;
+}) {
   const reduce = useReducedMotion();
+  const [display, setDisplay] = useState(() => (reduce ? value : 0));
 
   useEffect(() => {
-    if (reduce) { setDisplay(value); return; }
+    if (reduce) return;
+
     const duration = 1800;
     const start = performance.now();
     let raf: number;
@@ -22,13 +29,19 @@ function HeroCounter({ value, suffix = "" }: { value: number; suffix?: string })
       setDisplay(Math.round(eased * value));
       if (t < 1) raf = requestAnimationFrame(tick);
     };
-    const timer = setTimeout(() => { raf = requestAnimationFrame(tick); }, 600);
-    return () => { clearTimeout(timer); cancelAnimationFrame(raf); };
+    const timer = setTimeout(() => {
+      raf = requestAnimationFrame(tick);
+    }, 600);
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(raf);
+    };
   }, [value, reduce]);
 
   return (
     <span className="text-lg font-bold leading-none text-white tabular-nums sm:text-xl md:text-2xl">
-      {display.toLocaleString("en-IN")}{suffix}
+      {display.toLocaleString("en-IN")}
+      {suffix}
     </span>
   );
 }
@@ -70,13 +83,20 @@ export function HeroSection() {
           backgroundImage:
             "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
           backgroundSize: "64px 64px",
-          maskImage: "radial-gradient(circle at 50% 40%, black, transparent 75%)",
+          maskImage:
+            "radial-gradient(circle at 50% 40%, black, transparent 75%)",
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50" aria-hidden />
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50"
+        aria-hidden
+      />
 
       <div className="container-bsm relative z-10 flex flex-1 flex-col items-center justify-center pt-28 pb-6 text-center">
-        <motion.span {...rise(0)} className="eyebrow border-white/15 bg-white/5 text-white/80">
+        <motion.span
+          {...rise(0)}
+          className="eyebrow border-white/15 bg-white/5 text-white/80"
+        >
           Established 2004 · PAN India
         </motion.span>
 
@@ -98,7 +118,10 @@ export function HeroSection() {
           work, and travel.
         </motion.p>
 
-        <motion.div {...rise(0.24)} className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+        <motion.div
+          {...rise(0.24)}
+          className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center"
+        >
           <ButtonLink href="/services">Explore Services</ButtonLink>
           <ButtonLink href="/contact" variant="ghost-light">
             Get Free Media Plan

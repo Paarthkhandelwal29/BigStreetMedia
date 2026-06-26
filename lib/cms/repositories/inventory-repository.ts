@@ -65,9 +65,16 @@ function mapRowToRecord(row: InventoryRow): MediaInventoryRecord {
   };
 }
 
-function mapInputToRow(input: Partial<MediaInventoryRecord> & { imageUrl?: string | MediaAssetInput; galleryImages?: Array<string | MediaAssetInput> }): Partial<InventoryRow> {
-  const cover = typeof input.imageUrl === "string" ? { url: input.imageUrl } : input.imageUrl;
-  const gallery = normalizeMediaInputs(input.galleryImages ?? []);
+function mapInputToRow(
+  input: Partial<MediaInventoryRecord> & {
+    imageUrl?: string | MediaAssetInput;
+    galleryImages?: Array<string | MediaAssetInput>;
+  },
+): Partial<InventoryRow> {
+  const cover =
+    typeof input.imageUrl === "string"
+      ? { url: input.imageUrl }
+      : input.imageUrl;
 
   return {
     title: input.title ?? "",
@@ -105,7 +112,10 @@ export class InventoryRepository {
       return [] as MediaInventoryRecord[];
     }
 
-    const { data, error } = await client.from("inventory_items").select("*").order("created_at", { ascending: false });
+    const { data, error } = await client
+      .from("inventory_items")
+      .select("*")
+      .order("created_at", { ascending: false });
     if (error) {
       throw error;
     }
@@ -119,7 +129,11 @@ export class InventoryRepository {
       return null;
     }
 
-    const { data, error } = await client.from("inventory_items").select("*").eq("id", id).maybeSingle();
+    const { data, error } = await client
+      .from("inventory_items")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
     if (error) {
       throw error;
     }
@@ -127,9 +141,17 @@ export class InventoryRepository {
     return data ? mapRowToRecord(data as InventoryRow) : null;
   }
 
-  async create(input: Partial<MediaInventoryRecord> & { imageUrl?: string | MediaAssetInput; galleryImages?: Array<string | MediaAssetInput> }) {
+  async create(
+    input: Partial<MediaInventoryRecord> & {
+      imageUrl?: string | MediaAssetInput;
+      galleryImages?: Array<string | MediaAssetInput>;
+    },
+  ) {
     const client = getSupabaseClient();
-    const primaryImage = typeof input.imageUrl === "string" ? input.imageUrl : normalizeMediaInputs([input.imageUrl]).at(0)?.url ?? "";
+    const primaryImage =
+      typeof input.imageUrl === "string"
+        ? input.imageUrl
+        : (normalizeMediaInputs([input.imageUrl]).at(0)?.url ?? "");
     if (!client) {
       const record: MediaInventoryRecord = {
         id: crypto.randomUUID(),
@@ -153,7 +175,9 @@ export class InventoryRepository {
         industries: input.industries ?? [],
         tags: input.tags ?? [],
         imageUrl: primaryImage,
-        galleryImages: normalizeMediaInputs(input.galleryImages ?? []).map((item) => item.url),
+        galleryImages: normalizeMediaInputs(input.galleryImages ?? []).map(
+          (item) => item.url,
+        ),
         availability: input.availability ?? true,
         featured: input.featured ?? false,
         status: input.status ?? "active",
@@ -164,13 +188,20 @@ export class InventoryRepository {
     }
 
     const row = mapInputToRow(input);
-    const { data, error } = await client.from("inventory_items").insert([{ ...row, created_at: new Date().toISOString() }]).select().single();
+    const { data, error } = await client
+      .from("inventory_items")
+      .insert([{ ...row, created_at: new Date().toISOString() }])
+      .select()
+      .single();
     if (error) {
       throw error;
     }
 
     const record = mapRowToRecord(data as InventoryRow);
-    const mediaItems = normalizeMediaInputs([input.imageUrl, ...(input.galleryImages ?? [])]);
+    const mediaItems = normalizeMediaInputs([
+      input.imageUrl,
+      ...(input.galleryImages ?? []),
+    ]);
     if (record.id) {
       const withKind = mediaItems.map((item, index) => ({
         kind: "image" as const,
@@ -181,15 +212,28 @@ export class InventoryRepository {
         fileSize: item.fileSize,
         sortOrder: index,
       }));
-      await mediaAssetRepository.createMany({ ownerType: "inventory", ownerId: record.id, items: withKind });
+      await mediaAssetRepository.createMany({
+        ownerType: "inventory",
+        ownerId: record.id,
+        items: withKind,
+      });
     }
 
     return record;
   }
 
-  async update(id: string, input: Partial<MediaInventoryRecord> & { imageUrl?: string | MediaAssetInput; galleryImages?: Array<string | MediaAssetInput> }) {
+  async update(
+    id: string,
+    input: Partial<MediaInventoryRecord> & {
+      imageUrl?: string | MediaAssetInput;
+      galleryImages?: Array<string | MediaAssetInput>;
+    },
+  ) {
     const client = getSupabaseClient();
-    const primaryImage = typeof input.imageUrl === "string" ? input.imageUrl : normalizeMediaInputs([input.imageUrl]).at(0)?.url ?? "";
+    const primaryImage =
+      typeof input.imageUrl === "string"
+        ? input.imageUrl
+        : (normalizeMediaInputs([input.imageUrl]).at(0)?.url ?? "");
     if (!client) {
       return {
         id,
@@ -213,7 +257,9 @@ export class InventoryRepository {
         industries: input.industries ?? [],
         tags: input.tags ?? [],
         imageUrl: primaryImage,
-        galleryImages: normalizeMediaInputs(input.galleryImages ?? []).map((item) => item.url),
+        galleryImages: normalizeMediaInputs(input.galleryImages ?? []).map(
+          (item) => item.url,
+        ),
         availability: input.availability ?? true,
         featured: input.featured ?? false,
         status: input.status ?? "active",
@@ -223,16 +269,39 @@ export class InventoryRepository {
     }
 
     const row = mapInputToRow(input);
-    const { data, error } = await client.from("inventory_items").update(row).eq("id", id).select().single();
+    const { data, error } = await client
+      .from("inventory_items")
+      .update(row)
+      .eq("id", id)
+      .select()
+      .single();
     if (error) {
       throw error;
     }
 
     const record = mapRowToRecord(data as InventoryRow);
-    if (input.imageUrl || (input.galleryImages && input.galleryImages.length > 0)) {
+    if (
+      input.imageUrl ||
+      (input.galleryImages && input.galleryImages.length > 0)
+    ) {
       await mediaAssetRepository.deleteForOwner("inventory", id);
-      const mediaItems = normalizeMediaInputs([input.imageUrl, ...(input.galleryImages ?? [])]);
-      await mediaAssetRepository.createMany({ ownerType: "inventory", ownerId: record.id, items: mediaItems.map((item, index) => ({ kind: "image", url: item.url, imagekitFileId: item.fileId, width: item.width, height: item.height, fileSize: item.fileSize, sortOrder: index })) });
+      const mediaItems = normalizeMediaInputs([
+        input.imageUrl,
+        ...(input.galleryImages ?? []),
+      ]);
+      await mediaAssetRepository.createMany({
+        ownerType: "inventory",
+        ownerId: record.id,
+        items: mediaItems.map((item, index) => ({
+          kind: "image",
+          url: item.url,
+          imagekitFileId: item.fileId,
+          width: item.width,
+          height: item.height,
+          fileSize: item.fileSize,
+          sortOrder: index,
+        })),
+      });
     }
     return record;
   }
@@ -242,7 +311,10 @@ export class InventoryRepository {
     if (!client) {
       return false;
     }
-    const { error } = await client.from("inventory_items").delete().eq("id", id);
+    const { error } = await client
+      .from("inventory_items")
+      .delete()
+      .eq("id", id);
     if (error) {
       throw error;
     }
