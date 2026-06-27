@@ -3,6 +3,7 @@
 import { isAdminAuthenticated } from "@/lib/cms/auth";
 import { uploadFile } from "@/lib/cms/imagekit";
 import { createPortfolioBatch } from "@/lib/cms/store";
+import { validateUploadFiles } from "@/lib/cms/upload-validation";
 
 function getMediaType(fileName: string): "image" | "video" {
   const lower = fileName.toLowerCase();
@@ -35,6 +36,11 @@ export async function createPortfolioAction(formData: FormData) {
         success: false,
         error: "Please upload at least one media file.",
       };
+    }
+
+    const typeError = validateUploadFiles(validFiles, { allowVideo: true });
+    if (typeError) {
+      return { success: false, error: typeError };
     }
 
     console.log("[portfolio] upload:start", { count: validFiles.length });

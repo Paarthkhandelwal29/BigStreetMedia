@@ -3,6 +3,7 @@
 import { isAdminAuthenticated } from "@/lib/cms/auth";
 import { uploadFile } from "@/lib/cms/imagekit";
 import { createInventory } from "@/lib/cms/store";
+import { validateUploadFiles } from "@/lib/cms/upload-validation";
 
 export async function createInventoryAction(formData: FormData) {
   try {
@@ -20,6 +21,11 @@ export async function createInventoryAction(formData: FormData) {
 
     if (!city || !mediaType || !size || !location) {
       return { success: false, error: "Please fill all required fields." };
+    }
+
+    const typeError = validateUploadFiles(files, { allowVideo: false });
+    if (typeError) {
+      return { success: false, error: typeError };
     }
 
     console.log("[inventory] upload:start", { count: files.length });
