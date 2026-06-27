@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { inventory, mediaTypes } from "@/data/inventory";
+import { inventory, mediaTypes, type InventoryItem } from "@/data/inventory";
 import { cn } from "@/lib/utils";
 import {
   X,
@@ -13,7 +13,11 @@ import {
 
 type TypeFilter = (typeof mediaTypes)[number] | "All Types";
 
-export function MediaInventoryClient() {
+export function MediaInventoryClient({
+  items = inventory,
+}: {
+  items?: InventoryItem[];
+}) {
   const [citySearch, setCitySearch] = useState("");
   const [type, setType] = useState<TypeFilter>("All Types");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -23,12 +27,12 @@ export function MediaInventoryClient() {
   const filtered = useMemo(() => {
     const cityQuery = citySearch.trim().toLowerCase();
 
-    return inventory.filter(
+    return items.filter(
       (i) =>
         (!cityQuery || i.city.toLowerCase().includes(cityQuery)) &&
         (type === "All Types" || i.type === type),
     );
-  }, [citySearch, type]);
+  }, [items, citySearch, type]);
 
   return (
     <>

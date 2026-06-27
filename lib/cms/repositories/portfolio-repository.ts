@@ -55,7 +55,12 @@ export class PortfolioRepository {
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      // Public pages read this; degrade to empty (callers fall back) rather
+      // than throwing and breaking the page on a transient DB error.
+      console.warn("[cms] portfolio_works read failed:", error.message);
+      return [] as PortfolioWorkRecord[];
+    }
     return (data ?? []).map((row) => mapRowToRecord(row as PortfolioRow));
   }
 

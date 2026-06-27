@@ -52,7 +52,12 @@ export class InventoryRepository {
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      // Public pages read this; degrade to empty (callers fall back) rather
+      // than throwing and breaking the page on a transient DB error.
+      console.warn("[cms] media_inventory read failed:", error.message);
+      return [] as MediaInventoryRecord[];
+    }
     return (data ?? []).map((row) => mapRowToRecord(row as InventoryRow));
   }
 
