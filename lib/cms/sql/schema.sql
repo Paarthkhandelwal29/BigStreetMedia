@@ -1,24 +1,12 @@
+-- Big Street Media CMS schema (create-only, idempotent).
+--
+-- Safe to run repeatedly against a live database: every statement uses
+-- "if not exists" and will NOT drop or truncate existing data. To tear the
+-- schema down, run drop-all.sql explicitly (it is destructive by design).
+
 create extension if not exists "pgcrypto";
 
-drop table if exists case_study_portfolio_media cascade;
-drop table if exists case_study_portfolio_items cascade;
-drop table if exists case_study_results cascade;
-drop table if exists case_study_media_labels cascade;
-drop table if exists case_study_execution_points cascade;
-drop table if exists case_study_strategy_points cascade;
-drop table if exists case_studies cascade;
-drop table if exists portfolio_media cascade;
-drop table if exists portfolio_items cascade;
-drop table if exists portfolio_formats cascade;
-drop table if exists portfolio_categories cascade;
-drop table if exists inventory_media cascade;
-drop table if exists inventory_items cascade;
-drop table if exists brands cascade;
-
-drop table if exists portfolio_works cascade;
-drop table if exists media_inventory cascade;
-
-create table portfolio_works (
+create table if not exists portfolio_works (
   id uuid primary key default gen_random_uuid(),
   brand_name text not null,
   category text not null,
@@ -31,7 +19,7 @@ create table portfolio_works (
   updated_at timestamptz not null default now()
 );
 
-create table media_inventory (
+create table if not exists media_inventory (
   id uuid primary key default gen_random_uuid(),
   city text not null,
   media_type text not null,
@@ -43,14 +31,32 @@ create table media_inventory (
   updated_at timestamptz not null default now()
 );
 
-create index idx_portfolio_works_brand_name on portfolio_works(brand_name);
-create index idx_portfolio_works_category on portfolio_works(category);
-create index idx_portfolio_works_format on portfolio_works(format);
-create index idx_portfolio_works_city on portfolio_works(city);
-create index idx_portfolio_works_featured on portfolio_works(featured);
-create index idx_portfolio_works_created_at on portfolio_works(created_at desc);
+create index if not exists idx_portfolio_works_brand_name on portfolio_works(brand_name);
+create index if not exists idx_portfolio_works_category on portfolio_works(category);
+create index if not exists idx_portfolio_works_format on portfolio_works(format);
+create index if not exists idx_portfolio_works_city on portfolio_works(city);
+create index if not exists idx_portfolio_works_featured on portfolio_works(featured);
+create index if not exists idx_portfolio_works_created_at on portfolio_works(created_at desc);
 
-create index idx_media_inventory_city on media_inventory(city);
-create index idx_media_inventory_media_type on media_inventory(media_type);
-create index idx_media_inventory_featured on media_inventory(featured);
-create index idx_media_inventory_created_at on media_inventory(created_at desc);
+create index if not exists idx_media_inventory_city on media_inventory(city);
+create index if not exists idx_media_inventory_media_type on media_inventory(media_type);
+create index if not exists idx_media_inventory_featured on media_inventory(featured);
+create index if not exists idx_media_inventory_created_at on media_inventory(created_at desc);
+
+-- Row Level Security.
+-- Writes happen server-side with the service-role key, which bypasses RLS.
+-- Enabling RLS with a read-only policy means that even if the public anon key
+-- leaks, it can only read these (already public) marketing records — never
+-- insert/update/delete.
+alter table portfolio_works enable row level security;
+alter table media_inventory enable row level security;
+
+drop policy if exists "public read portfolio_works" on portfolio_works;
+create policy "public read portfolio_works"
+  on portfolio_works for select
+  using (true);
+
+drop policy if exists "public read media_inventory" on media_inventory;
+create policy "public read media_inventory"
+  on media_inventory for select
+  using (true);

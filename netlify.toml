@@ -1,7 +1,21 @@
-# Netlify config — static export of the Next.js site.
+# Netlify config — server-rendered Next.js (App Router + Server Actions).
+#
+# The admin CMS uses Server Actions and cookie auth, so this is NO LONGER a
+# static export. The official Next.js plugin provides the Node runtime,
+# middleware, and server actions. Do not set `publish = "out"` — the plugin
+# manages the publish directory.
+#
+# Required env vars (set in Netlify UI → Site settings → Environment variables):
+#   ADMIN_PASSWORD, ADMIN_SESSION_SECRET,
+#   NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY,
+#   IMAGEKIT_PUBLIC_KEY, IMAGEKIT_PRIVATE_KEY, IMAGEKIT_URL_ENDPOINT,
+#   NEXT_PUBLIC_SITE_URL
+
 [build]
   command = "npm run build"
-  publish = "out"
 
 [build.environment]
   NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
