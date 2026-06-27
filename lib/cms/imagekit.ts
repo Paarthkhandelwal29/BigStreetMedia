@@ -41,6 +41,10 @@ export async function uploadFile(buffer: Buffer, fileName: string) {
     url: response.url,
   });
 
+  if (!response.url) {
+    throw new Error("ImageKit upload did not return a URL.");
+  }
+
   return response.url;
 }
 

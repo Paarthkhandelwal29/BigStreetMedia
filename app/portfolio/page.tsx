@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { PortfolioGallery } from "@/components/portfolio/PortfolioGallery";
@@ -24,7 +25,9 @@ export default async function PortfolioPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Portfolio" }]}
       />
       <div className="pb-8 pt-4 md:pb-10 md:pt-5">
-        <PortfolioGallery items={portfolio} />
+        <Suspense fallback={null}>
+          <PortfolioGallery items={portfolio} />
+        </Suspense>
       </div>
       <FinalCTA />
     </>
