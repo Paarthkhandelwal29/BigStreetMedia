@@ -5,24 +5,26 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
-// One-time brand intro: an ink curtain with the logo that lifts to reveal the
-// site. Shows once per browser session (not on every navigation), never on the
-// admin CMS, and is skipped entirely for reduced-motion users.
+// Brand intro: an ink screen with the logo and a light sweep (shine) that
+// dissolves to reveal the site. Shows ONCE per browser session (sessionStorage)
+// so it doesn't replay on every reload or navigation. Never on /admin; skipped
+// for reduced motion.
 const SESSION_KEY = "bsm-intro-shown";
-const HOLD_MS = 1500;
+
+const HOLD_MS = 2600;
 const EASE = [0.16, 1, 0.3, 1] as const;
+const LOGO = "/logo-light.png";
 
 export function IntroCurtain() {
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
-  const isAdmin = pathname?.startsWith("/admin") ?? false;
+  const isHome = pathname === "/";
 
-  // Render visible on first paint for public pages so the site never flashes
-  // before the curtain. Effects below dismiss it when it shouldn't run.
-  const [show, setShow] = useState(!isAdmin);
+  // Visible on first paint of the home page so the site never flashes first.
+  const [show, setShow] = useState(isHome);
 
   useEffect(() => {
-    if (isAdmin || reduceMotion) {
+    if (!isHome || reduceMotion) {
       setShow(false);
       return;
     }
@@ -39,11 +41,12 @@ export function IntroCurtain() {
     try {
       sessionStorage.setItem(SESSION_KEY, "1");
     } catch {
-      // ignore (private mode); intro will simply replay next load
+      // ignore (private mode); intro simply replays next session
     }
+    setShow(true);
     const timer = setTimeout(() => setShow(false), HOLD_MS);
     return () => clearTimeout(timer);
-  }, [isAdmin, reduceMotion]);
+  }, [isHome, reduceMotion]);
 
   // Lock scroll while the curtain is up.
   useEffect(() => {
@@ -55,7 +58,7 @@ export function IntroCurtain() {
     };
   }, [show]);
 
-  if (isAdmin) return null;
+  if (!isHome) return null;
 
   return (
     <AnimatePresence>
@@ -63,31 +66,74 @@ export function IntroCurtain() {
         <motion.div
           key="intro"
           aria-hidden
-          className="fixed inset-0 z-[120] flex items-center justify-center bg-ink"
-          initial={{ y: 0 }}
-          exit={{ y: "-100%" }}
-          transition={{ duration: 0.75, ease: EASE }}
+          onClick={() => setShow(false)}
+          className="fixed inset-0 z-[120] flex cursor-pointer items-center justify-center overflow-hidden bg-ink"
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.7, ease: EASE }}
         >
+          {/* soft amber glow behind the mark */}
           <motion.div
-            className="flex flex-col items-center gap-5"
-            initial={{ opacity: 0, scale: 0.9, filter: "blur(6px)" }}
+            className="pointer-events-none absolute h-[40rem] w-[40rem] rounded-full blur-3xl"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(255,193,7,0.16), transparent 60%)",
+            }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.1, ease: EASE }}
+          />
+
+          <motion.div
+            className="relative flex flex-col items-center gap-5"
+            initial={{ opacity: 0, scale: 0.94, filter: "blur(8px)" }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, transition: { duration: 0.25 } }}
-            transition={{ duration: 0.7, ease: EASE }}
+            exit={{ opacity: 0, scale: 1.08, transition: { duration: 0.55, ease: EASE } }}
+            transition={{ duration: 0.8, ease: EASE }}
           >
-            <Image
-              src="/logo-light.png"
-              alt="Big Street Media"
-              width={240}
-              height={80}
-              priority
-              className="h-12 w-auto md:h-16"
-            />
+            <div className="relative inline-block">
+              <Image
+                src={LOGO}
+                alt="Big Street Media"
+                width={300}
+                height={100}
+                priority
+                className="h-14 w-auto md:h-20"
+              />
+
+              {/* shine: a bright band swept across, clipped to the logo shape */}
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  WebkitMaskImage: `url(${LOGO})`,
+                  maskImage: `url(${LOGO})`,
+                  WebkitMaskSize: "contain",
+                  maskSize: "contain",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskPosition: "center",
+                }}
+              >
+                <motion.div
+                  className="absolute inset-y-0 w-1/2 -skew-x-12"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, transparent, rgba(255,255,255,0.95) 45%, rgba(255,193,7,0.85) 60%, transparent)",
+                  }}
+                  initial={{ x: "-220%" }}
+                  animate={{ x: "320%" }}
+                  transition={{ duration: 1.15, ease: EASE, delay: 0.55 }}
+                />
+              </div>
+            </div>
+
+            {/* base accent line, draws in under the mark */}
             <motion.span
-              className="block h-0.5 w-24 origin-left rounded-full bg-amber"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.85, ease: EASE, delay: 0.2 }}
+              className="block h-0.5 w-20 origin-center rounded-full bg-amber"
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              transition={{ duration: 0.7, ease: EASE, delay: 0.35 }}
             />
           </motion.div>
         </motion.div>

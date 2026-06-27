@@ -39,12 +39,14 @@ export function PageHero({
       />
       <div
         className={cn(
-          "container-bsm relative z-10 flex flex-col",
+          "container-bsm relative z-10 flex flex-col justify-center",
+          // Fixed min-heights keep the dark band a consistent height across
+          // pages regardless of how many lines the title/subhead wrap to.
           compact
             ? density === "tight"
-              ? "gap-2 pb-6 pt-20 md:pb-7 md:pt-[5.5rem]"
-              : "gap-2 pb-8 pt-24"
-            : "gap-5 pb-20 pt-28",
+              ? "min-h-[18rem] gap-2 pb-7 pt-20 md:min-h-[19rem] md:pt-[5.5rem]"
+              : "min-h-[18rem] gap-2 pb-8 pt-24 md:min-h-[19rem]"
+            : "min-h-[24rem] gap-5 pb-20 pt-28",
           align === "center" && "items-center text-center"
         )}
       >
