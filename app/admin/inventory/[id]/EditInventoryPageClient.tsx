@@ -1,10 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { updateInventoryAction } from "@/app/admin/inventory/[id]/actions";
 import { mediaTypes } from "@/data/inventory";
 import type { MediaInventoryRecord } from "@/lib/cms/types";
+import {
+  CrumbLink,
+  Field,
+  PageHeader,
+  controlInput,
+  ghostButton,
+  primaryButton,
+} from "@/components/admin/ui";
+
+const textareaClass =
+  "w-full rounded-lg border border-hairline bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink/25 focus:ring-2 focus:ring-amber/35";
 
 export function EditInventoryPageClient({
   item,
@@ -30,34 +42,34 @@ export function EditInventoryPageClient({
   }
 
   return (
-    <div className="container-bsm py-20">
-      <div className="mb-8">
-        <p className="eyebrow">Admin</p>
-        <h1 className="mt-3 text-3xl font-bold text-ink">
-          Edit inventory record
-        </h1>
+    <>
+      <div className="mb-4">
+        <CrumbLink href="/admin/inventory">Back to inventory</CrumbLink>
       </div>
+      <PageHeader
+        eyebrow="Inventory"
+        title={`Edit ${item.city}`}
+        description="Update this location's details, and add or replace its images."
+      />
 
       <form
         onSubmit={onSubmit}
-        className="rounded-[1.75rem] border border-[#ececec] bg-surface p-6 shadow-sm md:p-8"
+        className="rounded-xl border border-hairline bg-surface p-5 shadow-[0_1px_2px_rgba(17,17,17,0.04)] md:p-7"
       >
         <div className="grid gap-5 md:grid-cols-2">
-          <label className="text-sm font-medium text-ink">
-            City
+          <Field label="City">
             <input
               name="city"
               defaultValue={item.city}
               required
-              className="mt-2 h-12 w-full rounded-full border border-[#ececec] px-4 text-sm"
+              className={controlInput}
             />
-          </label>
-          <label className="text-sm font-medium text-ink">
-            Media Type
+          </Field>
+          <Field label="Media type">
             <select
               name="mediaType"
               defaultValue={item.mediaType}
-              className="mt-2 h-12 w-full rounded-full border border-[#ececec] bg-surface px-4 text-sm"
+              className={controlInput + " appearance-none pr-9"}
             >
               {mediaTypes.map((entry) => (
                 <option key={entry} value={entry}>
@@ -65,89 +77,94 @@ export function EditInventoryPageClient({
                 </option>
               ))}
             </select>
-          </label>
-          <label className="text-sm font-medium text-ink">
-            Size
+          </Field>
+          <Field label="Size">
             <input
               name="size"
               defaultValue={item.size}
               required
-              className="mt-2 h-12 w-full rounded-full border border-[#ececec] px-4 text-sm"
+              className={controlInput}
             />
-          </label>
-          <label className="text-sm font-medium text-ink md:col-span-2">
-            Location
+          </Field>
+          <Field label="Location" className="md:col-span-2">
             <textarea
               name="location"
               defaultValue={item.location}
               required
-              className="mt-2 min-h-28 w-full rounded-[1.25rem] border border-[#ececec] px-4 py-3 text-sm"
+              rows={3}
+              className={textareaClass}
             />
-          </label>
+          </Field>
         </div>
 
-        <div className="mt-6 rounded-[1.25rem] border border-[#ececec] bg-surface-2 p-4">
-          <p className="text-sm font-semibold text-ink">Images</p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {item.images.map((image) => (
-              <img
-                key={image}
-                src={image}
-                alt={item.location}
-                className="h-40 w-full rounded-xl object-cover"
-              />
-            ))}
-            {item.images.length === 0 && (
-              <p className="text-sm text-muted">
-                No images uploaded for this location.
-              </p>
-            )}
-          </div>
-          <div className="mt-4 space-y-3">
+        <div className="mt-6 rounded-xl border border-hairline bg-surface-2 p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+            Current images
+          </p>
+          {item.images.length > 0 ? (
+            <div className="mt-3 grid gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
+              {item.images.map((image) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={image}
+                  src={image}
+                  alt={item.location}
+                  className="aspect-[4/3] w-full rounded-lg border border-hairline object-cover"
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="mt-2 text-sm text-muted">
+              No images uploaded for this location yet.
+            </p>
+          )}
+
+          <div className="mt-4 space-y-3 border-t border-hairline pt-4">
             <input
               type="file"
               name="images"
               accept="image/*"
               multiple
-              className="block w-full text-sm text-ink file:mr-3 file:rounded-full file:border-0 file:bg-ink file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+              className="block w-full text-sm text-ink file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-ink file:px-4 file:py-2 file:text-sm file:font-semibold file:text-surface"
             />
-            <label className="flex items-center gap-2 text-sm text-ink">
+            <label className="flex w-fit items-center gap-2.5 text-sm text-ink">
               <input
                 type="checkbox"
                 name="replaceImages"
-                className="h-4 w-4"
+                className="h-4 w-4 accent-amber-deep"
               />
               Replace existing images instead of adding to them
             </label>
             <p className="text-xs text-muted">
-              New images are appended by default. Leave empty to keep the
-              current images unchanged.
+              New images are appended by default. Leave empty to keep the current
+              images unchanged.
             </p>
           </div>
         </div>
 
-        <label className="mt-6 flex items-center gap-3 text-sm font-medium text-ink">
+        <label className="mt-5 flex w-fit items-center gap-2.5 text-sm font-medium text-ink">
           <input
             type="checkbox"
             name="featured"
             defaultChecked={item.featured}
-            className="h-4 w-4"
+            className="h-4 w-4 accent-amber-deep"
           />
-          Featured
+          Mark as featured
         </label>
 
         {error ? (
           <p className="mt-5 text-sm font-medium text-red-600">{error}</p>
         ) : null}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-ink px-6 text-sm font-semibold text-white disabled:opacity-60"
-        >
-          {loading ? "Saving..." : "Save Changes"}
-        </button>
+        <div className="mt-6 flex items-center gap-2.5">
+          <button type="submit" disabled={loading} className={primaryButton}>
+            {loading ? "Saving…" : "Save changes"}
+          </button>
+          <Link href="/admin/inventory" className={ghostButton}>
+            Cancel
+          </Link>
+        </div>
       </form>
-    </div>
+    </>
   );
 }

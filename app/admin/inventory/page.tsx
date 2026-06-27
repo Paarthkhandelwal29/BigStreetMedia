@@ -5,14 +5,18 @@ import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/cms/auth";
 import { deleteInventory, listInventory } from "@/lib/cms/store";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
+import {
+  PageHeader,
+  Panel,
+  controlInput,
+  ghostButton,
+  primaryButton,
+} from "@/components/admin/ui";
 
 export default async function InventoryAdminPage({
   searchParams,
 }: {
-  searchParams?: Promise<{
-    city?: string;
-    mediaType?: string;
-  }>;
+  searchParams?: Promise<{ city?: string; mediaType?: string }>;
 }) {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) redirect("/admin/login");
@@ -20,6 +24,7 @@ export default async function InventoryAdminPage({
   const params = (await searchParams) ?? {};
   const city = (params.city || "").trim().toLowerCase();
   const mediaType = (params.mediaType || "").trim().toLowerCase();
+  const hasFilters = Boolean(city || mediaType);
 
   const inventory = await listInventory();
   const filtered = inventory.filter(
@@ -29,135 +34,183 @@ export default async function InventoryAdminPage({
   );
 
   return (
-    <div className="container-bsm py-20">
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="eyebrow">Admin</p>
-          <h1 className="mt-3 text-3xl font-bold text-ink">Media inventory</h1>
-          <p className="mt-3 text-sm text-muted">
-            Each inventory record stores one location with multiple ImageKit
-            image URLs.
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Link
-            href="/admin"
-            className="text-sm font-semibold text-ink underline underline-offset-4"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/admin/inventory/new"
-            className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white"
-          >
+    <>
+      <PageHeader
+        eyebrow="Inventory"
+        title="Media inventory"
+        description="Locations shown on the public inventory page. Each record holds one location with its photos."
+        action={
+          <Link href="/admin/inventory/new" className={primaryButton}>
             Add inventory
           </Link>
-        </div>
+        }
+      />
+
+      <Panel className="mb-5 p-3">
+        <form className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
+          <input
+            type="text"
+            name="city"
+            defaultValue={params.city || ""}
+            placeholder="Filter by city"
+            className={controlInput + " sm:max-w-xs"}
+          />
+          <input
+            type="text"
+            name="mediaType"
+            defaultValue={params.mediaType || ""}
+            placeholder="Filter by media type"
+            className={controlInput + " sm:max-w-xs"}
+          />
+          <div className="flex items-center gap-2">
+            <button type="submit" className={primaryButton}>
+              Apply
+            </button>
+            {hasFilters ? (
+              <Link href="/admin/inventory" className={ghostButton}>
+                Clear
+              </Link>
+            ) : null}
+          </div>
+        </form>
+      </Panel>
+
+      <div className="mb-3 px-1 text-xs text-muted">
+        {filtered.length} of {inventory.length}{" "}
+        {inventory.length === 1 ? "location" : "locations"}
       </div>
 
-      <form className="mb-6 grid gap-4 rounded-[1.5rem] border border-[#ececec] bg-surface p-5 md:grid-cols-3">
-        <input
-          type="text"
-          name="city"
-          defaultValue={params.city || ""}
-          placeholder="Search city"
-          className="h-11 rounded-full border border-[#ececec] px-4 text-sm"
-        />
-        <input
-          type="text"
-          name="mediaType"
-          defaultValue={params.mediaType || ""}
-          placeholder="Search media type"
-          className="h-11 rounded-full border border-[#ececec] px-4 text-sm"
-        />
-        <button
-          type="submit"
-          className="h-11 rounded-full bg-ink px-5 text-sm font-semibold text-white"
+      <Panel className="overflow-hidden">
+        {filtered.length === 0 ? (
+          <EmptyState hasFilters={hasFilters} total={inventory.length} />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="border-b border-hairline text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted">
+                  <th className="px-4 py-3 font-semibold">Preview</th>
+                  <th className="px-4 py-3 font-semibold">Location</th>
+                  <th className="px-4 py-3 font-semibold">Type</th>
+                  <th className="px-4 py-3 font-semibold">Size</th>
+                  <th className="px-4 py-3 font-semibold">Status</th>
+                  <th className="px-4 py-3 font-semibold">Added</th>
+                  <th className="px-4 py-3 text-right font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="border-b border-hairline last:border-0 transition-colors hover:bg-surface-2"
+                  >
+                    <td className="px-4 py-3">
+                      {item.images[0] ? (
+                        <Image
+                          src={item.images[0]}
+                          alt={item.location}
+                          width={56}
+                          height={42}
+                          className="h-10 w-14 rounded-md border border-hairline object-cover"
+                          unoptimized
+                        />
+                      ) : (
+                        <span className="flex h-10 w-14 items-center justify-center rounded-md border border-dashed border-hairline text-[10px] text-muted">
+                          None
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="font-semibold text-ink">{item.city}</div>
+                      <div className="max-w-xs truncate text-xs text-muted">
+                        {item.location}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-body">{item.mediaType}</td>
+                    <td className="px-4 py-3 text-body">{item.size}</td>
+                    <td className="px-4 py-3">
+                      {item.featured ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber/15 px-2.5 py-1 text-xs font-semibold text-ink">
+                          <span className="h-1.5 w-1.5 rounded-full bg-amber-deep" />
+                          Featured
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted">Standard</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-muted">
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-3">
+                        <Link
+                          href={`/admin/inventory/${item.id}`}
+                          className="text-sm font-medium text-ink transition-colors hover:text-amber-deep"
+                        >
+                          Edit
+                        </Link>
+                        <form
+                          action={async () => {
+                            "use server";
+                            await deleteInventory(item.id);
+                            revalidatePath("/admin/inventory");
+                          }}
+                        >
+                          <ConfirmSubmit
+                            message="Delete this inventory item? This cannot be undone."
+                            className="text-sm font-medium text-red-600 transition-colors hover:text-red-700"
+                          >
+                            Delete
+                          </ConfirmSubmit>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Panel>
+    </>
+  );
+}
+
+function EmptyState({
+  hasFilters,
+  total,
+}: {
+  hasFilters: boolean;
+  total: number;
+}) {
+  if (hasFilters && total > 0) {
+    return (
+      <div className="px-6 py-16 text-center">
+        <p className="text-sm font-semibold text-ink">No matching locations</p>
+        <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
+          No inventory matches these filters.
+        </p>
+        <Link
+          href="/admin/inventory"
+          className={ghostButton + " mt-5 inline-flex"}
         >
-          Apply
-        </button>
-      </form>
-
-      <div className="overflow-hidden rounded-[1.5rem] border border-[#ececec] bg-surface">
-        <table className="min-w-full text-sm">
-          <thead className="bg-surface-2 text-left text-xs uppercase tracking-widest text-muted">
-            <tr>
-              <th className="px-4 py-3">First Image Preview</th>
-              <th className="px-4 py-3">Media Type</th>
-              <th className="px-4 py-3">City</th>
-              <th className="px-4 py-3">Size</th>
-              <th className="px-4 py-3">Location</th>
-              <th className="px-4 py-3">Featured</th>
-              <th className="px-4 py-3">Created Date</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((item) => (
-              <tr key={item.id} className="border-t border-[#ececec] align-top">
-                <td className="px-4 py-3">
-                  {item.images[0] ? (
-                    <Image
-                      src={item.images[0]}
-                      alt={item.location}
-                      width={64}
-                      height={48}
-                      className="h-12 w-16 rounded object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="text-muted">No image</span>
-                  )}
-                </td>
-                <td className="px-4 py-3">{item.mediaType}</td>
-                <td className="px-4 py-3 font-semibold text-ink">
-                  {item.city}
-                </td>
-                <td className="px-4 py-3">{item.size}</td>
-                <td className="px-4 py-3 max-w-sm">{item.location}</td>
-                <td className="px-4 py-3">{item.featured ? "Yes" : "No"}</td>
-                <td className="px-4 py-3">
-                  {new Date(item.createdAt).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/admin/inventory/${item.id}`}
-                      className="text-sm font-semibold text-ink underline underline-offset-4"
-                    >
-                      Edit
-                    </Link>
-                    <form
-                      action={async () => {
-                        "use server";
-                        await deleteInventory(item.id);
-                        revalidatePath("/admin/inventory");
-                      }}
-                    >
-                      <ConfirmSubmit
-                        message="Delete this inventory item? This cannot be undone."
-                        className="text-sm font-semibold text-red-600"
-                      >
-                        Delete
-                      </ConfirmSubmit>
-                    </form>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {filtered.length === 0 && (
-              <tr>
-                <td
-                  colSpan={8}
-                  className="px-4 py-10 text-center text-sm text-muted"
-                >
-                  No inventory records found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+          Clear filters
+        </Link>
       </div>
+    );
+  }
+  return (
+    <div className="px-6 py-16 text-center">
+      <p className="text-sm font-semibold text-ink">No inventory yet</p>
+      <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
+        Add your first media location to surface it on the public inventory
+        page.
+      </p>
+      <Link
+        href="/admin/inventory/new"
+        className={primaryButton + " mt-5 inline-flex"}
+      >
+        Add inventory
+      </Link>
     </div>
   );
 }

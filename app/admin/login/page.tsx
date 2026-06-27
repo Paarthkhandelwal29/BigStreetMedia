@@ -1,49 +1,50 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { loginAction } from "@/app/admin/login/actions";
+import { Panel, controlInput, primaryButton } from "@/components/admin/ui";
 
 type LoginState = { error: string; success?: boolean };
 
 const initialState: LoginState = { error: "" };
 
 export default function AdminLoginPage() {
-  const [password, setPassword] = useState("");
   const [state, formAction] = useActionState<LoginState, FormData>(
     loginAction,
     initialState,
   );
 
   return (
-    <div className="container-bsm flex min-h-[70vh] items-center justify-center py-20">
-      <form
-        action={formAction}
-        className="w-full max-w-md rounded-[1.5rem] border border-[#ececec] bg-surface p-8"
-      >
-        <p className="eyebrow">Admin Access</p>
-        <h1 className="mt-3 text-3xl font-bold text-ink">Sign in</h1>
-        <p className="mt-3 text-sm text-muted">
-          Use the admin password from your environment variables.
+    <div className="flex min-h-[58vh] items-center justify-center">
+      <Panel className="w-full max-w-sm p-7">
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+          Admin access
         </p>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter password"
-          className="mt-6 h-12 w-full rounded-full border border-[#ececec] px-4 text-sm outline-none focus:border-amber"
-          required
-        />
-        <button
-          type="submit"
-          className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-ink px-5 text-sm font-semibold text-white"
-        >
-          Continue
-        </button>
+        <h1 className="mt-2 font-display text-2xl font-bold tracking-tight text-ink">
+          Sign in
+        </h1>
+        <p className="mt-1.5 text-sm text-body">
+          Enter the CMS password to manage site content.
+        </p>
+
+        <form action={formAction} className="mt-6 space-y-3">
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            autoFocus
+            required
+            className={controlInput}
+          />
+          <button type="submit" className={primaryButton + " w-full"}>
+            Continue
+          </button>
+        </form>
+
         {state.error ? (
-          <p className="mt-4 text-sm text-red-600">{state.error}</p>
+          <p className="mt-3 text-sm font-medium text-red-600">{state.error}</p>
         ) : null}
-      </form>
+      </Panel>
     </div>
   );
 }

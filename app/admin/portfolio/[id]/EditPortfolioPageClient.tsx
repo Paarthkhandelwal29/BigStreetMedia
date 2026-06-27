@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { updatePortfolioAction } from "@/app/admin/portfolio/[id]/actions";
 import {
@@ -8,6 +9,16 @@ import {
   type PortfolioCategory,
 } from "@/data/portfolio";
 import type { PortfolioWorkRecord } from "@/lib/cms/types";
+import {
+  CrumbLink,
+  Field,
+  PageHeader,
+  controlInput,
+  ghostButton,
+  primaryButton,
+} from "@/components/admin/ui";
+
+const selectClass = controlInput + " appearance-none pr-9";
 
 export function EditPortfolioPageClient({
   item,
@@ -34,46 +45,45 @@ export function EditPortfolioPageClient({
   }
 
   return (
-    <div className="container-bsm py-20">
-      <div className="mb-8">
-        <p className="eyebrow">Admin</p>
-        <h1 className="mt-3 text-3xl font-bold text-ink">
-          Edit portfolio record
-        </h1>
+    <>
+      <div className="mb-4">
+        <CrumbLink href="/admin/portfolio">Back to portfolio</CrumbLink>
       </div>
+      <PageHeader
+        eyebrow="Portfolio"
+        title={`Edit ${item.brandName}`}
+        description="Update this record's details. Media file replacement is not available here."
+      />
 
       <form
         onSubmit={onSubmit}
-        className="rounded-[1.75rem] border border-[#ececec] bg-surface p-6 shadow-sm md:p-8"
+        className="rounded-xl border border-hairline bg-surface p-5 shadow-[0_1px_2px_rgba(17,17,17,0.04)] md:p-7"
       >
         <div className="grid gap-5 md:grid-cols-2">
-          <label className="text-sm font-medium text-ink">
-            Brand Name
+          <Field label="Brand name">
             <input
               name="brandName"
               defaultValue={item.brandName}
               required
-              className="mt-2 h-12 w-full rounded-full border border-[#ececec] px-4 text-sm"
+              className={controlInput}
             />
-          </label>
-          <label className="text-sm font-medium text-ink">
-            City
+          </Field>
+          <Field label="City">
             <input
               name="city"
               defaultValue={item.city}
               required
-              className="mt-2 h-12 w-full rounded-full border border-[#ececec] px-4 text-sm"
+              className={controlInput}
             />
-          </label>
-          <label className="text-sm font-medium text-ink">
-            Category
+          </Field>
+          <Field label="Category">
             <select
               name="category"
               value={category}
               onChange={(event) =>
                 setCategory(event.target.value as PortfolioCategory)
               }
-              className="mt-2 h-12 w-full rounded-full border border-[#ececec] bg-surface px-4 text-sm"
+              className={selectClass}
             >
               {(
                 Object.keys(portfolioFormatsByCategory) as PortfolioCategory[]
@@ -83,13 +93,12 @@ export function EditPortfolioPageClient({
                 </option>
               ))}
             </select>
-          </label>
-          <label className="text-sm font-medium text-ink">
-            Format
+          </Field>
+          <Field label="Format">
             <select
               name="format"
               defaultValue={item.format}
-              className="mt-2 h-12 w-full rounded-full border border-[#ececec] bg-surface px-4 text-sm"
+              className={selectClass}
             >
               {portfolioFormatsByCategory[category].map((entry) => (
                 <option key={entry} value={entry}>
@@ -97,54 +106,54 @@ export function EditPortfolioPageClient({
                 </option>
               ))}
             </select>
-          </label>
+          </Field>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-[1.25rem] border border-[#ececec] bg-surface-2 p-4">
-          <p className="text-sm font-semibold text-ink">Media Preview</p>
+        <div className="mt-6 rounded-xl border border-hairline bg-surface-2 p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+            Current media
+          </p>
           <div className="mt-3">
             {item.mediaType === "image" ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={item.mediaUrl}
                 alt={item.brandName}
-                className="max-h-72 rounded-xl object-cover"
+                className="max-h-64 rounded-lg border border-hairline object-cover"
               />
             ) : (
               <video
                 src={item.mediaUrl}
                 controls
-                className="max-h-72 rounded-xl"
+                className="max-h-64 rounded-lg border border-hairline"
               />
             )}
           </div>
-          <p className="mt-3 text-xs text-muted">
-            Media file replacement is intentionally not included here. This edit
-            only updates this record’s metadata.
-          </p>
         </div>
 
-        <label className="mt-6 flex items-center gap-3 text-sm font-medium text-ink">
+        <label className="mt-5 flex w-fit items-center gap-2.5 text-sm font-medium text-ink">
           <input
             type="checkbox"
             name="featured"
             defaultChecked={item.featured}
-            className="h-4 w-4"
+            className="h-4 w-4 accent-amber-deep"
           />
-          Featured
+          Mark as featured
         </label>
 
         {error ? (
           <p className="mt-5 text-sm font-medium text-red-600">{error}</p>
         ) : null}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-ink px-6 text-sm font-semibold text-white disabled:opacity-60"
-        >
-          {loading ? "Saving..." : "Save Changes"}
-        </button>
+        <div className="mt-6 flex items-center gap-2.5">
+          <button type="submit" disabled={loading} className={primaryButton}>
+            {loading ? "Saving…" : "Save changes"}
+          </button>
+          <Link href="/admin/portfolio" className={ghostButton}>
+            Cancel
+          </Link>
+        </div>
       </form>
-    </div>
+    </>
   );
 }
