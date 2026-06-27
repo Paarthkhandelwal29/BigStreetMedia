@@ -13,15 +13,18 @@ const MEDIA_TYPE_SET = new Set<string>(mediaTypes);
 export function inventoryRecordsToItems(
   records: MediaInventoryRecord[],
 ): InventoryItem[] {
-  return records.map((record) => ({
-    id: record.id,
-    city: record.city || "India",
-    type: (MEDIA_TYPE_SET.has(record.mediaType)
-      ? record.mediaType
-      : "Hoardings") as MediaType,
-    landmark: record.location || record.city,
-    size: record.size || "Custom",
-    dailyTraffic: "Contact for details",
-    available: true,
-  }));
+  return records.map((record) => {
+    const city = record.city || "India";
+    return {
+      id: record.id,
+      city,
+      type: (MEDIA_TYPE_SET.has(record.mediaType)
+        ? record.mediaType
+        : "Hoardings") as MediaType,
+      landmark: record.location || city,
+      size: record.size || "Custom",
+      dailyTraffic: "Contact for details",
+      available: true,
+    };
+  });
 }
