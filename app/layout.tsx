@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { MobileStickyCTA } from "@/components/layout/MobileStickyCTA";
 import { HideOnAdmin } from "@/components/layout/HideOnAdmin";
+import { IntroCurtain } from "@/components/layout/IntroCurtain";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -71,6 +72,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${sora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-surface">
+        <IntroCurtain />
         <HideOnAdmin>
           <Navbar />
         </HideOnAdmin>
