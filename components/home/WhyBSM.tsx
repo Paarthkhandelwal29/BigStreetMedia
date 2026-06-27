@@ -50,8 +50,8 @@ export function WhyBSM() {
             const Icon = icons[r.icon];
             return (
               <RevealItem key={r.title}>
-                <div className="group card-surface h-full p-7 hover:-translate-y-1">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber/15 text-amber-deep transition-colors duration-300 group-hover:bg-amber group-hover:text-ink">
+                <div className="group card-surface h-full p-7 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-amber/50 hover:shadow-[0_22px_48px_-16px_rgba(255,193,7,0.35)]">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber/15 text-amber-deep transition-all duration-300 group-hover:scale-110 group-hover:bg-amber group-hover:text-ink">
                     <Icon size={24} />
                   </span>
                   <h3 className="mt-6 text-lg font-semibold text-ink">{r.title}</h3>

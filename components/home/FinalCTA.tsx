@@ -2,27 +2,27 @@ import { Reveal } from "@/components/ui/Reveal";
 import { LeadForm } from "@/components/shared/LeadForm";
 import { ButtonLink } from "@/components/ui/Button";
 import { site } from "@/lib/site";
+import { AuroraBackdrop } from "./AuroraBackdrop";
 
 export function FinalCTA() {
   return (
     <section className="relative overflow-hidden bg-ink">
-      <div
-        className="absolute inset-0 opacity-60"
-        aria-hidden
-        style={{
-          backgroundImage:
-            "radial-gradient(55% 80% at 85% 20%, rgba(255,193,7,0.2), transparent 70%), radial-gradient(40% 60% at 10% 80%, rgba(255,193,7,0.08), transparent 70%)",
-        }}
-      />
-      <div className="container-bsm relative z-10 py-20 md:py-24">
+      <AuroraBackdrop />
+      <div className="container-bsm relative z-10 py-24 md:py-28">
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
           <Reveal>
             <span className="eyebrow border-white/15 bg-white/5 text-white/80">
               Get Started
             </span>
-            <h2 className="mt-5 text-balance text-4xl font-extrabold leading-[1.05] text-white md:text-5xl">
+            <h2 className="mt-5 text-balance text-5xl font-extrabold leading-[0.98] tracking-[-0.02em] text-white md:text-6xl lg:text-7xl">
               Let&apos;s build something{" "}
-              <span className="text-amber">big.</span>
+              <span className="relative inline-block text-amber">
+                big.
+                <span
+                  aria-hidden
+                  className="absolute -inset-x-3 -inset-y-1 -z-10 rounded-full bg-amber/20 blur-2xl"
+                />
+              </span>
             </h2>
             <p className="mt-4 max-w-md text-base leading-relaxed text-white/60 md:text-lg">
               Tell us your campaign goal — we&apos;ll come back with a tailored media plan within 48 hours.

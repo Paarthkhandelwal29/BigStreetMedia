@@ -20,16 +20,17 @@ function ServiceTile({ service, index }: { service: (typeof services)[number]; i
     >
       <Link
         href={`/services/${service.slug}`}
-        className="group flex h-full min-h-[148px] flex-col items-center justify-center gap-5 border border-[#e8e8e8] bg-white px-5 py-10 text-center transition-colors duration-200 hover:border-amber hover:bg-[#fffdf5]"
+        className="group relative flex h-full min-h-[156px] flex-col items-center justify-center gap-5 overflow-hidden border border-[#e8e8e8] bg-white px-5 py-10 text-center transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-amber hover:shadow-[0_20px_44px_-12px_rgba(255,193,7,0.4)]"
       >
-        <span className="flex h-14 w-14 items-center justify-center bg-amber/10 transition-colors duration-200 group-hover:bg-amber/15">
-          <Icon
-            size={32}
-            weight="regular"
-            className="text-amber"
-          />
+        {/* amber wash that sweeps up on hover (transform, not layout) */}
+        <span
+          aria-hidden
+          className="absolute inset-0 origin-bottom scale-y-0 bg-gradient-to-t from-amber/12 to-transparent transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-y-100"
+        />
+        <span className="relative flex h-14 w-14 items-center justify-center rounded-xl bg-amber/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-amber group-hover:text-ink">
+          <Icon size={32} weight="regular" className="text-amber group-hover:text-ink" />
         </span>
-        <span className="text-[11px] font-semibold uppercase leading-snug tracking-[0.1em] text-body transition-colors duration-200 group-hover:text-ink">
+        <span className="relative text-[11px] font-semibold uppercase leading-snug tracking-[0.1em] text-body transition-colors duration-200 group-hover:text-ink">
           {service.title}
         </span>
       </Link>
