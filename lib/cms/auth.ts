@@ -9,7 +9,25 @@ function getAdminPassword() {
 }
 
 function getSessionSecret() {
-  return process.env.ADMIN_SESSION_SECRET?.trim() || getAdminPassword();
+  const secret = process.env.ADMIN_SESSION_SECRET?.trim() || "";
+  // Hardening: the cookie-signing key must exist and be independent of the
+  // password. Otherwise knowing the password is enough to forge a session.
+  if (!secret || secret === getAdminPassword()) {
+    throw new Error(
+      "ADMIN_SESSION_SECRET must be set to a value distinct from ADMIN_PASSWORD.",
+    );
+  }
+  return secret;
+}
+
+/**
+ * Timing-safe check of a submitted admin password against the configured one.
+ * Returns false (never throws) when the password is unconfigured.
+ */
+export function verifyAdminPassword(submitted: string) {
+  const expected = getAdminPassword();
+  if (!expected) return false;
+  return safeEqual(submitted, expected);
 }
 
 function createSessionSignature(password: string) {
@@ -33,8 +51,13 @@ export async function isAdminAuthenticated() {
   const token = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
   if (!token) return false;
 
-  const expected = createSessionSignature(adminPassword);
-  return safeEqual(token, expected);
+  // A misconfigured secret must fail closed (redirect to login), not 500.
+  try {
+    const expected = createSessionSignature(adminPassword);
+    return safeEqual(token, expected);
+  } catch {
+    return false;
+  }
 }
 
 export async function setAdminSession() {
