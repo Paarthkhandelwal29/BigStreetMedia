@@ -16,6 +16,8 @@ import {
   CaretLeft,
   CaretRight,
   FunnelSimple,
+  PlayCircle,
+  ImageSquare,
 } from "@phosphor-icons/react/dist/ssr";
 
 type PortfolioGalleryProps = {
@@ -220,11 +222,20 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                           className="aspect-[4/3] w-full object-cover"
                         />
                       ) : (
-                        <video
-                          src={item.mediaUrl}
-                          className="aspect-[4/3] w-full bg-black object-cover"
-                          muted
-                        />
+                        <>
+                          <video
+                            src={item.mediaUrl}
+                            className="aspect-[4/3] w-full bg-black object-cover"
+                            muted
+                          />
+                          <div className="pointer-events-none absolute inset-0 bg-ink/20" />
+                          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                            <span className="flex items-center gap-2 rounded-full bg-white/92 px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink shadow-sm">
+                              <PlayCircle size={18} weight="fill" />
+                              Video
+                            </span>
+                          </div>
+                        </>
                       )}
                       <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
                         {item.category}
@@ -236,8 +247,18 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                       ) : null}
                     </div>
                     <span className="block p-4">
-                      <span className="block font-display text-sm font-semibold text-ink">
-                        {item.brandName}
+                      <span className="flex items-center justify-between gap-3">
+                        <span className="block font-display text-sm font-semibold text-ink">
+                          {item.brandName}
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full border border-[#ececec] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
+                          {item.mediaType === "video" ? (
+                            <PlayCircle size={14} weight="fill" />
+                          ) : (
+                            <ImageSquare size={14} weight="fill" />
+                          )}
+                          {item.mediaType}
+                        </span>
                       </span>
                       <span className="mt-1 block text-xs text-muted">
                         {item.format} · {item.city}
@@ -434,7 +455,15 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                 <span className="font-display text-lg font-semibold">
                   {current.brandName}
                 </span>
-                <span className="mt-1 block text-sm text-white/60">
+                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white">
+                  {current.mediaType === "video" ? (
+                    <PlayCircle size={14} weight="fill" />
+                  ) : (
+                    <ImageSquare size={14} weight="fill" />
+                  )}
+                  {current.mediaType}
+                </span>
+                <span className="mt-2 block text-sm text-white/60">
                   {current.category} · {current.format} · {current.city}
                 </span>
               </figcaption>
