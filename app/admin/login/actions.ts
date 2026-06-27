@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { setAdminSession } from "@/lib/cms/auth";
 
 type LoginState = { error: string; success?: boolean };
@@ -16,7 +17,7 @@ export async function loginAction(
   const password = String(formData.get("password") || "");
   if (password === configuredPassword) {
     await setAdminSession();
-    return { success: true, error: "" };
+    redirect("/admin");
   }
 
   return { success: false, error: "Incorrect password." };

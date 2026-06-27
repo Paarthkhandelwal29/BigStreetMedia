@@ -4,18 +4,31 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
-  portfolio,
   portfolioCategories,
   portfolioFormatsByCategory,
   type PortfolioCategory,
   type PortfolioFormat,
 } from "@/data/portfolio";
+import type { PortfolioWorkRecord } from "@/lib/cms/types";
 import { cn } from "@/lib/utils";
-import { X, CaretLeft, CaretRight, FunnelSimple } from "@phosphor-icons/react/dist/ssr";
+import {
+  X,
+  CaretLeft,
+  CaretRight,
+  FunnelSimple,
+} from "@phosphor-icons/react/dist/ssr";
 
-export function PortfolioGallery() {
-  const [activeCategory, setActiveCategory] = useState<PortfolioCategory | "All">("All");
-  const [activeFormat, setActiveFormat] = useState<PortfolioFormat | "All Formats">("All Formats");
+type PortfolioGalleryProps = {
+  items: PortfolioWorkRecord[];
+};
+
+type ActiveFormat = PortfolioFormat | "All Formats";
+
+export function PortfolioGallery({ items }: PortfolioGalleryProps) {
+  const [activeCategory, setActiveCategory] = useState<
+    PortfolioCategory | "All"
+  >("All");
+  const [activeFormat, setActiveFormat] = useState<ActiveFormat>("All Formats");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const searchParams = useSearchParams();
@@ -25,7 +38,7 @@ export function PortfolioGallery() {
     const category = searchParams.get("category");
     const nextCategory = portfolioCategories.find((cat) => cat === category);
 
-    if (nextCategory) {
+    if (nextCategory && nextCategory !== "All") {
       const frame = requestAnimationFrame(() => {
         setActiveCategory(nextCategory);
         setActiveFormat("All Formats");
@@ -36,12 +49,32 @@ export function PortfolioGallery() {
     }
   }, [searchParams]);
 
-  const formatOptions =
-    activeCategory === "All" ? [] : portfolioFormatsByCategory[activeCategory];
+  const availableCategories = useMemo(() => {
+    const categories = Array.from(new Set(items.map((item) => item.category)));
+    return portfolioCategories.filter(
+      (category) =>
+        category === "All" ||
+        categories.includes(category as PortfolioCategory),
+    );
+  }, [items]);
+
+  const formatOptions = useMemo(() => {
+    if (activeCategory === "All") return [];
+
+    const allowedFormats = new Set(
+      items
+        .filter((item) => item.category === activeCategory)
+        .map((item) => item.format),
+    );
+
+    return portfolioFormatsByCategory[activeCategory].filter((format) =>
+      allowedFormats.has(format),
+    );
+  }, [activeCategory, items]);
 
   const filtered = useMemo(
     () =>
-      portfolio.filter((item) => {
+      items.filter((item) => {
         const matchesCategory =
           activeCategory === "All" || item.category === activeCategory;
         const matchesFormat =
@@ -49,24 +82,24 @@ export function PortfolioGallery() {
 
         return matchesCategory && matchesFormat;
       }),
-    [activeCategory, activeFormat]
+    [items, activeCategory, activeFormat],
   );
 
   const current = lightboxIndex !== null ? filtered[lightboxIndex] : null;
 
   const move = (dir: 1 | -1) => {
-    if (lightboxIndex === null) return;
+    if (lightboxIndex === null || filtered.length === 0) return;
     const next = (lightboxIndex + dir + filtered.length) % filtered.length;
     setLightboxIndex(next);
   };
 
-  const handleCategorySelect = (category: PortfolioCategory) => {
+  const handleCategorySelect = (category: PortfolioCategory | "All") => {
     setActiveCategory(category);
     setActiveFormat("All Formats");
     setLightboxIndex(null);
   };
 
-  const handleFormatSelect = (format: PortfolioFormat | "All Formats") => {
+  const handleFormatSelect = (format: ActiveFormat) => {
     setActiveFormat(format);
     setLightboxIndex(null);
   };
@@ -110,7 +143,7 @@ export function PortfolioGallery() {
                 activeFormat === "All Formats"
                   ? "border-ink bg-ink text-white"
                   : "border-[#f0f0f0] bg-white text-body",
-                activeCategory === "All" && "cursor-not-allowed opacity-50"
+                activeCategory === "All" && "cursor-not-allowed opacity-50",
               )}
               disabled={activeCategory === "All"}
             >
@@ -129,7 +162,7 @@ export function PortfolioGallery() {
                     "min-h-9 whitespace-nowrap cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                     isActive
                       ? "border-ink bg-ink text-white"
-                      : "border-[#f0f0f0] bg-white text-body hover:border-ink/20 hover:text-ink"
+                      : "border-[#f0f0f0] bg-white text-body hover:border-ink/20 hover:text-ink",
                   )}
                 >
                   {format}
@@ -140,14 +173,13 @@ export function PortfolioGallery() {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
-          {/* filters */}
           <aside className="hidden lg:sticky lg:top-24 lg:block">
             <div className="rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-5">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                 Categories
               </p>
               <div className="flex flex-col gap-2">
-                {portfolioCategories.map((cat) => {
+                {availableCategories.map((cat) => {
                   const isActive = activeCategory === cat;
                   return (
                     <button
@@ -159,7 +191,7 @@ export function PortfolioGallery() {
                         "min-h-11 w-full cursor-pointer rounded-2xl border px-4 py-3 text-left text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                         isActive
                           ? "border-amber bg-amber text-ink"
-                          : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20"
+                          : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
                       )}
                     >
                       {cat}
@@ -170,30 +202,45 @@ export function PortfolioGallery() {
             </div>
           </aside>
 
-          {/* masonry */}
           <div>
             {filtered.length > 0 ? (
-              <div className="columns-2 gap-4 md:columns-3 xl:columns-4 [&>*]:mb-4">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {filtered.map((item, i) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => setLightboxIndex(i)}
-                    className={cn(
-                      "group relative block w-full overflow-hidden rounded-[1.25rem] border border-[#f0f0f0] bg-surface-2 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.08)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber",
-                      item.tall ? "aspect-[3/4]" : "aspect-[4/3]"
-                    )}
+                    className="group relative block w-full overflow-hidden rounded-[1.25rem] border border-[#f0f0f0] bg-surface-2 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.08)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber"
                   >
-                    <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
-                      {item.category}
-                    </span>
-                    <span className="absolute inset-0 flex items-center justify-center px-6 text-center text-xs uppercase tracking-widest text-muted">
-                      {item.format}
-                    </span>
-                    <span className="absolute inset-x-0 bottom-0 translate-y-2 bg-gradient-to-t from-ink/80 to-transparent p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                      <span className="block font-display text-sm font-semibold text-white">{item.brand}</span>
-                      <span className="block text-xs text-white/70">
-                        {item.format} · {item.city} · {item.year}
+                    <div className="relative">
+                      {item.mediaType === "image" ? (
+                        <img
+                          src={item.mediaUrl}
+                          alt={`${item.brandName} - ${item.format}`}
+                          className="aspect-[4/3] w-full object-cover"
+                        />
+                      ) : (
+                        <video
+                          src={item.mediaUrl}
+                          className="aspect-[4/3] w-full bg-black object-cover"
+                          muted
+                        />
+                      )}
+                      <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
+                        {item.category}
+                      </span>
+                      {item.featured ? (
+                        <span className="absolute right-3 top-3 rounded-full bg-amber px-2.5 py-1 text-[10px] font-semibold text-ink">
+                          Featured
+                        </span>
+                      ) : null}
+                    </div>
+                    <span className="block p-4">
+                      <span className="block font-display text-sm font-semibold text-ink">
+                        {item.brandName}
+                      </span>
+                      <span className="mt-1 block text-xs text-muted">
+                        {item.format} · {item.city}
                       </span>
                     </span>
                   </button>
@@ -201,7 +248,9 @@ export function PortfolioGallery() {
               </div>
             ) : (
               <div className="rounded-[1.5rem] border border-dashed border-[#e6e6e6] bg-surface px-6 py-12 text-center">
-                <p className="text-base font-medium text-ink">No works found for this format yet.</p>
+                <p className="text-base font-medium text-ink">
+                  No works found for this format yet.
+                </p>
                 <p className="mt-2 text-sm text-muted">
                   Try another format or switch the primary category above.
                 </p>
@@ -248,7 +297,7 @@ export function PortfolioGallery() {
                     Categories
                   </p>
                   <div className="flex flex-col gap-2">
-                    {portfolioCategories.map((cat) => {
+                    {availableCategories.map((cat) => {
                       const isActive = activeCategory === cat;
                       return (
                         <button
@@ -260,7 +309,7 @@ export function PortfolioGallery() {
                             "min-h-11 w-full cursor-pointer rounded-2xl border px-4 py-3 text-left text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                             isActive
                               ? "border-amber bg-amber text-ink"
-                              : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20"
+                              : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
                           )}
                         >
                           {cat}
@@ -284,7 +333,8 @@ export function PortfolioGallery() {
                         activeFormat === "All Formats"
                           ? "border-ink bg-ink text-white"
                           : "border-[#f0f0f0] bg-white text-body",
-                        activeCategory === "All" && "cursor-not-allowed opacity-50"
+                        activeCategory === "All" &&
+                          "cursor-not-allowed opacity-50",
                       )}
                       disabled={activeCategory === "All"}
                     >
@@ -303,7 +353,7 @@ export function PortfolioGallery() {
                             "min-h-9 whitespace-nowrap cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                             isActive
                               ? "border-ink bg-ink text-white"
-                              : "border-[#f0f0f0] bg-white text-body hover:border-ink/20 hover:text-ink"
+                              : "border-[#f0f0f0] bg-white text-body hover:border-ink/20 hover:text-ink",
                           )}
                         >
                           {format}
@@ -318,7 +368,6 @@ export function PortfolioGallery() {
         )}
       </AnimatePresence>
 
-      {/* lightbox */}
       <AnimatePresence>
         {current && (
           <motion.div
@@ -338,7 +387,10 @@ export function PortfolioGallery() {
             </button>
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); move(-1); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                move(-1);
+              }}
               aria-label="Previous"
               className="absolute left-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 cursor-pointer"
             >
@@ -346,7 +398,10 @@ export function PortfolioGallery() {
             </button>
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); move(1); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                move(1);
+              }}
               aria-label="Next"
               className="absolute right-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 cursor-pointer"
             >
@@ -360,13 +415,27 @@ export function PortfolioGallery() {
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex aspect-[16/10] items-center justify-center rounded-[1.5rem] bg-surface-2 text-sm uppercase tracking-widest text-muted">
-                {current.format}
+              <div className="overflow-hidden rounded-[1.5rem] bg-surface-2">
+                {current.mediaType === "image" ? (
+                  <img
+                    src={current.mediaUrl}
+                    alt={`${current.brandName} - ${current.format}`}
+                    className="max-h-[75vh] w-full object-contain"
+                  />
+                ) : (
+                  <video
+                    src={current.mediaUrl}
+                    controls
+                    className="max-h-[75vh] w-full bg-black object-contain"
+                  />
+                )}
               </div>
               <figcaption className="mt-4 text-center text-white">
-                <span className="font-display text-lg font-semibold">{current.brand}</span>
+                <span className="font-display text-lg font-semibold">
+                  {current.brandName}
+                </span>
                 <span className="mt-1 block text-sm text-white/60">
-                  {current.category} · {current.format} · {current.city} · {current.year}
+                  {current.category} · {current.format} · {current.city}
                 </span>
               </figcaption>
             </motion.figure>

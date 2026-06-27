@@ -1,68 +1,42 @@
+export type PortfolioCategory =
+  | "OOH"
+  | "Transit"
+  | "Events"
+  | "Exhibitions"
+  | "Retail Launches"
+  | "Special Activations";
+
+export type PortfolioWorkRecord = {
+  id: string;
+  brandName: string;
+  category: PortfolioCategory;
+  format: string;
+  city: string;
+  mediaUrl: string;
+  mediaType: "image" | "video";
+  featured: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type MediaInventoryRecord = {
   id: string;
-  title: string;
-  slug?: string;
-  description?: string;
-  siteCode?: string;
   city: string;
-  state: string;
-  locality?: string;
-  address?: string;
-  googleMapsUrl?: string;
   mediaType: string;
-  mediaCategory?: string;
-  width?: number;
-  height?: number;
-  size?: string;
-  illumination?: string;
-  trafficVolume?: string;
-  mediaOwner?: string;
-  industries: string[];
-  tags: string[];
-  imageUrl: string;
-  galleryImages: string[];
-  availability: boolean;
+  size: string;
+  location: string;
+  images: string[];
   featured: boolean;
-  status?: "active" | "inactive" | "draft" | "archived";
-  coverImageUrl?: string;
-  thumbnailUrl?: string;
   createdAt: string;
   updatedAt: string;
 };
 
-export type PortfolioProjectRecord = {
-  id: string;
-  title: string;
-  slug?: string;
-  clientName?: string;
-  serviceType: string;
-  location?: string;
-  projectDate?: string;
-  description: string;
-  images: string[];
-  videos: string[];
-  featured: boolean;
-  coverImageUrl?: string;
-  thumbnailUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-};
+export type CreatePortfolioWorkInput = Omit<
+  PortfolioWorkRecord,
+  "id" | "createdAt" | "updatedAt"
+>;
 
-export type CaseStudyRecord = {
-  id: string;
-  title: string;
-  slug?: string;
-  clientName: string;
-  objective: string;
-  challenge: string;
-  solution: string;
-  execution: string;
-  results: string;
-  images: string[];
-  videos: string[];
-  featured: boolean;
-  coverImageUrl?: string;
-  thumbnailUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-};
+export type CreateMediaInventoryInput = Omit<
+  MediaInventoryRecord,
+  "id" | "createdAt" | "updatedAt"
+>;
