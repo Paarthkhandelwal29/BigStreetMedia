@@ -103,10 +103,27 @@ export function EditInventoryPageClient({
               </p>
             )}
           </div>
-          <p className="mt-3 text-xs text-muted">
-            Image replacement is intentionally not included here. This edit
-            updates metadata only.
-          </p>
+          <div className="mt-4 space-y-3">
+            <input
+              type="file"
+              name="images"
+              accept="image/*"
+              multiple
+              className="block w-full text-sm text-ink file:mr-3 file:rounded-full file:border-0 file:bg-ink file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+            />
+            <label className="flex items-center gap-2 text-sm text-ink">
+              <input
+                type="checkbox"
+                name="replaceImages"
+                className="h-4 w-4"
+              />
+              Replace existing images instead of adding to them
+            </label>
+            <p className="text-xs text-muted">
+              New images are appended by default. Leave empty to keep the
+              current images unchanged.
+            </p>
+          </div>
         </div>
 
         <label className="mt-6 flex items-center gap-3 text-sm font-medium text-ink">
