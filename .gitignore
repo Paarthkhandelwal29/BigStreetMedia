@@ -47,3 +47,6 @@ next-env.d.ts
 AGENTS.md
 CLAUDE.md
 docs/PROJECT_STATUS.md
+
+# GSD planning artifacts (local only)
+.planning/
