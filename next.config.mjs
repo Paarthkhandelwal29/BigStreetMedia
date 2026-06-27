@@ -1,10 +1,15 @@
-import type { NextConfig } from "next";
 import path from "node:path";
 
-const nextConfig: NextConfig = {
+/** @type {import("next").NextConfig} */
+const nextConfig = {
   // Enable runtime features required by the admin CMS and server actions.
   turbopack: {
-    root: path.join(__dirname),
+    root: path.join(process.cwd()),
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "25mb",
+    },
   },
   images: {
     // Static export can't use the Next image optimizer at runtime.

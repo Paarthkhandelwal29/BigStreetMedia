@@ -1,21 +1,44 @@
-import ImageKit from "imagekit";
+import ImageKit, { toFile } from "@imagekit/nodejs";
 
 const imagekit = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || "",
+  timeout: 10000,
+  maxRetries: 0,
 });
 
 export async function uploadFile(buffer: Buffer, fileName: string) {
-  if (!process.env.IMAGEKIT_PUBLIC_KEY || !process.env.IMAGEKIT_PRIVATE_KEY || !process.env.IMAGEKIT_URL_ENDPOINT) {
+  const publicKey = process.env.IMAGEKIT_PUBLIC_KEY || "";
+  const privateKey = process.env.IMAGEKIT_PRIVATE_KEY || "";
+  const urlEndpoint = process.env.IMAGEKIT_URL_ENDPOINT || "";
+
+  if (!publicKey || !privateKey || !urlEndpoint) {
     throw new Error("ImageKit environment variables are not configured.");
   }
 
-  const response = await imagekit.upload({
-    file: buffer,
+  console.log("[imagekit] upload:start", {
     fileName,
-    useUniqueFileName: true,
-    folder: "/bigstreetmedia",
+    size: buffer.length,
+    urlEndpoint,
+    hasPublicKey: Boolean(publicKey),
+    hasPrivateKey: Boolean(privateKey),
+  });
+
+  const response = await imagekit.files.upload(
+    {
+      file: await toFile(buffer, fileName),
+      fileName,
+      useUniqueFileName: true,
+      folder: "/bigstreetmedia",
+    },
+    {
+      timeout: 10000,
+      maxRetries: 0,
+    },
+  );
+
+  console.log("[imagekit] upload:done", {
+    fileName,
+    url: response.url,
   });
 
   return response.url;

@@ -1,21 +1,32 @@
-import type { CaseStudyRecord, MediaInventoryRecord, PortfolioProjectRecord } from "./types";
+import type {
+  CreateMediaInventoryInput,
+  CreatePortfolioWorkInput,
+  MediaInventoryRecord,
+  PortfolioWorkRecord,
+} from "./types";
 import { inventoryRepository } from "./repositories/inventory-repository";
 import { portfolioRepository } from "./repositories/portfolio-repository";
-import { caseStudyRepository } from "./repositories/case-study-repository";
 
 export async function listInventory(): Promise<MediaInventoryRecord[]> {
   return inventoryRepository.getAll();
 }
 
-export async function getInventory(id: string): Promise<MediaInventoryRecord | null> {
+export async function getInventory(
+  id: string,
+): Promise<MediaInventoryRecord | null> {
   return inventoryRepository.getById(id);
 }
 
-export async function createInventory(input: Omit<MediaInventoryRecord, "id" | "createdAt" | "updatedAt">): Promise<MediaInventoryRecord> {
-  return inventoryRepository.create(input as Partial<MediaInventoryRecord>);
+export async function createInventory(
+  input: CreateMediaInventoryInput,
+): Promise<MediaInventoryRecord> {
+  return inventoryRepository.create(input);
 }
 
-export async function updateInventory(id: string, input: Partial<MediaInventoryRecord>): Promise<MediaInventoryRecord | null> {
+export async function updateInventory(
+  id: string,
+  input: Partial<CreateMediaInventoryInput>,
+): Promise<MediaInventoryRecord | null> {
   return inventoryRepository.update(id, input);
 }
 
@@ -23,42 +34,35 @@ export async function deleteInventory(id: string): Promise<boolean> {
   return inventoryRepository.delete(id);
 }
 
-export async function listPortfolio(): Promise<PortfolioProjectRecord[]> {
+export async function listPortfolio(): Promise<PortfolioWorkRecord[]> {
   return portfolioRepository.getAll();
 }
 
-export async function getPortfolio(id: string): Promise<PortfolioProjectRecord | null> {
+export async function getPortfolio(
+  id: string,
+): Promise<PortfolioWorkRecord | null> {
   return portfolioRepository.getById(id);
 }
 
-export async function createPortfolio(input: Omit<PortfolioProjectRecord, "id" | "createdAt" | "updatedAt">): Promise<PortfolioProjectRecord> {
-  return portfolioRepository.create(input as Partial<PortfolioProjectRecord>);
+export async function createPortfolio(
+  input: CreatePortfolioWorkInput,
+): Promise<PortfolioWorkRecord> {
+  return portfolioRepository.create(input);
 }
 
-export async function updatePortfolio(id: string, input: Partial<PortfolioProjectRecord>): Promise<PortfolioProjectRecord | null> {
+export async function createPortfolioBatch(
+  inputs: CreatePortfolioWorkInput[],
+): Promise<PortfolioWorkRecord[]> {
+  return portfolioRepository.createMany(inputs);
+}
+
+export async function updatePortfolio(
+  id: string,
+  input: Partial<CreatePortfolioWorkInput>,
+): Promise<PortfolioWorkRecord | null> {
   return portfolioRepository.update(id, input);
 }
 
 export async function deletePortfolio(id: string): Promise<boolean> {
   return portfolioRepository.delete(id);
-}
-
-export async function listCaseStudies(): Promise<CaseStudyRecord[]> {
-  return caseStudyRepository.getAll();
-}
-
-export async function getCaseStudy(id: string): Promise<CaseStudyRecord | null> {
-  return caseStudyRepository.getById(id);
-}
-
-export async function createCaseStudy(input: Omit<CaseStudyRecord, "id" | "createdAt" | "updatedAt">): Promise<CaseStudyRecord> {
-  return caseStudyRepository.create(input as Partial<CaseStudyRecord>);
-}
-
-export async function updateCaseStudy(id: string, input: Partial<CaseStudyRecord>): Promise<CaseStudyRecord | null> {
-  return caseStudyRepository.update(id, input);
-}
-
-export async function deleteCaseStudy(id: string): Promise<boolean> {
-  return caseStudyRepository.delete(id);
 }

@@ -1,92 +1,56 @@
 create extension if not exists "pgcrypto";
 
-create table if not exists inventory_items (
+drop table if exists case_study_portfolio_media cascade;
+drop table if exists case_study_portfolio_items cascade;
+drop table if exists case_study_results cascade;
+drop table if exists case_study_media_labels cascade;
+drop table if exists case_study_execution_points cascade;
+drop table if exists case_study_strategy_points cascade;
+drop table if exists case_studies cascade;
+drop table if exists portfolio_media cascade;
+drop table if exists portfolio_items cascade;
+drop table if exists portfolio_formats cascade;
+drop table if exists portfolio_categories cascade;
+drop table if exists inventory_media cascade;
+drop table if exists inventory_items cascade;
+drop table if exists brands cascade;
+
+drop table if exists portfolio_works cascade;
+drop table if exists media_inventory cascade;
+
+create table portfolio_works (
   id uuid primary key default gen_random_uuid(),
-  title text not null,
-  slug text unique,
-  description text,
-  site_code text,
-  city text,
-  state text,
-  locality text,
-  address text,
-  google_maps_url text,
-  media_type text,
-  media_category text,
-  width integer,
-  height integer,
-  size text,
-  illumination text,
-  traffic_volume text,
-  media_owner text,
-  industries text[] default '{}',
-  tags text[] default '{}',
-  cover_image_url text,
-  thumbnail_url text,
-  availability boolean default true,
-  featured boolean default false,
-  status text default 'active' check (status in ('active','inactive','draft','archived')),
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
+  brand_name text not null,
+  category text not null,
+  format text not null,
+  city text not null,
+  media_url text not null,
+  media_type text not null check (media_type in ('image', 'video')),
+  featured boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
-create index if not exists idx_inventory_items_city on inventory_items(city);
-create index if not exists idx_inventory_items_media_type on inventory_items(media_type);
-create index if not exists idx_inventory_items_featured on inventory_items(featured);
-create index if not exists idx_inventory_items_tags on inventory_items using gin(tags);
-create index if not exists idx_inventory_items_industries on inventory_items using gin(industries);
-
-create table if not exists portfolio_projects (
+create table media_inventory (
   id uuid primary key default gen_random_uuid(),
-  title text not null,
-  slug text unique,
-  client_name text,
-  service_type text,
-  location text,
-  project_date date,
-  description text,
-  cover_image_url text,
-  thumbnail_url text,
-  featured boolean default false,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
+  city text not null,
+  media_type text not null,
+  size text not null,
+  location text not null,
+  images text[] not null default '{}',
+  featured boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
-create index if not exists idx_portfolio_projects_featured on portfolio_projects(featured);
+create index idx_portfolio_works_brand_name on portfolio_works(brand_name);
+create index idx_portfolio_works_category on portfolio_works(category);
+create index idx_portfolio_works_format on portfolio_works(format);
+create index idx_portfolio_works_city on portfolio_works(city);
+create index idx_portfolio_works_featured on portfolio_works(featured);
+create index idx_portfolio_works_created_at on portfolio_works(created_at desc);
 
-create table if not exists case_studies (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  slug text unique,
-  client_name text,
-  objective text,
-  challenge text,
-  solution text,
-  execution text,
-  results text,
-  cover_image_url text,
-  thumbnail_url text,
-  featured boolean default false,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-
-create index if not exists idx_case_studies_featured on case_studies(featured);
-
-create table if not exists media_assets (
-  id uuid primary key default gen_random_uuid(),
-  owner_type text not null check (owner_type in ('inventory','portfolio','case_study')),
-  owner_id uuid not null,
-  kind text not null check (kind in ('image','video')),
-  url text not null,
-  imagekit_file_id text,
-  width integer,
-  height integer,
-  file_size integer,
-  caption text,
-  sort_order integer default 0,
-  created_at timestamptz default now()
-);
-
-create index if not exists idx_media_assets_owner_type on media_assets(owner_type);
-create index if not exists idx_media_assets_owner_id on media_assets(owner_id);
+create index idx_media_inventory_city on media_inventory(city);
+create index idx_media_inventory_media_type on media_inventory(media_type);
+create index idx_media_inventory_featured on media_inventory(featured);
+create index idx_media_inventory_created_at on media_inventory(created_at desc);

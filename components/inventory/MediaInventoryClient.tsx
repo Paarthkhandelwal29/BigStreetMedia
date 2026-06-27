@@ -2,15 +2,14 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { LeadForm } from "@/components/shared/LeadForm";
-import {
-  inventory,
-  inventoryCities,
-  mediaTypes,
-  type InventoryItem,
-} from "@/data/inventory";
+import { inventory, mediaTypes } from "@/data/inventory";
 import { cn } from "@/lib/utils";
-import { X, MapPin, MagnifyingGlass, FunnelSimple } from "@phosphor-icons/react/dist/ssr";
+import {
+  X,
+  MapPin,
+  MagnifyingGlass,
+  FunnelSimple,
+} from "@phosphor-icons/react/dist/ssr";
 
 type TypeFilter = (typeof mediaTypes)[number] | "All Types";
 
@@ -18,22 +17,18 @@ export function MediaInventoryClient() {
   const [citySearch, setCitySearch] = useState("");
   const [type, setType] = useState<TypeFilter>("All Types");
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [selected, setSelected] = useState<InventoryItem | null>(null);
   const reduce = useReducedMotion();
   const hasActiveFilters = citySearch.trim() || type !== "All Types";
 
-  const filtered = useMemo(
-    () => {
-      const cityQuery = citySearch.trim().toLowerCase();
+  const filtered = useMemo(() => {
+    const cityQuery = citySearch.trim().toLowerCase();
 
-      return inventory.filter(
-        (i) =>
-          (!cityQuery || i.city.toLowerCase().includes(cityQuery)) &&
-          (type === "All Types" || i.type === type)
-      );
-    },
-    [citySearch, type]
-  );
+    return inventory.filter(
+      (i) =>
+        (!cityQuery || i.city.toLowerCase().includes(cityQuery)) &&
+        (type === "All Types" || i.type === type),
+    );
+  }, [citySearch, type]);
 
   return (
     <>
@@ -51,7 +46,8 @@ export function MediaInventoryClient() {
           <section>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-muted">
-                {filtered.length} media space{filtered.length === 1 ? "" : "s"} found
+                {filtered.length} media space{filtered.length === 1 ? "" : "s"}{" "}
+                found
               </p>
               <div className="flex items-center gap-3">
                 <button
@@ -63,7 +59,10 @@ export function MediaInventoryClient() {
                   <FunnelSimple size={17} />
                   Filters
                   {hasActiveFilters && (
-                    <span className="h-2 w-2 rounded-full bg-amber" aria-hidden />
+                    <span
+                      className="h-2 w-2 rounded-full bg-amber"
+                      aria-hidden
+                    />
                   )}
                 </button>
                 {hasActiveFilters && (
@@ -114,7 +113,9 @@ export function MediaInventoryClient() {
                       <span
                         className={cn(
                           "absolute right-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-semibold",
-                          item.available ? "bg-success/15 text-success" : "bg-ink/10 text-muted"
+                          item.available
+                            ? "bg-success/15 text-success"
+                            : "bg-ink/10 text-muted",
                         )}
                       >
                         {item.available ? "Available" : "Coming Soon"}
@@ -122,7 +123,8 @@ export function MediaInventoryClient() {
                     </div>
                     <div className="flex flex-1 flex-col p-4">
                       <h3 className="flex items-center gap-1.5 font-display text-base font-semibold text-ink">
-                        <MapPin size={16} className="text-amber-deep" /> {item.landmark}
+                        <MapPin size={16} className="text-amber-deep" />{" "}
+                        {item.landmark}
                       </h3>
                       <p className="mt-1 text-sm text-muted">{item.city}</p>
                       <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
@@ -132,16 +134,11 @@ export function MediaInventoryClient() {
                         </div>
                         <div>
                           <dt className="text-xs text-muted">Daily Traffic</dt>
-                          <dd className="font-medium text-ink">{item.dailyTraffic}</dd>
+                          <dd className="font-medium text-ink">
+                            {item.dailyTraffic}
+                          </dd>
                         </div>
                       </dl>
-                      <button
-                        type="button"
-                        onClick={() => setSelected(item)}
-                        className="mt-4 inline-flex h-10 items-center justify-center rounded-full bg-ink px-4 text-sm font-medium text-white transition-colors hover:bg-black cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2"
-                      >
-                        Check Availability
-                      </button>
                     </div>
                   </article>
                 </div>
@@ -149,72 +146,12 @@ export function MediaInventoryClient() {
             </div>
             {filtered.length === 0 && (
               <p className="rounded-2xl border border-[#eeeeee] bg-surface px-5 py-10 text-center text-sm text-muted">
-                No spaces match these filters. Try widening your search or{" "}
-                <button onClick={() => setSelected(inventory[0])} className="font-medium text-ink underline cursor-pointer">
-                  ask us directly
-                </button>
-                .
+                No spaces match these filters. Try widening your search.
               </p>
             )}
           </section>
         </div>
       </div>
-
-      {/* enquiry modal */}
-      <AnimatePresence>
-        {selected && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelected(null)}
-          >
-            <motion.div
-              role="dialog"
-              aria-modal
-              aria-label={`Check availability — ${selected.landmark}`}
-              className="w-full max-w-lg rounded-[1.5rem] bg-surface p-6 shadow-2xl md:p-8"
-              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={reduce ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.98 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-display text-xl font-semibold text-ink">
-                    Check availability
-                  </h3>
-                  <p className="mt-1 text-sm text-muted">
-                    {selected.type} · {selected.landmark}, {selected.city}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelected(null)}
-                  aria-label="Close"
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#f0f0f0] text-muted hover:text-ink cursor-pointer"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-              <div className="mt-6">
-                <LeadForm
-                  subject={`Inventory enquiry — ${selected.type}, ${selected.landmark}, ${selected.city}`}
-                  submitLabel="Send Enquiry"
-                  fields={[
-                    { name: "dates", label: "Campaign Dates", placeholder: "e.g. Aug–Oct 2026" },
-                    { name: "brand", label: "Brand Name", required: true, placeholder: "Your brand" },
-                    { name: "email", label: "Email", type: "email", placeholder: "you@company.com" },
-                    { name: "phone", label: "Phone", type: "tel", required: true, placeholder: "Phone" },
-                  ]}
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }
@@ -260,22 +197,14 @@ function FilterPanel({
             </button>
           )}
         </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {inventoryCities.map((c) => (
-            <SmallChip
-              key={c}
-              active={citySearch.trim().toLowerCase() === c.toLowerCase()}
-              onClick={() => setCitySearch(c)}
-            >
-              {c}
-            </SmallChip>
-          ))}
-        </div>
       </FilterBlock>
 
       <FilterBlock label="Media Type">
         <div className="flex flex-col gap-2">
-          <Chip active={type === "All Types"} onClick={() => setType("All Types")}>
+          <Chip
+            active={type === "All Types"}
+            onClick={() => setType("All Types")}
+          >
             All Types
           </Chip>
           {mediaTypes.map((t) => (
@@ -287,7 +216,8 @@ function FilterPanel({
       </FilterBlock>
 
       <p className="border-t border-[#f5f5f5] pt-4 text-sm leading-relaxed text-muted">
-        Media inventory is subject to availability. Contact us for a customized media plan.
+        Media inventory is subject to availability. Contact us for a customized
+        media plan.
       </p>
 
       {onApply && (
@@ -303,7 +233,13 @@ function FilterPanel({
   );
 }
 
-function FilterBlock({ label, children }: { label: string; children: React.ReactNode }) {
+function FilterBlock({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="border-b border-[#f5f5f5] pb-4 mb-4 last:mb-0">
       <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.14em] text-muted">
@@ -332,33 +268,7 @@ function Chip({
         "min-h-9 w-full cursor-pointer rounded-full border px-3.5 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
         active
           ? "border-amber bg-amber text-ink"
-          : "border-[#f0f0f0] bg-surface text-body hover:border-ink/20 hover:text-ink"
-      )}
-    >
-      {children}
-    </button>
-  );
-}
-
-function SmallChip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={cn(
-        "min-h-8 cursor-pointer rounded-full border px-3 py-1 text-xs font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
-        active
-          ? "border-amber bg-amber text-ink"
-          : "border-[#f0f0f0] bg-surface text-body hover:border-ink/20 hover:text-ink"
+          : "border-[#f0f0f0] bg-surface text-body hover:border-ink/20 hover:text-ink",
       )}
     >
       {children}
