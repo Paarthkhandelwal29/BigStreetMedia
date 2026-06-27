@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/cms/auth";
 import { deletePortfolio, listPortfolio } from "@/lib/cms/store";
+import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 
 export default async function PortfolioAdminPage({
   searchParams,
@@ -194,12 +195,12 @@ export default async function PortfolioAdminPage({
                         revalidatePath("/admin/portfolio");
                       }}
                     >
-                      <button
-                        type="submit"
+                      <ConfirmSubmit
+                        message="Delete this portfolio item? This cannot be undone."
                         className="text-sm font-semibold text-red-600"
                       >
                         Delete
-                      </button>
+                      </ConfirmSubmit>
                     </form>
                   </div>
                 </td>

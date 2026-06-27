@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/cms/auth";
 import { deleteInventory, listInventory } from "@/lib/cms/store";
+import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 
 export default async function InventoryAdminPage({
   searchParams,
@@ -133,12 +134,12 @@ export default async function InventoryAdminPage({
                         revalidatePath("/admin/inventory");
                       }}
                     >
-                      <button
-                        type="submit"
+                      <ConfirmSubmit
+                        message="Delete this inventory item? This cannot be undone."
                         className="text-sm font-semibold text-red-600"
                       >
                         Delete
-                      </button>
+                      </ConfirmSubmit>
                     </form>
                   </div>
                 </td>

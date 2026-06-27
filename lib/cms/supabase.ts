@@ -11,14 +11,22 @@ export function getSupabaseClient() {
     return null;
   }
 
-  if (!client) {
-    client = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey!, {
+  const create = () =>
+    createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey!, {
       auth: {
         persistSession: false,
         autoRefreshToken: false,
       },
     });
+
+  // In dev, Turbopack hot-reload can leave the module-level singleton holding a
+  // stale client; build a fresh one each call. In prod, reuse the singleton.
+  if (process.env.NODE_ENV === "development") {
+    return create();
   }
 
+  if (!client) {
+    client = create();
+  }
   return client;
 }
