@@ -18,6 +18,14 @@ import {
   FunnelSimple,
   PlayCircle,
   ImageSquare,
+  ArrowRight,
+  ArrowsCounterClockwise,
+  Buildings,
+  Train,
+  Storefront,
+  Megaphone,
+  CalendarDots,
+  Sparkle,
 } from "@phosphor-icons/react/dist/ssr";
 
 type PortfolioGalleryProps = {
@@ -25,8 +33,31 @@ type PortfolioGalleryProps = {
 };
 
 type ActiveFormat = PortfolioFormat | "All Formats";
+type ActiveBrand = string | "All Brands";
+
+const categoryIcons = {
+  All: Buildings,
+  OOH: Buildings,
+  Transit: Train,
+  Events: CalendarDots,
+  Exhibitions: Megaphone,
+  "Retail Launches": Storefront,
+  "Special Activations": Sparkle,
+} as const;
+
+function brandBadgeText(brand: string) {
+  if (brand === "All Brands") return "★";
+
+  return brand
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || "")
+    .join("");
+}
 
 export function PortfolioGallery({ items }: PortfolioGalleryProps) {
+  const [activeBrand, setActiveBrand] = useState<ActiveBrand>("All Brands");
   const [activeCategory, setActiveCategory] = useState<
     PortfolioCategory | "All"
   >("All");
@@ -51,20 +82,40 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
     }
   }, [searchParams]);
 
+  const availableBrands = useMemo(
+    () => [
+      "All Brands",
+      ...Array.from(new Set(items.map((item) => item.brandName))).sort((a, b) =>
+        a.localeCompare(b),
+      ),
+    ],
+    [items],
+  );
+
+  const brandFilteredItems = useMemo(
+    () =>
+      activeBrand === "All Brands"
+        ? items
+        : items.filter((item) => item.brandName === activeBrand),
+    [items, activeBrand],
+  );
+
   const availableCategories = useMemo(() => {
-    const categories = Array.from(new Set(items.map((item) => item.category)));
+    const categories = Array.from(
+      new Set(brandFilteredItems.map((item) => item.category)),
+    );
     return portfolioCategories.filter(
       (category) =>
         category === "All" ||
         categories.includes(category as PortfolioCategory),
     );
-  }, [items]);
+  }, [brandFilteredItems]);
 
   const formatOptions = useMemo(() => {
     if (activeCategory === "All") return [];
 
     const allowedFormats = new Set(
-      items
+      brandFilteredItems
         .filter((item) => item.category === activeCategory)
         .map((item) => item.format),
     );
@@ -72,11 +123,11 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
     return portfolioFormatsByCategory[activeCategory].filter((format) =>
       allowedFormats.has(format),
     );
-  }, [activeCategory, items]);
+  }, [activeCategory, brandFilteredItems]);
 
   const filtered = useMemo(
     () =>
-      items.filter((item) => {
+      brandFilteredItems.filter((item) => {
         const matchesCategory =
           activeCategory === "All" || item.category === activeCategory;
         const matchesFormat =
@@ -84,7 +135,7 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
 
         return matchesCategory && matchesFormat;
       }),
-    [items, activeCategory, activeFormat],
+    [brandFilteredItems, activeCategory, activeFormat],
   );
 
   const current = lightboxIndex !== null ? filtered[lightboxIndex] : null;
@@ -95,6 +146,13 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
     setLightboxIndex(next);
   };
 
+  const handleBrandSelect = (brand: ActiveBrand) => {
+    setActiveBrand(brand);
+    setActiveCategory("All");
+    setActiveFormat("All Formats");
+    setLightboxIndex(null);
+  };
+
   const handleCategorySelect = (category: PortfolioCategory | "All") => {
     setActiveCategory(category);
     setActiveFormat("All Formats");
@@ -103,6 +161,13 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
 
   const handleFormatSelect = (format: ActiveFormat) => {
     setActiveFormat(format);
+    setLightboxIndex(null);
+  };
+
+  const clearAllFilters = () => {
+    setActiveBrand("All Brands");
+    setActiveCategory("All");
+    setActiveFormat("All Formats");
     setLightboxIndex(null);
   };
 
@@ -120,6 +185,30 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
   return (
     <>
       <div className="container-bsm pb-12">
+        <div className="mb-6 overflow-x-auto pb-2 lg:hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="inline-flex min-w-full gap-2 rounded-[1.5rem] border border-[#ececec] bg-surface p-2 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+            {availableBrands.map((brand) => {
+              const isActive = activeBrand === brand;
+              return (
+                <button
+                  key={brand}
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => handleBrandSelect(brand)}
+                  className={cn(
+                    "min-h-10 whitespace-nowrap cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                    isActive
+                      ? "border-ink bg-ink text-white shadow-sm"
+                      : "border-transparent bg-white text-body hover:border-ink/10 hover:text-ink",
+                  )}
+                >
+                  {brand}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="mb-6 lg:hidden">
           <button
             type="button"
@@ -174,15 +263,18 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
           </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
+        <div className="grid gap-6 lg:grid-cols-[210px_minmax(0,1fr)_210px] lg:items-start">
           <aside className="hidden lg:sticky lg:top-24 lg:block">
-            <div className="rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-5">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+            <div className="rounded-[1.35rem] border border-[#ececec] bg-surface p-3 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+              <p className="mb-3 px-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
                 Categories
               </p>
-              <div className="flex flex-col gap-2">
+              <div className="space-y-1.5">
                 {availableCategories.map((cat) => {
                   const isActive = activeCategory === cat;
+                  const Icon =
+                    categoryIcons[cat as keyof typeof categoryIcons] ??
+                    Buildings;
                   return (
                     <button
                       key={cat}
@@ -190,23 +282,45 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                       aria-pressed={isActive}
                       onClick={() => handleCategorySelect(cat)}
                       className={cn(
-                        "min-h-11 w-full cursor-pointer rounded-2xl border px-4 py-3 text-left text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                        "flex min-h-10 w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left text-[13px] font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                         isActive
-                          ? "border-amber bg-amber text-ink"
+                          ? "border-amber bg-amber text-ink shadow-sm"
                           : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
                       )}
                     >
-                      {cat}
+                      <span
+                        className={cn(
+                          "flex h-6 w-6 items-center justify-center rounded-md border text-muted",
+                          isActive
+                            ? "border-ink/10 bg-white/70 text-ink"
+                            : "border-[#ececec] bg-surface",
+                        )}
+                      >
+                        <Icon size={15} weight="regular" />
+                      </span>
+                      <span className="flex-1">
+                        {cat === "All" ? "All" : cat}
+                      </span>
+                      {isActive ? <ArrowRight size={14} weight="bold" /> : null}
                     </button>
                   );
                 })}
               </div>
+
+              <button
+                type="button"
+                onClick={clearAllFilters}
+                className="mt-4 inline-flex items-center gap-2 px-2 text-sm font-medium text-muted transition-colors hover:text-ink"
+              >
+                <ArrowsCounterClockwise size={14} />
+                Clear All
+              </button>
             </div>
           </aside>
 
           <div>
             {filtered.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {filtered.map((item, i) => (
                   <button
                     key={item.id}
@@ -278,6 +392,54 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
               </div>
             )}
           </div>
+
+          <aside className="hidden lg:sticky lg:top-24 lg:block">
+            <div className="rounded-[1.35rem] border border-[#ececec] bg-surface p-3 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+              <p className="mb-3 px-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+                Brands
+              </p>
+              <div className="space-y-1.5">
+                {availableBrands.map((brand) => {
+                  const isActive = activeBrand === brand;
+                  return (
+                    <button
+                      key={brand}
+                      type="button"
+                      aria-pressed={isActive}
+                      onClick={() => handleBrandSelect(brand)}
+                      className={cn(
+                        "flex min-h-10 w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left text-[13px] font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                        isActive
+                          ? "border-ink bg-ink text-white shadow-sm"
+                          : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-bold",
+                          isActive
+                            ? "bg-white/15 text-white"
+                            : "bg-surface-2 text-ink",
+                        )}
+                      >
+                        {brandBadgeText(brand)}
+                      </span>
+                      <span className="flex-1 truncate">{brand}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleBrandSelect("All Brands")}
+                className="mt-4 inline-flex items-center gap-2 px-2 text-sm font-medium text-muted transition-colors hover:text-ink"
+              >
+                <Buildings size={14} />
+                View All Brands
+              </button>
+            </div>
+          </aside>
         </div>
       </div>
 
@@ -313,6 +475,43 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
               </div>
 
               <div className="space-y-5">
+                <div>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                    Brands
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {availableBrands.map((brand) => {
+                      const isActive = activeBrand === brand;
+                      return (
+                        <button
+                          key={brand}
+                          type="button"
+                          aria-pressed={isActive}
+                          onClick={() => handleBrandSelect(brand)}
+                          className={cn(
+                            "flex min-h-11 w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                            isActive
+                              ? "border-ink bg-ink text-white"
+                              : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
+                          )}
+                        >
+                          <span
+                            className={cn(
+                              "flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-bold",
+                              isActive
+                                ? "bg-white/15 text-white"
+                                : "bg-surface-2 text-ink",
+                            )}
+                          >
+                            {brandBadgeText(brand)}
+                          </span>
+                          <span className="flex-1 truncate">{brand}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div>
                   <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                     Categories

@@ -20,49 +20,47 @@ export function IntroCurtain() {
   const reduceMotion = useReducedMotion();
   const isHome = pathname === "/";
 
-  // Visible on first paint of the home page so the site never flashes first.
-  const [show, setShow] = useState(isHome);
+  const [show, setShow] = useState(() => {
+    if (typeof window === "undefined") return true;
+    if (window.location.pathname !== "/") return false;
+
+    try {
+      return !window.sessionStorage.getItem(SESSION_KEY);
+    } catch {
+      return true;
+    }
+  });
+
+  const shouldShow = isHome && !reduceMotion && show;
 
   useEffect(() => {
-    if (!isHome || reduceMotion) {
-      setShow(false);
-      return;
-    }
-    let seen = false;
-    try {
-      seen = Boolean(sessionStorage.getItem(SESSION_KEY));
-    } catch {
-      seen = false;
-    }
-    if (seen) {
-      setShow(false);
-      return;
-    }
+    if (!shouldShow) return;
+
     try {
       sessionStorage.setItem(SESSION_KEY, "1");
     } catch {
       // ignore (private mode); intro simply replays next session
     }
-    setShow(true);
+
     const timer = setTimeout(() => setShow(false), HOLD_MS);
     return () => clearTimeout(timer);
-  }, [isHome, reduceMotion]);
+  }, [shouldShow]);
 
   // Lock scroll while the curtain is up.
   useEffect(() => {
-    if (!show) return;
+    if (!shouldShow) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previous;
     };
-  }, [show]);
+  }, [shouldShow]);
 
-  if (!isHome) return null;
+  if (!isHome || !shouldShow) return null;
 
   return (
     <AnimatePresence>
-      {show ? (
+      {shouldShow ? (
         <motion.div
           key="intro"
           aria-hidden
@@ -88,7 +86,11 @@ export function IntroCurtain() {
             className="relative flex flex-col items-center gap-5"
             initial={{ opacity: 0, scale: 0.94, filter: "blur(8px)" }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 1.08, transition: { duration: 0.55, ease: EASE } }}
+            exit={{
+              opacity: 0,
+              scale: 1.08,
+              transition: { duration: 0.55, ease: EASE },
+            }}
             transition={{ duration: 0.8, ease: EASE }}
           >
             <div className="relative inline-block">
