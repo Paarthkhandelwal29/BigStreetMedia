@@ -8,6 +8,7 @@ import type {
   BatchInventoryDraftPreview,
   BatchInventoryField,
   BatchSaveResponse,
+  DraftNewImage,
   EditableBatchInventoryDraft,
 } from "@/lib/cms/inventory-batch/types";
 
@@ -70,6 +71,7 @@ export default function BatchInventoryPageClient() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [stageIndex, setStageIndex] = useState(0);
+  const [newImages, setNewImages] = useState<Record<string, DraftNewImage[]>>({});
 
   useEffect(() => {
     if (!extracting) return;
@@ -104,7 +106,55 @@ export default function BatchInventoryPageClient() {
     setExtracting(false);
     setSaving(false);
     setStageIndex(0);
+    setNewImages({});
     if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  function deleteDraft(id: string) {
+    setDrafts((current) => current.filter((d) => d.id !== id));
+    setNewImages((current) => {
+      const copy = { ...current };
+      delete copy[id];
+      return copy;
+    });
+  }
+
+  function addPhotoToDraft(draftId: string, file: File) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (!dataUrl) return;
+
+      const newEntry: DraftNewImage = {
+        fileName: file.name,
+        dataUrl,
+      };
+
+      setNewImages((current) => ({
+        ...current,
+        [draftId]: [...(current[draftId] || []), newEntry],
+      }));
+
+      setDrafts((current) =>
+        current.map((draft) => {
+          if (draft.id !== draftId) return draft;
+          return {
+            ...draft,
+            imagePreviews: [
+              ...draft.imagePreviews,
+              {
+                id: crypto.randomUUID(),
+                fileName: file.name,
+                previewUrl: dataUrl,
+                mimeType: file.type || "image/jpeg",
+                source: "embedded" as const,
+              },
+            ],
+          };
+        }),
+      );
+    };
+    reader.readAsDataURL(file);
   }
 
   function onFileChosen(file: File | null) {
@@ -215,6 +265,7 @@ export default function BatchInventoryPageClient() {
             featured: draft.featured,
             unknownConfirmed: draft.unknownConfirmed,
           })),
+          newImages,
         }),
       });
 
@@ -438,13 +489,22 @@ export default function BatchInventoryPageClient() {
                         {draft.imagePreviews.length === 1 ? "" : "s"}
                       </p>
                     </div>
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold ${getConfidenceTone(
-                        draft.confidence,
-                      )}`}
-                    >
-                      Confidence {draft.confidence}%
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${getConfidenceTone(
+                          draft.confidence,
+                        )}`}
+                      >
+                        Confidence {draft.confidence}%
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => deleteDraft(draft.id)}
+                        className="rounded-full border border-red-200 px-3 py-1 text-xs font-semibold text-red-600 hover:bg-red-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
 
                   <div className="mt-5 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -473,10 +533,36 @@ export default function BatchInventoryPageClient() {
                               </div>
                             </div>
                           ))}
+                          <label className="flex cursor-pointer items-center justify-center rounded-[1.25rem] border border-dashed border-[#d9d9d9] bg-surface-2 text-xs text-muted hover:border-ink/30 min-h-[11rem]">
+                            <span>+ Add Photo</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(event) => {
+                                const file = event.target.files?.[0];
+                                if (file) addPhotoToDraft(draft.id, file);
+                                event.target.value = "";
+                              }}
+                            />
+                          </label>
                         </div>
                       ) : (
-                        <div className="flex min-h-48 items-center justify-center rounded-[1.25rem] border border-dashed border-[#d9d9d9] bg-surface-2 text-sm text-muted">
-                          No photos were extracted for this draft.
+                        <div className="flex min-h-48 flex-col items-center justify-center gap-3 rounded-[1.25rem] border border-dashed border-[#d9d9d9] bg-surface-2 p-4 text-sm text-muted">
+                          <span>No photos were extracted for this draft.</span>
+                          <label className="cursor-pointer rounded-full bg-ink px-4 py-2 text-xs font-semibold text-white hover:opacity-90">
+                            Upload Photo
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(event) => {
+                                const file = event.target.files?.[0];
+                                if (file) addPhotoToDraft(draft.id, file);
+                                event.target.value = "";
+                              }}
+                            />
+                          </label>
                         </div>
                       )}
                     </div>

@@ -10,6 +10,7 @@ import {
 import type {
   BatchInventoryField,
   BatchSaveResponse,
+  DraftNewImage,
   EditableBatchInventoryDraft,
 } from "@/lib/cms/inventory-batch/types";
 import { createInventory } from "@/lib/cms/store";
@@ -20,6 +21,7 @@ export const dynamic = "force-dynamic";
 type SaveBatchPayload = {
   sessionId?: string;
   drafts?: EditableBatchInventoryDraft[];
+  newImages?: Record<string, DraftNewImage[]>;
 };
 
 const FIELD_LABELS: Record<BatchInventoryField, string> = {
@@ -63,6 +65,7 @@ export async function POST(request: Request) {
     const payload = (await request.json()) as SaveBatchPayload;
     const sessionId = payload.sessionId?.trim();
     const drafts = payload.drafts || [];
+    const newImages = payload.newImages || {};
 
     if (!sessionId || drafts.length === 0) {
       return NextResponse.json<BatchSaveResponse>(
@@ -98,6 +101,18 @@ export async function POST(request: Request) {
           { success: false, error: `Unknown draft id: ${draft.id}` },
           { status: 400 },
         );
+      }
+
+      const draftNewImages = newImages[draft.id] || [];
+      for (const newImg of draftNewImages) {
+        storedDraft.imagePreviews.push({
+          id: crypto.randomUUID(),
+          fileName: newImg.fileName,
+          previewUrl: newImg.dataUrl,
+          mimeType: newImg.dataUrl.split(";")[0].replace("data:", ""),
+          base64: newImg.dataUrl.split(",")[1],
+          source: "embedded",
+        });
       }
 
       const city = normalizeValue(draft.city);

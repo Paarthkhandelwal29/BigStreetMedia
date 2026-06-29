@@ -59,6 +59,11 @@ export type EditableBatchInventoryDraft = {
   unknownConfirmed: boolean;
 };
 
+export type DraftNewImage = {
+  fileName: string;
+  dataUrl: string;
+};
+
 export type BatchExtractResponse =
   | {
       success: true;

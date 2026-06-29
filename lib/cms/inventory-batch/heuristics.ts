@@ -54,6 +54,72 @@ const COMMON_CITIES = Array.from(
   ]),
 );
 
+const CITY_SYNONYMS: Record<string, string[]> = {
+  Delhi: ["New Delhi", "Dilli", "Del"],
+  Mumbai: ["Bombay", "Mumb"],
+  Bengaluru: ["Bangalore", "Bengalur"],
+  Chennai: ["Madras", "Chenn"],
+  Kolkata: ["Calcutta", "Kolkat"],
+  Pune: ["Poona"],
+  Kochi: ["Cochin"],
+  Varanasi: ["Banaras", "Kashi", "Varanas"],
+  Prayagraj: ["Allahabad"],
+  Gurugram: ["Gurgaon", "Gurg", "Gurugr"],
+  Mysuru: ["Mysore"],
+  Bhubaneswar: ["Bhubaneshwar", "Bhuban"],
+  Chandigarh: ["Chand"],
+  Ahmedabad: ["Ahemdabad", "Ahmadabad", "Ahmed"],
+  Hyderabad: ["Hyd", "Hyder"],
+  Lucknow: ["Luck", "Lukhnow"],
+  Kanpur: ["Cawnpore", "Kanp"],
+  Patna: ["Patn"],
+  Jaipur: ["Jaip", "Jaypur"],
+  Indore: ["Indor"],
+};
+
+function levenshtein(a: string, b: string): number {
+  const an = a.length;
+  const bn = b.length;
+  const matrix: number[] = [];
+  for (let i = 0; i <= bn; i++) matrix[i] = i;
+  for (let i = 1; i <= an; i++) {
+    let prev = i;
+    for (let j = 1; j <= bn; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      const val = Math.min(
+        matrix[j - 1] + cost,
+        matrix[j] + 1,
+        prev + 1,
+      );
+      matrix[j - 1] = prev;
+      prev = val;
+    }
+    matrix[bn] = prev;
+  }
+  return matrix[bn];
+}
+
+function fuzzyFindCity(text: string): string | null {
+  const words = text.split(/[\s,;()]+/).filter((w) => w.length >= 3);
+  let best: { city: string; dist: number } | null = null;
+
+  for (const word of words) {
+    const clean = word.replace(/[^a-zA-Z]/g, "").toLowerCase();
+    if (clean.length < 3) continue;
+    for (const city of COMMON_CITIES) {
+      if (city.toLowerCase() === clean) return city;
+      const dist = levenshtein(clean, city.toLowerCase());
+      const maxLen = Math.max(clean.length, city.length);
+      if (dist <= 2 && dist / maxLen < 0.35) {
+        if (!best || dist < best.dist) {
+          best = { city, dist };
+        }
+      }
+    }
+  }
+  return best?.city || null;
+}
+
 const MEDIA_TYPE_MATCHERS: Array<{ value: string; patterns: RegExp[] }> = [
   {
     value: "Hoardings",
@@ -61,7 +127,7 @@ const MEDIA_TYPE_MATCHERS: Array<{ value: string; patterns: RegExp[] }> = [
   },
   {
     value: "Bus Shelters",
-    patterns: [/\bbus\s+shelter\b/i, /\bbus\s+shelters\b/i],
+    patterns: [/\bbus\s+shelter\b/i, /\bbus\s+shelters\b/i, /\bbus\s+stop\b/i],
   },
   {
     value: "Unipoles",
@@ -109,6 +175,14 @@ const NON_LOCATION_LABELS = [
   "page",
   "big street media",
   "advertisers",
+];
+
+const ADDRESS_KEYWORDS = [
+  "road", "rd", "nagar", "colony", "chauraha", "square", "chowk",
+  "crossing", "tiraha", "marg", "street", "lane", "complex", "plaza",
+  "tower", "building", "sector", "phase", "block", "near", "opposite",
+  "opp", "beside", "adjacent", "gate", "toll", "flyover", "bridge",
+  "bypass", "highway", "nh-", "nh ", "sh-", "sh ", "district",
 ];
 
 export function normalizeWhitespace(value: string) {
@@ -181,13 +255,38 @@ function findLabeledValue(text: string, labels: string[]): Candidate | null {
 }
 
 function findMentionedCities(text: string) {
-  return COMMON_CITIES.filter((city) => {
+  const found: string[] = [];
+
+  for (const city of COMMON_CITIES) {
     const pattern = new RegExp(
       `\\b${city.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")}\\b`,
       "i",
     );
-    return pattern.test(text);
-  });
+    if (pattern.test(text)) {
+      found.push(city);
+    }
+  }
+
+  for (const [canonical, synonyms] of Object.entries(CITY_SYNONYMS)) {
+    if (found.includes(canonical)) continue;
+    for (const synonym of synonyms) {
+      const pattern = new RegExp(
+        `\\b${synonym.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")}`,
+        "i",
+      );
+      if (pattern.test(text)) {
+        found.push(canonical);
+        break;
+      }
+    }
+  }
+
+  const fuzzy = fuzzyFindCity(text);
+  if (fuzzy && !found.includes(fuzzy)) {
+    found.push(fuzzy);
+  }
+
+  return [...new Set(found)];
 }
 
 function sanitizeCityValue(value: string) {
@@ -272,18 +371,29 @@ function extractMediaType(text: string): Candidate | null {
 
 function extractSize(text: string): Candidate | null {
   const labeled = findLabeledValue(text, ["size", "dimension", "dimensions"]);
-  if (labeled) return labeled;
+  if (labeled) {
+    const normalized = normalizeWhitespace(labeled.value);
+    return { value: normalized, confidence: labeled.confidence };
+  }
 
-  const match = text.match(
-    /\b\d{1,3}(?:\.\d{1,2})?\s*(?:x|×|by)\s*\d{1,3}(?:\.\d{1,2})?(?:\s*(?:ft|feet|m|meter|meters|sqm|sq ft|sq\.ft|\"|'))?/i,
-  );
+  const sizePatterns = [
+    /\b\d{1,3}(?:\.\d{1,2})?\s*(?:x|×|X|by|BY|\*)\s*\d{1,3}(?:\.\d{1,2})?(?:\s*(?:ft|feet|foot|m|meter|meters|sqm|sq\s*ft|sq\.\s*ft|\"|'|inches|inch|h|w|hgt|wdth))?/i,
+    /\b\d{1,3}\s*['"]?\s*(?:x|×|X|\*)\s*\d{1,3}\s*['"]?\b/i,
+    /\b\d{1,3}\s*(?:ft|feet|foot|m|meter)\s*(?:x|×|X|by|\*)\s*\d{1,3}\s*(?:ft|feet|foot|m|meter)?/i,
+    /\b\d{1,3}\s*[WwHh]?\s*(?:x|×|X|\*)\s*\d{1,3}\s*[HhWw]?\b/i,
+  ];
 
-  if (!match) return null;
+  for (const pattern of sizePatterns) {
+    const match = text.match(pattern);
+    if (match) {
+      return {
+        value: normalizeWhitespace(match[0].replace(/\s*(?:x|X|by|BY|\*)\s*/i, " × ")),
+        confidence: 0.9,
+      };
+    }
+  }
 
-  return {
-    value: normalizeWhitespace(match[0].replace(/\s*(?:x|by)\s*/i, " × ")),
-    confidence: 0.9,
-  };
+  return null;
 }
 
 function sanitizeLocationValue(value: string, cityValue?: string) {
@@ -293,6 +403,11 @@ function sanitizeLocationValue(value: string, cityValue?: string) {
     return null;
   }
   return normalized;
+}
+
+function hasAddressKeywords(text: string) {
+  const lower = text.toLowerCase();
+  return ADDRESS_KEYWORDS.some((kw) => lower.includes(kw));
 }
 
 function extractLocation(text: string, cityValue?: string): Candidate | null {
@@ -314,6 +429,21 @@ function extractLocation(text: string, cityValue?: string): Candidate | null {
   }
 
   const lines = getTextLines(text);
+
+  const addressLines = lines.filter(
+    (line) => line.length >= 8 && hasAddressKeywords(line),
+  );
+  if (addressLines.length > 0) {
+    const best = addressLines.sort((a, b) => b.length - a.length)[0];
+    const sanitized = sanitizeLocationValue(best, cityValue);
+    if (sanitized) {
+      const cityMentioned = cityValue
+        ? findMentionedCities(best).length > 0
+        : false;
+      return { value: sanitized, confidence: cityMentioned ? 0.88 : 0.82 };
+    }
+  }
+
   const meaningfulLine = lines
     .filter((line) => line.length >= 8)
     .filter((line) => !/^\d+(?:\.|\))/.test(line))
@@ -345,12 +475,25 @@ function extractLocation(text: string, cityValue?: string): Candidate | null {
   return { value: meaningfulLine, confidence: 0.72 };
 }
 
+function isLowQualityOcrText(text: string): boolean {
+  if (text.length < 10) return true;
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length < 2) return true;
+  const alphaWords = words.filter((w) => /[a-zA-Z]{3,}/.test(w));
+  return alphaWords.length / words.length < 0.2;
+}
+
 export function analyzeInventorySource(
   unit: InventorySourceUnit,
 ): InventoryAnalysisResult {
-  const mergedText = [unit.text, unit.ocrText || ""]
-    .filter(Boolean)
-    .map((part) => normalizeMultilineText(part))
+  const rawText = normalizeMultilineText(unit.text || "");
+
+  const ocrText = unit.ocrText
+    ? normalizeMultilineText(unit.ocrText)
+    : "";
+
+  const useOcr = ocrText && !isLowQualityOcrText(ocrText);
+  const mergedText = [rawText, useOcr ? ocrText : ""]
     .filter(Boolean)
     .join("\n");
 

@@ -2,6 +2,16 @@ import { randomUUID } from "node:crypto";
 import { unlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+const pdfWorkerFile = path.join(
+  process.cwd(),
+  "node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs",
+);
+const pdfWorkerUrl = pathToFileURL(pdfWorkerFile).href;
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
 import { PDFParse } from "pdf-parse";
 import { extractPptx } from "pptx-content-extractor";
 import { heuristicInventoryBatchAnalyzer } from "./analyzer";
@@ -10,6 +20,7 @@ import { runOcrOnBuffers } from "./ocr";
 import type {
   BatchInventoryDraftPreview,
   BatchInventoryImageSource,
+  InventoryAnalysisResult,
   StoredBatchInventoryDraft,
   StoredBatchInventoryImage,
 } from "./types";
@@ -20,7 +31,7 @@ type ExtractedUnit = {
   sourceLabel: string;
   rawText: string;
   images: StoredBatchInventoryImage[];
-  ocrBuffers: Buffer[];
+  ocrBuffers: Array<Buffer>;
 };
 
 type PptxExtractResult = Awaited<ReturnType<typeof extractPptx>>;
@@ -131,9 +142,14 @@ async function extractFromPptx(
   try {
     const parsed = (await extractPptx(tempPath)) as PptxExtractResult;
 
-    const mediaByName = new Map(
-      parsed.media.map((item) => [getBaseName(item.name), item]),
-    );
+    const mediaByName = new Map<string, PptxExtractResult["media"][number]>();
+    const mediaByLowerName = new Map<string, PptxExtractResult["media"][number]>();
+    for (const item of parsed.media) {
+      mediaByName.set(getBaseName(item.name), item);
+      mediaByLowerName.set(getBaseName(item.name).toLowerCase(), item);
+      const normalizedPath = item.name.replace(/[\\/]/g, "/");
+      mediaByLowerName.set(normalizedPath.toLowerCase(), item);
+    }
 
     return parsed.slides
       .map((slide, index) => {
@@ -146,29 +162,35 @@ async function extractFromPptx(
           parsed.notes[index]?.content || "",
         );
         const rawText = [slideText, noteText].filter(Boolean).join("\n");
-        const images = slide.mediaNames
-          .map((mediaName) => ({
-            mediaName,
-            media: mediaByName.get(getBaseName(mediaName)),
-          }))
-          .filter(
-            (
-              entry,
-            ): entry is {
-              mediaName: string;
-              media: PptxExtractResult["media"][number];
-            } => Boolean(entry.media),
-          )
-          .map(({ media, mediaName }, mediaIndex) => {
-            const resolvedFileName = getBaseName(media.name);
-            return buildStoredImage({
-              fileName:
-                resolvedFileName ||
-                `slide-${index + 1}-${mediaIndex + 1}.${getFileExtension(mediaName) || "png"}`,
-              dataUrl: media.content,
-              source: "embedded",
-            });
+
+        const resolvedMedia: Array<{
+          media: PptxExtractResult["media"][number];
+          mediaName: string;
+        }> = [];
+
+        for (const mediaName of slide.mediaNames) {
+          const baseName = getBaseName(mediaName);
+          let found = mediaByName.get(baseName);
+          if (!found) found = mediaByLowerName.get(baseName.toLowerCase());
+          if (!found) {
+            const normalizedPath = mediaName.replace(/[\\/]/g, "/");
+            found = mediaByLowerName.get(normalizedPath.toLowerCase());
+          }
+          if (found) {
+            resolvedMedia.push({ media: found, mediaName });
+          }
+        }
+
+        const images = resolvedMedia.map(({ media, mediaName }, mediaIndex) => {
+          const resolvedFileName = getBaseName(media.name);
+          return buildStoredImage({
+            fileName:
+              resolvedFileName ||
+              `slide-${index + 1}-${mediaIndex + 1}.${getFileExtension(mediaName) || "png"}`,
+            dataUrl: media.content,
+            source: "embedded",
           });
+        });
 
         return {
           id: randomUUID(),
@@ -178,8 +200,8 @@ async function extractFromPptx(
           images,
           ocrBuffers: images
             .map(getOcrBufferFromImage)
-            .filter((buffer): buffer is Buffer => Boolean(buffer))
-            .slice(0, 3),
+            .filter((b): b is NonNullable<typeof b> => b !== null)
+            .slice(0, 10),
         } satisfies ExtractedUnit;
       })
       .filter((unit) => shouldIncludeDraft(unit.rawText, unit.images.length));
@@ -205,7 +227,7 @@ async function extractFromPdf(buffer: Buffer): Promise<ExtractedUnit[]> {
       try {
         const imageResult = await parser.getImage({
           partial: [pageNumber],
-          imageThreshold: 120,
+          imageThreshold: 80,
         });
 
         const pageImages = imageResult.pages[0]?.images || [];
@@ -241,12 +263,21 @@ async function extractFromPdf(buffer: Buffer): Promise<ExtractedUnit[]> {
             height: screenshot.height,
           });
 
-          if (images.length === 0) {
-            images = [screenshotImage];
-          }
+          images = [screenshotImage, ...images];
         }
       } catch (err) {
-        console.error(`Page ${pageNumber} getScreenshot failed:`, err);
+        if (
+          err instanceof Error &&
+          (err.message.includes("worker") ||
+            err.message.includes("worker.mjs") ||
+            err.message.includes("fake worker"))
+        ) {
+          console.warn(
+            `Page ${pageNumber} screenshot unavailable (worker issue). Using embedded images only.`,
+          );
+        } else {
+          console.error(`Page ${pageNumber} getScreenshot failed:`, err);
+        }
         screenshotImage = null;
       }
 
@@ -268,18 +299,117 @@ async function extractFromPdf(buffer: Buffer): Promise<ExtractedUnit[]> {
           .map((image) =>
             getOcrBufferFromImage(image as StoredBatchInventoryImage),
           )
-          .filter((buffer): buffer is Buffer => Boolean(buffer))
-          .slice(0, 3),
+          .filter((b): b is NonNullable<typeof b> => b !== null)
+          .slice(0, 10),
       });
     }
 
-    return units;
+    return mergePdfUnits(units);
   } finally {
     await parser.destroy();
   }
 }
 
+function mergePdfUnits(units: ExtractedUnit[]): ExtractedUnit[] {
+  const merged = new Map<number, ExtractedUnit>();
+  const imagePages: { unit: ExtractedUnit; pageNum: number }[] = [];
+
+  for (const unit of units) {
+    const pageNum = parseInt(unit.sourceLabel.replace(/\D/g, ""), 10);
+    merged.set(pageNum, { ...unit });
+    if (unit.images.length > 0) {
+      imagePages.push({ unit, pageNum });
+    }
+  }
+
+  for (const { unit: imgUnit, pageNum: imgPageNum } of imagePages) {
+    const existing = merged.get(imgPageNum);
+    if (!existing) continue;
+    if (existing.rawText.trim().length >= 15) continue;
+
+    let bestPartner: number | null = null;
+    let bestDiff = Infinity;
+
+    for (const [key] of merged) {
+      if (key === imgPageNum) continue;
+      const candidate = merged.get(key);
+      if (!candidate || candidate.rawText.trim().length < 15) continue;
+      const diff = Math.abs(imgPageNum - key);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        bestPartner = key;
+      }
+    }
+
+    if (bestPartner !== null && bestDiff <= 3) {
+      const partner = merged.get(bestPartner);
+      if (partner) {
+        merged.set(bestPartner, {
+          ...partner,
+          images: [...partner.images, ...existing.images],
+          ocrBuffers: [...partner.ocrBuffers, ...existing.ocrBuffers].slice(0, 10),
+          sourceLabel:
+            bestPartner < imgPageNum
+              ? `${partner.sourceLabel} & ${existing.sourceLabel}`
+              : `${existing.sourceLabel} & ${partner.sourceLabel}`,
+        });
+        merged.delete(imgPageNum);
+      }
+    }
+  }
+
+  return Array.from(merged.values()).sort((a, b) => {
+    const aNum = parseInt(a.sourceLabel.replace(/\D/g, ""), 10);
+    const bNum = parseInt(b.sourceLabel.replace(/\D/g, ""), 10);
+    return aNum - bNum;
+  });
+}
+
+function deduplicateUnits(units: ExtractedUnit[]): ExtractedUnit[] {
+  const seen = new Map<string, ExtractedUnit>();
+
+  for (const unit of units) {
+    const textKey = normalizeMultilineText(unit.rawText).toLowerCase();
+    const imageKey = unit.images.map((i) => i.mimeType).join(",");
+    const key = `${textKey}|${imageKey}|${unit.images.length}`;
+
+    const existing = seen.get(key);
+    if (existing) {
+      const existingLabelNum = parseInt(existing.sourceLabel.replace(/\D/g, ""), 10);
+      const currentLabelNum = parseInt(unit.sourceLabel.replace(/\D/g, ""), 10);
+      if (currentLabelNum < existingLabelNum) {
+        seen.set(key, unit);
+      }
+    } else {
+      seen.set(key, unit);
+    }
+  }
+
+  return Array.from(seen.values()).sort((a, b) => {
+    const aNum = parseInt(a.sourceLabel.replace(/\D/g, ""), 10);
+    const bNum = parseInt(b.sourceLabel.replace(/\D/g, ""), 10);
+    return aNum - bNum;
+  });
+}
+
+function hasUsableContent(rawText: string, ocrText: string, analysis: InventoryAnalysisResult): boolean {
+  if (rawText.trim().length >= 20) return true;
+  if (ocrText.trim().length >= 20) return true;
+
+  const filledFields = Object.values({ city: analysis.city, mediaType: analysis.mediaType, size: analysis.size, location: analysis.location })
+    .filter((v) => v !== "Unknown").length;
+  if (filledFields >= 2) return true;
+
+  return false;
+}
+
 async function enhanceUnitsWithOcr(units: ExtractedUnit[]) {
+  let deduplicated = deduplicateUnits(units);
+  if (deduplicated.length !== units.length) {
+    console.log(`Deduplication: ${units.length} -> ${deduplicated.length} units`);
+  }
+  units = deduplicated;
+
   const initialAnalyses = await Promise.all(
     units.map((unit) =>
       heuristicInventoryBatchAnalyzer.analyze({
@@ -298,7 +428,7 @@ async function enhanceUnitsWithOcr(units: ExtractedUnit[]) {
       needsOcr:
         unit.ocrBuffers.length > 0 &&
         (unit.sourceType === "pdf" ||
-          unit.rawText.length < 80 ||
+          unit.rawText.length < 120 ||
           initialAnalyses[index].unknownFields.length >= 1),
     }))
     .filter((entry) => entry.needsOcr && entry.unit.ocrBuffers.length > 0);
@@ -336,34 +466,37 @@ async function enhanceUnitsWithOcr(units: ExtractedUnit[]) {
     }
   }
 
-  const finalDrafts = await Promise.all(
-    units.map(async (unit, index) => {
-      const ocrText = ocrTexts.get(index) || "";
-      const analysis = await heuristicInventoryBatchAnalyzer.analyze({
-        label: unit.sourceLabel,
-        sourceType: unit.sourceType,
-        text: unit.rawText,
-        ocrText,
-        imageCount: unit.images.length,
-      });
+  const finalDrafts: StoredBatchInventoryDraft[] = [];
 
-      return {
-        id: unit.id,
-        sourceType: unit.sourceType,
-        sourceLabel: unit.sourceLabel,
-        city: analysis.city,
-        mediaType: analysis.mediaType,
-        size: analysis.size,
-        location: analysis.location,
-        featured: false,
-        confidence: analysis.confidence,
-        unknownFields: analysis.unknownFields,
-        imagePreviews: unit.images,
-        rawText: unit.rawText,
-        ocrText,
-      } satisfies StoredBatchInventoryDraft;
-    }),
-  );
+  for (let index = 0; index < units.length; index++) {
+    const unit = units[index];
+    const ocrText = ocrTexts.get(index) || "";
+    const analysis = await heuristicInventoryBatchAnalyzer.analyze({
+      label: unit.sourceLabel,
+      sourceType: unit.sourceType,
+      text: unit.rawText,
+      ocrText,
+      imageCount: unit.images.length,
+    });
+
+    if (!hasUsableContent(unit.rawText, ocrText, analysis)) continue;
+
+    finalDrafts.push({
+      id: unit.id,
+      sourceType: unit.sourceType,
+      sourceLabel: unit.sourceLabel,
+      city: analysis.city,
+      mediaType: analysis.mediaType,
+      size: analysis.size,
+      location: analysis.location,
+      featured: false,
+      confidence: analysis.confidence,
+      unknownFields: analysis.unknownFields,
+      imagePreviews: unit.images,
+      rawText: unit.rawText,
+      ocrText,
+    } satisfies StoredBatchInventoryDraft);
+  }
 
   return { drafts: finalDrafts, warnings };
 }
