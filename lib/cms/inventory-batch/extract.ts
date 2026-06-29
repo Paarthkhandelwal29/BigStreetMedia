@@ -140,7 +140,14 @@ async function extractFromPptx(
   await writeFile(tempPath, buffer);
 
   try {
-    const parsed = (await extractPptx(tempPath)) as PptxExtractResult;
+    let parsed: PptxExtractResult;
+    try {
+      parsed = (await extractPptx(tempPath)) as PptxExtractResult;
+    } catch {
+      throw new Error(
+        `Failed to parse the PPTX file. One or more slides could not be read. If this file was converted from another format, try re-saving it as .pptx or export as .pdf and upload that instead.`,
+      );
+    }
 
     const mediaByName = new Map<string, PptxExtractResult["media"][number]>();
     const mediaByLowerName = new Map<string, PptxExtractResult["media"][number]>();
@@ -201,7 +208,7 @@ async function extractFromPptx(
           ocrBuffers: images
             .map(getOcrBufferFromImage)
             .filter((b): b is NonNullable<typeof b> => b !== null)
-            .slice(0, 10),
+            .slice(0, 3),
         } satisfies ExtractedUnit;
       })
       .filter((unit) => shouldIncludeDraft(unit.rawText, unit.images.length));
@@ -248,37 +255,41 @@ async function extractFromPdf(buffer: Buffer): Promise<ExtractedUnit[]> {
         images = [];
       }
 
-      try {
-        const screenshotResult = await parser.getScreenshot({
-          partial: [pageNumber],
-          desiredWidth: 1600,
-        });
-        const screenshot = screenshotResult.pages[0];
-        if (screenshot) {
-          screenshotImage = buildStoredImage({
-            fileName: `page-${pageNumber}-preview.png`,
-            dataUrl: screenshot.dataUrl,
-            source: "screenshot",
-            width: screenshot.width,
-            height: screenshot.height,
-          });
+      const hasEmbeddedImages = images.length > 0;
 
-          images = [screenshotImage, ...images];
+      if (!hasEmbeddedImages) {
+        try {
+          const screenshotResult = await parser.getScreenshot({
+            partial: [pageNumber],
+            desiredWidth: 800,
+          });
+          const screenshot = screenshotResult.pages[0];
+          if (screenshot) {
+            screenshotImage = buildStoredImage({
+              fileName: `page-${pageNumber}-preview.png`,
+              dataUrl: screenshot.dataUrl,
+              source: "screenshot",
+              width: screenshot.width,
+              height: screenshot.height,
+            });
+
+            images = [screenshotImage, ...images];
+          }
+        } catch (err) {
+          if (
+            err instanceof Error &&
+            (err.message.includes("worker") ||
+              err.message.includes("worker.mjs") ||
+              err.message.includes("fake worker"))
+          ) {
+            console.warn(
+              `Page ${pageNumber} screenshot unavailable (worker issue). Using embedded images only.`,
+            );
+          } else {
+            console.error(`Page ${pageNumber} getScreenshot failed:`, err);
+          }
+          screenshotImage = null;
         }
-      } catch (err) {
-        if (
-          err instanceof Error &&
-          (err.message.includes("worker") ||
-            err.message.includes("worker.mjs") ||
-            err.message.includes("fake worker"))
-        ) {
-          console.warn(
-            `Page ${pageNumber} screenshot unavailable (worker issue). Using embedded images only.`,
-          );
-        } else {
-          console.error(`Page ${pageNumber} getScreenshot failed:`, err);
-        }
-        screenshotImage = null;
       }
 
       if (!shouldIncludeDraft(rawText, images.length)) {
@@ -292,7 +303,7 @@ async function extractFromPdf(buffer: Buffer): Promise<ExtractedUnit[]> {
         rawText,
         images,
         ocrBuffers: [
-          screenshotImage,
+          ...(hasEmbeddedImages ? [] : [screenshotImage].filter(Boolean)),
           ...images.filter((image) => image.source === "embedded"),
         ]
           .filter(Boolean)
@@ -300,7 +311,7 @@ async function extractFromPdf(buffer: Buffer): Promise<ExtractedUnit[]> {
             getOcrBufferFromImage(image as StoredBatchInventoryImage),
           )
           .filter((b): b is NonNullable<typeof b> => b !== null)
-          .slice(0, 10),
+          .slice(0, 3),
       });
     }
 
@@ -322,7 +333,7 @@ function mergePdfUnits(units: ExtractedUnit[]): ExtractedUnit[] {
     }
   }
 
-  for (const { unit: imgUnit, pageNum: imgPageNum } of imagePages) {
+  for (const { pageNum: imgPageNum } of imagePages) {
     const existing = merged.get(imgPageNum);
     if (!existing) continue;
     if (existing.rawText.trim().length >= 15) continue;
@@ -404,7 +415,7 @@ function hasUsableContent(rawText: string, ocrText: string, analysis: InventoryA
 }
 
 async function enhanceUnitsWithOcr(units: ExtractedUnit[]) {
-  let deduplicated = deduplicateUnits(units);
+  const deduplicated = deduplicateUnits(units);
   if (deduplicated.length !== units.length) {
     console.log(`Deduplication: ${units.length} -> ${deduplicated.length} units`);
   }
@@ -444,11 +455,20 @@ async function enhanceUnitsWithOcr(units: ExtractedUnit[]) {
         return entry.unit.ocrBuffers;
       });
 
-      const results = await runOcrOnBuffers(flatBuffers);
+      const totalLimit = 30;
+      const limitedBuffers = flatBuffers.slice(0, totalLimit);
+      const limitedOwners = bufferOwners.slice(0, totalLimit);
+      if (flatBuffers.length > totalLimit) {
+        warnings.push(
+          `OCR was limited to ${totalLimit} images (${flatBuffers.length} total available) to keep processing fast. Some fields may remain Unknown.`,
+        );
+      }
+
+      const results = await runOcrOnBuffers(limitedBuffers);
       const groupedTexts = new Map<number, string[]>();
 
       results.forEach((result, resultIndex) => {
-        const ownerIndex = bufferOwners[resultIndex];
+        const ownerIndex = limitedOwners[resultIndex];
         if (ownerIndex === undefined) return;
         const current = groupedTexts.get(ownerIndex) || [];
         if (result.trim()) current.push(result);
@@ -496,6 +516,23 @@ async function enhanceUnitsWithOcr(units: ExtractedUnit[]) {
       rawText: unit.rawText,
       ocrText,
     } satisfies StoredBatchInventoryDraft);
+  }
+
+  const firstCity = finalDrafts.find(
+    (d) => d.city !== "Unknown",
+  )?.city;
+  if (firstCity) {
+    for (const draft of finalDrafts) {
+      if (draft.city === "Unknown") {
+        draft.city = firstCity;
+        draft.unknownFields = draft.unknownFields.filter(
+          (f) => f !== "city",
+        );
+        draft.confidence = Math.round(
+          draft.confidence * 0.85 + 15,
+        );
+      }
+    }
   }
 
   return { drafts: finalDrafts, warnings };

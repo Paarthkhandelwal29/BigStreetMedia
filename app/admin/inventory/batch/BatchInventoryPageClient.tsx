@@ -119,6 +119,29 @@ export default function BatchInventoryPageClient() {
     });
   }
 
+  function deleteImageFromDraft(draftId: string, imageId: string) {
+    setDrafts((current) =>
+      current.map((draft) => {
+        if (draft.id !== draftId) return draft;
+        const removed = draft.imagePreviews.find((i) => i.id === imageId);
+        const remaining = draft.imagePreviews.filter(
+          (i) => i.id !== imageId,
+        );
+        if (removed) {
+          setNewImages((ni) => {
+            const draftNew = ni[draftId] || [];
+            const filtered = draftNew.filter(
+              (n) => n.dataUrl !== removed.previewUrl,
+            );
+            if (filtered.length === draftNew.length) return ni;
+            return { ...ni, [draftId]: filtered };
+          });
+        }
+        return { ...draft, imagePreviews: remaining };
+      }),
+    );
+  }
+
   function addPhotoToDraft(draftId: string, file: File) {
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -511,16 +534,25 @@ export default function BatchInventoryPageClient() {
                     <div>
                       {draft.imagePreviews.length > 0 ? (
                         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                          {draft.imagePreviews.map((image) => (
+                           {draft.imagePreviews.map((image) => (
                             <div
                               key={image.id}
-                              className="overflow-hidden rounded-[1.25rem] border border-[#ececec] bg-surface-2"
+                              className="group relative overflow-hidden rounded-[1.25rem] border border-[#ececec] bg-surface-2"
                             >
                               <img
                                 src={image.previewUrl}
                                 alt={image.fileName}
                                 className="h-44 w-full object-cover"
                               />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  deleteImageFromDraft(draft.id, image.id)
+                                }
+                                className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-xs text-white opacity-0 transition-opacity hover:bg-black/70 group-hover:opacity-100"
+                              >
+                                ✕
+                              </button>
                               <div className="p-3">
                                 <p className="truncate text-xs font-medium text-ink">
                                   {image.fileName}
