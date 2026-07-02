@@ -64,6 +64,9 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
   const [activeFormat, setActiveFormat] = useState<ActiveFormat>("All Formats");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [mobileFilterView, setMobileFilterView] = useState<
+    "tabs" | "categories" | "brands" | "formats"
+  >("tabs");
   const searchParams = useSearchParams();
   const reduce = useReducedMotion();
 
@@ -138,11 +141,22 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
     [brandFilteredItems, activeCategory, activeFormat],
   );
 
-  const current = lightboxIndex !== null ? filtered[lightboxIndex] : null;
+  const sortedFiltered = useMemo(
+    () =>
+      [...filtered].sort((a, b) => {
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        return 0;
+      }),
+    [filtered],
+  );
+
+  const current =
+    lightboxIndex !== null ? sortedFiltered[lightboxIndex] : null;
 
   const move = (dir: 1 | -1) => {
-    if (lightboxIndex === null || filtered.length === 0) return;
-    const next = (lightboxIndex + dir + filtered.length) % filtered.length;
+    if (lightboxIndex === null || sortedFiltered.length === 0) return;
+    const next = (lightboxIndex + dir + sortedFiltered.length) % sortedFiltered.length;
     setLightboxIndex(next);
   };
 
@@ -185,34 +199,13 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
   return (
     <>
       <div className="container-bsm pb-12">
-        <div className="mb-6 overflow-x-auto pb-2 lg:hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          <div className="inline-flex min-w-full gap-2 rounded-[1.5rem] border border-[#ececec] bg-surface p-2 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
-            {availableBrands.map((brand) => {
-              const isActive = activeBrand === brand;
-              return (
-                <button
-                  key={brand}
-                  type="button"
-                  aria-pressed={isActive}
-                  onClick={() => handleBrandSelect(brand)}
-                  className={cn(
-                    "min-h-10 whitespace-nowrap cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
-                    isActive
-                      ? "border-ink bg-ink text-white shadow-sm"
-                      : "border-transparent bg-white text-body hover:border-ink/10 hover:text-ink",
-                  )}
-                >
-                  {brand}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         <div className="mb-6 lg:hidden">
           <button
             type="button"
-            onClick={() => setMobileFiltersOpen(true)}
+            onClick={() => {
+              setMobileFilterView("tabs");
+              setMobileFiltersOpen(true);
+            }}
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#f0f0f0] bg-surface px-4 py-2 text-sm font-semibold text-ink transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2"
           >
             <FunnelSimple size={16} />
@@ -319,9 +312,9 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
           </aside>
 
           <div>
-            {filtered.length > 0 ? (
+            {sortedFiltered.length > 0 ? (
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {filtered.map((item, i) => (
+                {sortedFiltered.map((item, i) => (
                   <button
                     key={item.id}
                     type="button"
@@ -354,11 +347,6 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                       <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
                         {item.category}
                       </span>
-                      {item.featured ? (
-                        <span className="absolute right-3 top-3 rounded-full bg-amber px-2.5 py-1 text-[10px] font-semibold text-ink">
-                          Featured
-                        </span>
-                      ) : null}
                     </div>
                     <span className="block p-4">
                       <span className="flex items-center justify-between gap-3">
@@ -398,7 +386,7 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
               <p className="mb-3 px-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
                 Brands
               </p>
-              <div className="space-y-1.5">
+              <div className="max-h-[380px] space-y-1.5 overflow-y-auto">
                 {availableBrands.map((brand) => {
                   const isActive = activeBrand === brand;
                   return (
@@ -474,8 +462,142 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                 </button>
               </div>
 
-              <div className="space-y-5">
+              {mobileFilterView === "tabs" && (
+                <div className="flex flex-col gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterView("categories")}
+                    className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl border border-[#f0f0f0] bg-surface text-base font-semibold text-ink transition-all"
+                  >
+                    Categories
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterView("brands")}
+                    className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl border border-[#f0f0f0] bg-surface text-base font-semibold text-ink transition-all"
+                  >
+                    Brands
+                  </button>
+                </div>
+              )}
+
+              {mobileFilterView === "categories" && (
                 <div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleCategorySelect("All");
+                      setMobileFilterView("tabs");
+                    }}
+                    className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted transition-colors hover:text-ink"
+                  >
+                    <CaretLeft size={16} />
+                    Back
+                  </button>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                    Categories
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {availableCategories.map((cat) => {
+                      const isActive = activeCategory === cat;
+                      return (
+                        <button
+                          key={cat}
+                          type="button"
+                          aria-pressed={isActive}
+                          onClick={() => {
+                            handleCategorySelect(cat);
+                            if (cat === "All") {
+                              setMobileFiltersOpen(false);
+                            } else {
+                              setMobileFilterView("formats");
+                            }
+                          }}
+                          className={cn(
+                            "min-h-11 w-full cursor-pointer rounded-2xl border px-4 py-3 text-left text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                            isActive
+                              ? "border-amber bg-amber text-ink"
+                              : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
+                          )}
+                        >
+                          {cat}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {mobileFilterView === "formats" && (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterView("categories")}
+                    className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted transition-colors hover:text-ink"
+                  >
+                    <CaretLeft size={16} />
+                    Back
+                  </button>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                    Formats
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      aria-pressed={activeFormat === "All Formats"}
+                      onClick={() => {
+                        handleFormatSelect("All Formats");
+                        setMobileFiltersOpen(false);
+                      }}
+                      className={cn(
+                        "min-h-9 whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                        activeFormat === "All Formats"
+                          ? "border-ink bg-ink text-white"
+                          : "border-[#f0f0f0] bg-white text-body",
+                        activeCategory === "All" &&
+                          "cursor-not-allowed opacity-50",
+                      )}
+                      disabled={activeCategory === "All"}
+                    >
+                      All Formats
+                    </button>
+
+                    {formatOptions.map((format) => {
+                      const isActive = activeFormat === format;
+                      return (
+                        <button
+                          key={format}
+                          type="button"
+                          aria-pressed={isActive}
+                          onClick={() => {
+                            handleFormatSelect(format);
+                            setMobileFiltersOpen(false);
+                          }}
+                          className={cn(
+                            "min-h-9 whitespace-nowrap cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                            isActive
+                              ? "border-ink bg-ink text-white"
+                              : "border-[#f0f0f0] bg-white text-body hover:border-ink/20 hover:text-ink",
+                          )}
+                        >
+                          {format}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {mobileFilterView === "brands" && (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterView("tabs")}
+                    className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted transition-colors hover:text-ink"
+                  >
+                    <CaretLeft size={16} />
+                    Back
+                  </button>
                   <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                     Brands
                   </p>
@@ -487,7 +609,10 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                           key={brand}
                           type="button"
                           aria-pressed={isActive}
-                          onClick={() => handleBrandSelect(brand)}
+                          onClick={() => {
+                            handleBrandSelect(brand);
+                            setMobileFiltersOpen(false);
+                          }}
                           className={cn(
                             "flex min-h-11 w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                             isActive
@@ -511,78 +636,7 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                     })}
                   </div>
                 </div>
-
-                <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-                    Categories
-                  </p>
-                  <div className="flex flex-col gap-2">
-                    {availableCategories.map((cat) => {
-                      const isActive = activeCategory === cat;
-                      return (
-                        <button
-                          key={cat}
-                          type="button"
-                          aria-pressed={isActive}
-                          onClick={() => handleCategorySelect(cat)}
-                          className={cn(
-                            "min-h-11 w-full cursor-pointer rounded-2xl border px-4 py-3 text-left text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
-                            isActive
-                              ? "border-amber bg-amber text-ink"
-                              : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
-                          )}
-                        >
-                          {cat}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-                    Formats
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      aria-pressed={activeFormat === "All Formats"}
-                      onClick={() => handleFormatSelect("All Formats")}
-                      className={cn(
-                        "min-h-9 whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
-                        activeFormat === "All Formats"
-                          ? "border-ink bg-ink text-white"
-                          : "border-[#f0f0f0] bg-white text-body",
-                        activeCategory === "All" &&
-                          "cursor-not-allowed opacity-50",
-                      )}
-                      disabled={activeCategory === "All"}
-                    >
-                      All Formats
-                    </button>
-
-                    {formatOptions.map((format) => {
-                      const isActive = activeFormat === format;
-                      return (
-                        <button
-                          key={format}
-                          type="button"
-                          aria-pressed={isActive}
-                          onClick={() => handleFormatSelect(format)}
-                          className={cn(
-                            "min-h-9 whitespace-nowrap cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
-                            isActive
-                              ? "border-ink bg-ink text-white"
-                              : "border-[#f0f0f0] bg-white text-body hover:border-ink/20 hover:text-ink",
-                          )}
-                        >
-                          {format}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
+              )}
             </motion.div>
           </motion.div>
         )}
