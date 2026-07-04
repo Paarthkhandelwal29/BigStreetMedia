@@ -38,12 +38,17 @@ export async function uploadFile(buffer: Buffer, fileName: string) {
     },
   );
 
+  const url = response.url;
+  if (!url) {
+    throw new Error(`ImageKit did not return a URL for ${fileName}.`);
+  }
+
   console.log("[imagekit] upload:done", {
     fileName,
-    url: response.url,
+    url,
   });
 
-  return response.url;
+  return url;
 }
 
 export function getImageKitUrl(path: string) {
