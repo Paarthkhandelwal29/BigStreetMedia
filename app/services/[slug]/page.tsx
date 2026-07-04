@@ -9,7 +9,7 @@ import { LeadForm } from "@/components/shared/LeadForm";
 import { FAQ } from "@/components/shared/FAQ";
 import { services, serviceBySlug } from "@/data/services";
 import { cityTiers } from "@/data/cities";
-import { portfolio } from "@/data/portfolio";
+import { listPortfolio } from "@/lib/cms/store";
 import { icons } from "@/lib/icons";
 import {
   ArrowRight,
@@ -85,7 +85,16 @@ export default async function ServicePage({
 
   const Icon = icons[service.icon];
   const related = services.filter((s) => s.slug !== service.slug).slice(0, 4);
-  const recentCampaigns = portfolio.slice(0, 4);
+  const portfolioItems = await listPortfolio().catch(() => []);
+  const categoryItems = service.portfolioCategory
+    ? portfolioItems.filter((i) => i.category === service.portfolioCategory)
+    : [];
+  const shuffled = [...categoryItems].sort((a, b) => {
+    if (a.featured && !b.featured) return -1;
+    if (!a.featured && b.featured) return 1;
+    return Math.random() - 0.5;
+  });
+  const recentCampaigns = shuffled.slice(0, 4);
 
   /* Build format cards — append Airport Advertising only for transit-media */
   const formatCards = [
@@ -167,6 +176,7 @@ export default async function ServicePage({
       </section>
 
       {/* ── Info panel: large Campaigns left + Cities & Why BSM stacked right ── */}
+      {recentCampaigns.length > 0 && (
       <section className="bg-surface-2">
         <div className="container-bsm py-14">
           <div className="grid gap-5 md:grid-cols-[1.8fr_0.8fr]">
@@ -177,9 +187,13 @@ export default async function ServicePage({
               <div className="mt-5 grid grid-cols-2 gap-4">
                 {recentCampaigns.map((item) => (
                   <div key={item.id} className="overflow-hidden rounded-xl border border-[#f0f0f0]">
-                    <div className="h-52 bg-gradient-to-br from-slate-500 to-slate-800" />
+                    {item.mediaType === "image" ? (
+                      <img src={item.mediaUrl} alt={item.brandName} className="h-52 w-full object-cover" />
+                    ) : (
+                      <video src={item.mediaUrl} className="h-52 w-full object-cover" muted />
+                    )}
                     <div className="p-3">
-                      <p className="text-sm font-semibold leading-tight text-ink">{item.brand}</p>
+                      <p className="text-sm font-semibold leading-tight text-ink">{item.brandName}</p>
                       <p className="mt-0.5 text-xs text-muted">{item.format}</p>
                       <p className="text-xs text-muted">{item.city}</p>
                     </div>
@@ -248,7 +262,7 @@ export default async function ServicePage({
             </div>
           </div>
         </div>
-      </section>
+      </section>)}
 
       {/* ── FAQ ── */}
       <section className="bg-surface">
