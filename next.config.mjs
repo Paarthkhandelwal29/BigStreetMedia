@@ -12,7 +12,6 @@ const nextConfig = {
     },
   },
   images: {
-    // Static export can't use the Next image optimizer at runtime.
     unoptimized: true,
     formats: ["image/avif", "image/webp"],
   },
