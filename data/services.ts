@@ -213,6 +213,7 @@ export const services: Service[] = [
       { value: "Regional", label: "Coverage" },
       { value: "End-to-End", label: "Management" },
     ],
+    portfolioCategory: null,
     formats: ["Macro Influencers", "Micro & Nano Creators", "Regional Creators", "Campaign Management"],
   },
   {
@@ -227,6 +228,7 @@ export const services: Service[] = [
       { value: "Local", label: "Ground Teams" },
       { value: "End-to-End", label: "Execution" },
     ],
+    portfolioCategory: null,
     formats: ["Haat & Mandi Activation", "Wall Painting", "Van Campaigns", "Mela Branding"],
   },
 ];

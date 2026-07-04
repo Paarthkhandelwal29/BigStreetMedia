@@ -64,8 +64,10 @@ export async function createPortfolioAction(formData: FormData) {
 
     console.log("[portfolio] upload:complete", { count: uploaded.length });
 
+    const validUploads = uploaded.filter((item): item is { mediaUrl: string; mediaType: "image" | "video" } => typeof item.mediaUrl === "string");
+
     await createPortfolioBatch(
-      uploaded.map((item) => ({
+      validUploads.map((item) => ({
         brandName,
         category: category as never,
         format,
