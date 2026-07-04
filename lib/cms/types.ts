@@ -36,6 +36,34 @@ export type CreatePortfolioWorkInput = Omit<
   "id" | "createdAt" | "updatedAt"
 >;
 
+export type CaseStudyRecord = {
+  id: string;
+  title: string;
+  slug?: string;
+  brandId?: string;
+  brandName?: string;
+  industry?: string;
+  campaignType?: string;
+  challenge?: string;
+  objective?: string;
+  duration?: string;
+  cities?: string;
+  briefType?: string;
+  featured: boolean;
+  status: "draft" | "published";
+  testimonialQuote?: string;
+  testimonialName?: string;
+  testimonialTitle?: string;
+  strategyPoints: { id?: string; caseStudyId?: string; content: string; sortOrder: number }[];
+  executionPoints: { id?: string; caseStudyId?: string; content: string; sortOrder: number }[];
+  mediaLabels: { id?: string; caseStudyId?: string; label: string; sortOrder: number }[];
+  results: { id?: string; caseStudyId?: string; label: string; value: string; sortOrder: number }[];
+  portfolioItemIds: string[];
+  portfolioMediaIds: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type CreateMediaInventoryInput = Omit<
   MediaInventoryRecord,
   "id" | "createdAt" | "updatedAt"

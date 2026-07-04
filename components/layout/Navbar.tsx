@@ -42,7 +42,7 @@ function navLinkClass(active: boolean, light: boolean) {
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [hoveredDropdown, setHoveredDropdown] = useState<"services" | "work" | null>(null);
+  const [hoveredDropdown, setHoveredDropdown] = useState<"services" | null>(null);
   const pathname = usePathname();
   const reduce = useReducedMotion();
 
@@ -66,7 +66,8 @@ export function Navbar() {
   }, [open]);
 
   const servicesActive = pathname.startsWith("/services");
-  const workActive = pathname === "/portfolio" || pathname.startsWith("/case-studies");
+  const portfolioActive = pathname === "/portfolio";
+  const caseStudiesActive = pathname.startsWith("/case-studies");
   const mediaInventoryActive = pathname === "/media-inventory";
   const aboutActive = pathname === "/about";
 
@@ -138,33 +139,18 @@ export function Navbar() {
             </Link>
           </li>
 
-          {/* Work */}
-          <li
-            className="relative"
-            onMouseEnter={() => setHoveredDropdown("work")}
-            onMouseLeave={() => setHoveredDropdown(null)}
-          >
-            <button type="button" className={navLinkClass(workActive, lightText)}>
-              Work <CaretDown size={13} />
-            </button>
-            <AnimatePresence>
-              {hoveredDropdown === "work" && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 8 }}
-                  transition={{ duration: 0.15, ease: "easeOut" }}
-                  className="absolute left-1/2 top-full mt-3 w-44 -translate-x-1/2 rounded-2xl border border-[#ececec] bg-white p-2 shadow-[0_12px_40px_rgba(0,0,0,0.08)] z-50 flex flex-col gap-1"
-                >
-                  <Link href="/portfolio" className="rounded-lg px-3 py-2.5 text-sm font-medium text-body transition-colors hover:bg-surface-2 hover:text-ink">
-                    Portfolio
-                  </Link>
-                  <Link href="/case-studies" className="rounded-lg px-3 py-2.5 text-sm font-medium text-body transition-colors hover:bg-surface-2 hover:text-ink">
-                    Case Studies
-                  </Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          {/* Portfolio */}
+          <li>
+            <Link href="/portfolio" className={navLinkClass(portfolioActive, lightText)}>
+              Portfolio
+            </Link>
+          </li>
+
+          {/* Case Studies */}
+          <li>
+            <Link href="/case-studies" className={navLinkClass(caseStudiesActive, lightText)}>
+              Case Studies
+            </Link>
           </li>
 
           {/* About */}

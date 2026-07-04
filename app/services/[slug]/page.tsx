@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeader } from "@/components/ui/Section";
-import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
+import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { ButtonLink } from "@/components/ui/Button";
 import { LeadForm } from "@/components/shared/LeadForm";
 import { FAQ } from "@/components/shared/FAQ";
 import { services, serviceBySlug } from "@/data/services";
-import { industries } from "@/data/industries";
 import { cityTiers } from "@/data/cities";
+import { portfolio } from "@/data/portfolio";
 import { icons } from "@/lib/icons";
-import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import {
+  ArrowRight,
+  MapPin,
+  Handshake,
+  CurrencyInr,
+  Lightning,
+  UserCircle,
+  Airplane,
+} from "@phosphor-icons/react/dist/ssr";
 
 export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
@@ -30,43 +39,38 @@ export async function generateMetadata({
   };
 }
 
-const benefits = [
-  {
-    title: "Planned around your goal",
-    body: "Every plan starts from your objective and budget — not a template we reuse for everyone.",
-  },
-  {
-    title: "Executed by ground teams",
-    body: "Local teams in every market handle setup, monitoring, and proof of display — so it actually runs.",
-  },
-  {
-    title: "One point of accountability",
-    body: "A single contact owns your campaign end to end. No chasing multiple vendors for updates.",
-  },
+/* Colour palette for format cards */
+const cardColors = [
+  "from-blue-800 to-blue-950",
+  "from-red-800 to-red-950",
+  "from-emerald-700 to-emerald-950",
+  "from-orange-700 to-orange-950",
+  "from-violet-800 to-violet-950",
+  "from-cyan-700 to-cyan-950",
+  "from-rose-800 to-rose-950",
+  "from-sky-700 to-sky-950",
+];
+
+const whyPoints = [
+  { icon: MapPin,      title: "Pan India Presence",          sub: "Access to 100+ cities" },
+  { icon: Handshake,   title: "Strong Media Partnerships",    sub: "Tie-ups with leading operators" },
+  { icon: CurrencyInr, title: "Best Rates & Transparent",    sub: "Value for money, always" },
+  { icon: Lightning,   title: "End to End Execution",        sub: "Planning to reporting" },
+  { icon: UserCircle,  title: "Dedicated Account Manager",   sub: "Single point of contact" },
 ];
 
 function faqsFor(title: string) {
   return [
-    {
-      q: "How long does it take to go live?",
-      a: `For most ${title} campaigns we move from brief to live in a matter of days, thanks to a pre-approved vendor network across 400+ cities.`,
-    },
-    {
-      q: "What's the minimum budget?",
-      a: "We build plans across budgets — from single-city activations to PAN-India campaigns. Share your goal and we'll recommend the right scale.",
-    },
-    {
-      q: "Do you handle the creative?",
-      a: "Yes. We can take a finished creative or design it for you, and we adapt it to every format and city in your plan.",
-    },
-    {
-      q: "How do I know it actually ran?",
-      a: "You receive geo-tagged photos and a monitoring report for every site, so you have proof of display for your records and your board.",
-    },
-    {
-      q: "Which cities can you cover?",
-      a: `${title} can run across Tier 1, Tier 2, and Tier 3 markets — wherever your customers are, including towns most agencies skip.`,
-    },
+    { q: "How long does it take to go live?",
+      a: `For most ${title} campaigns we move from brief to live in a matter of days, thanks to a pre-approved vendor network across 400+ cities.` },
+    { q: "What's the minimum budget?",
+      a: "We build plans across budgets — from single-city activations to PAN-India campaigns." },
+    { q: "Do you handle the creative?",
+      a: "Yes. We can take a finished creative or design it for you, adapting it to every format and city." },
+    { q: "How do I know it actually ran?",
+      a: "You receive geo-tagged photos and a monitoring report for every site." },
+    { q: "Which cities can you cover?",
+      a: `${title} can run across Tier 1, Tier 2, and Tier 3 markets — wherever your customers are.` },
   ];
 }
 
@@ -81,167 +85,184 @@ export default async function ServicePage({
 
   const Icon = icons[service.icon];
   const related = services.filter((s) => s.slug !== service.slug).slice(0, 4);
+  const recentCampaigns = portfolio.slice(0, 4);
+
+  /* Build format cards — append Airport Advertising only for transit-media */
+  const formatCards = [
+    ...service.formats.map((f, i) => ({
+      label: f,
+      desc: `High-impact ${f.toLowerCase()} across major Indian cities.`,
+      color: cardColors[i % cardColors.length],
+      isAirport: false,
+    })),
+    ...(service.slug === "transit-media"
+      ? [{
+          label: "Airport Advertising",
+          desc: "Premium brand exposure at airports across India.",
+          color: "from-sky-700 to-sky-950",
+          isAirport: true,
+        }]
+      : []),
+  ];
+
+  const topCities = [
+    ...cityTiers["Tier 1"],
+    ...cityTiers["Tier 2"].slice(0, 6),
+    "100+ Cities Across India",
+  ];
 
   return (
     <>
+      {/* ── Hero: no CTA buttons, stats on right ── */}
       <PageHero
-        compact
         eyebrow={service.title}
         title={service.headline}
         subhead={service.outcome}
+        stats={service.heroStats}
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Services", href: "/services" },
           { label: service.title },
         ]}
-      >
-        <ButtonLink href="/contact" variant="primary">
-          Get a Media Plan for {service.title}
-        </ButtonLink>
-      </PageHero>
+      />
 
-      {/* What is + why it works */}
-      <section className="container-bsm py-20">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <Reveal>
-            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber/15 text-amber-deep">
-              <Icon size={28} />
-            </span>
-            <h2 className="mt-6 text-3xl font-bold text-ink">
-              What {service.title} does for your brand
+      {/* ── Format cards — 3 per row ── */}
+      <section className="bg-surface">
+        <div className="container-bsm py-14">
+          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+            <h2 className="section-heading text-xl font-bold text-ink md:text-2xl">
+              Reach commuters at every touchpoint
             </h2>
-          </Reveal>
-          <Reveal delay={0.1} className="space-y-4 text-base leading-relaxed text-body md:text-lg">
-            <p>
-              {service.outcome} {service.title} puts your brand in the physical and
-              cultural path of your customer — building the kind of awareness that
-              compounds every single day a campaign is live.
-            </p>
-            <p>
-              We don&apos;t just book space and walk away. Our teams plan the right
-              mix of formats and locations for your objective, execute on the
-              ground across every city in the plan, and report back with proof of
-              display you can take to your board.
-            </p>
-            <p>
-              The result is advertising that&apos;s impossible to skip, hard to
-              forget, and measured against the goal you started with.
-            </p>
-          </Reveal>
-        </div>
-      </section>
+            <Link
+              href="/media-inventory"
+              className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-body transition-colors hover:text-amber"
+            >
+              View All {service.title} Options <ArrowRight size={14} />
+            </Link>
+          </div>
 
-      {/* What you get */}
-      <section className="bg-surface-2">
-        <div className="container-bsm py-20">
-          <SectionHeader eyebrow="What You Get" title="Built to be executed, not just pitched" />
-          <RevealGroup className="mt-10 grid gap-5 md:grid-cols-3" stagger={0.08}>
-            {benefits.map((b) => (
-              <RevealItem key={b.title}>
-                <div className="h-full rounded-[1.25rem] border border-[#f0f0f0] bg-surface p-7">
-                  <CheckCircle size={26} weight="fill" className="text-amber-deep" />
-                  <h3 className="mt-4 text-lg font-semibold text-ink">{b.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-body">{b.body}</p>
+          <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {formatCards.map((card, i) => (
+              <div
+                key={card.label}
+                className="group overflow-hidden rounded-2xl border border-[#ebebeb] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]"
+              >
+                {/* Image area */}
+                <div className={`relative h-52 bg-gradient-to-br ${card.color}`}>
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
+                  {/* Icon badge */}
+                  <span className="absolute bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-full bg-amber text-ink shadow-md">
+                    {card.isAirport ? <Airplane size={22} /> : <Icon size={22} />}
+                  </span>
                 </div>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </div>
-      </section>
-
-      {/* Formats */}
-      <section className="container-bsm py-20">
-        <SectionHeader eyebrow="Formats" title={`${service.title} formats available`} />
-        <RevealGroup className="mt-10 flex flex-wrap gap-3" stagger={0.04}>
-          {service.formats.map((f) => (
-            <RevealItem key={f}>
-              <span className="inline-flex items-center rounded-full border border-[#f0f0f0] bg-surface px-5 py-2.5 text-sm font-medium text-ink">
-                {f}
-              </span>
-            </RevealItem>
-          ))}
-        </RevealGroup>
-      </section>
-
-      {/* Cities */}
-      <section className="bg-surface-2">
-        <div className="container-bsm py-20">
-          <SectionHeader
-            eyebrow="Coverage"
-            title="Cities where we execute this"
-            subhead="A sample of our network — we run campaigns well beyond this list, including towns most agencies skip."
-          />
-          <div className="mt-10 space-y-8">
-            {(Object.keys(cityTiers) as (keyof typeof cityTiers)[]).map((tier) => (
-              <Reveal key={tier}>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted">
-                  {tier}
-                </h3>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {cityTiers[tier].map((city) => (
-                    <span
-                      key={city}
-                      className="rounded-full border border-[#f0f0f0] bg-surface px-4 py-1.5 text-sm text-body"
-                    >
-                      {city}
-                    </span>
-                  ))}
+                {/* Text */}
+                <div className="p-5">
+                  <p className="text-base font-semibold text-ink">{card.label}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted">{card.desc}</p>
                 </div>
-              </Reveal>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Campaign gallery (placeholder) */}
-      <section className="container-bsm py-20">
-        <SectionHeader
-          eyebrow="Campaign Gallery"
-          title={`${service.title} in the wild`}
-          subhead="Real campaign photography drops in here. Placeholders shown until assets are added."
-        />
-        <RevealGroup className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3" stagger={0.05}>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <RevealItem key={i}>
-              <div className="flex aspect-[4/3] items-center justify-center rounded-[1.25rem] border border-[#f0f0f0] bg-surface-2 text-xs uppercase tracking-widest text-muted">
-                {service.title} · {i + 1}
+      {/* ── Info panel: large Campaigns left + Cities & Why BSM stacked right ── */}
+      <section className="bg-surface-2">
+        <div className="container-bsm py-14">
+          <div className="grid gap-5 md:grid-cols-[1.8fr_0.8fr]">
+
+            {/* Left — Our Recent Campaigns (large) */}
+            <div className="rounded-2xl border border-[#ebebeb] bg-white p-6">
+              <h3 className="section-heading text-base font-bold text-ink">Our Recent Campaigns</h3>
+              <div className="mt-5 grid grid-cols-2 gap-4">
+                {recentCampaigns.map((item) => (
+                  <div key={item.id} className="overflow-hidden rounded-xl border border-[#f0f0f0]">
+                    <div className="h-52 bg-gradient-to-br from-slate-500 to-slate-800" />
+                    <div className="p-3">
+                      <p className="text-sm font-semibold leading-tight text-ink">{item.brand}</p>
+                      <p className="mt-0.5 text-xs text-muted">{item.format}</p>
+                      <p className="text-xs text-muted">{item.city}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </RevealItem>
-          ))}
-        </RevealGroup>
-      </section>
+              <Link
+                href="/portfolio"
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-amber"
+              >
+                View All Work <ArrowRight size={14} />
+              </Link>
+            </div>
 
-      {/* Industries */}
-      <section className="bg-surface-2">
-        <div className="container-bsm py-20">
-          <SectionHeader eyebrow="Industries" title="Sectors that use this most" />
-          <RevealGroup className="mt-10 flex flex-wrap gap-3" stagger={0.04}>
-            {industries.map((ind) => {
-              const IndIcon = icons[ind.icon];
-              return (
-                <RevealItem key={ind.slug}>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-[#f0f0f0] bg-surface px-4 py-2.5 text-sm font-medium text-ink">
-                    <IndIcon size={18} className="text-amber-deep" />
-                    {ind.name}
-                  </span>
-                </RevealItem>
-              );
-            })}
-          </RevealGroup>
+            {/* Right — Cities + Why BSM stacked */}
+            <div className="flex flex-col gap-5">
+
+              {/* Top Cities */}
+              <div className="rounded-2xl border border-[#ebebeb] bg-white p-5">
+                <h3 className="section-heading text-sm font-bold text-ink">Top Cities We Serve</h3>
+                <div className="mt-4 max-h-36 overflow-y-auto pr-1 scrollbar-thin">
+                  <div className="flex flex-wrap gap-2">
+                    {topCities.map((city) => (
+                      <span
+                        key={city}
+                        className={`rounded-full border px-3 py-1 text-[11px] font-medium ${
+                          city === "100+ Cities Across India"
+                            ? "border-amber bg-amber/10 text-ink"
+                            : "border-[#e8e8e8] bg-[#f5f5f5] text-body"
+                        }`}
+                      >
+                        {city}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <Link
+                  href="/media-inventory"
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-ink transition-colors hover:text-amber"
+                >
+                  View All Cities <ArrowRight size={12} />
+                </Link>
+              </div>
+
+              {/* Why Choose BSM */}
+              <div className="rounded-2xl border border-[#ebebeb] bg-white p-5">
+                <h3 className="section-heading text-sm font-bold text-ink">Why Choose Big Street Media?</h3>
+                <ul className="mt-4 space-y-3">
+                  {whyPoints.map((point) => {
+                    const WIcon = point.icon;
+                    return (
+                      <li key={point.title} className="flex items-start gap-2.5">
+                        <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber/10">
+                          <WIcon size={14} className="text-amber-deep" />
+                        </span>
+                        <div>
+                          <p className="text-[12px] font-semibold leading-tight text-ink">{point.title}</p>
+                          <p className="mt-0.5 text-[11px] leading-snug text-muted">{point.sub}</p>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="container-bsm py-20">
-        <SectionHeader eyebrow="FAQ" title="Questions clients ask us" align="center" className="mx-auto items-center" />
-        <div className="mt-10">
-          <FAQ items={faqsFor(service.title)} />
+      {/* ── FAQ ── */}
+      <section className="bg-surface">
+        <div className="container-bsm py-14">
+          <SectionHeader eyebrow="FAQ" title="Questions clients ask us" align="center" className="mx-auto items-center" />
+          <div className="mt-8">
+            <FAQ items={faqsFor(service.title)} />
+          </div>
         </div>
       </section>
 
-      {/* Lead form */}
+      {/* ── Lead form ── */}
       <section className="bg-surface-2">
-        <div className="container-bsm py-20">
+        <div className="container-bsm py-14">
           <div className="mx-auto max-w-2xl">
             <SectionHeader
               eyebrow="Let's Talk"
@@ -249,16 +270,16 @@ export default async function ServicePage({
               align="center"
               className="mx-auto items-center"
             />
-            <div className="mt-8 rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-6 md:p-8">
+            <div className="mt-8 rounded-2xl border border-[#f0f0f0] bg-white p-6 md:p-8">
               <LeadForm
                 subject={`${service.title} campaign enquiry — Big Street Media`}
                 submitLabel="Request Free Media Plan"
                 fields={[
-                  { name: "name", label: "Name", required: true, placeholder: "Your name" },
-                  { name: "company", label: "Company", placeholder: "Company name" },
-                  { name: "city", label: "City", placeholder: "Target city / cities" },
-                  { name: "budget", label: "Budget Range", placeholder: "e.g. ₹10L" },
-                  { name: "message", label: "Message", type: "textarea", placeholder: "Tell us about your campaign goal" },
+                  { name: "name",    label: "Name",         required: true, placeholder: "Your name" },
+                  { name: "company", label: "Company",                      placeholder: "Company name" },
+                  { name: "city",    label: "City",                         placeholder: "Target city / cities" },
+                  { name: "budget",  label: "Budget Range",                 placeholder: "e.g. ₹10L" },
+                  { name: "message", label: "Message",      type: "textarea", placeholder: "Tell us about your campaign goal" },
                 ]}
               />
             </div>
@@ -266,27 +287,29 @@ export default async function ServicePage({
         </div>
       </section>
 
-      {/* Related services */}
-      <section className="container-bsm py-20">
-        <SectionHeader eyebrow="Explore More" title="Related services" />
-        <RevealGroup className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.05}>
-          {related.map((s) => {
-            const RIcon = icons[s.icon];
-            return (
-              <RevealItem key={s.slug} className="h-full">
-                <ButtonLink
-                  href={`/services/${s.slug}`}
-                  variant="ghost"
-                  withIcon={false}
-                  className="flex h-full w-full flex-col items-start gap-3 rounded-[1.25rem] !px-6 !py-6 text-left"
-                >
-                  <RIcon size={22} className="text-amber-deep" />
-                  <span className="font-semibold text-ink">{s.title}</span>
-                </ButtonLink>
-              </RevealItem>
-            );
-          })}
-        </RevealGroup>
+      {/* ── Related services ── */}
+      <section className="bg-surface">
+        <div className="container-bsm py-14">
+          <SectionHeader eyebrow="Explore More" title="Related services" />
+          <RevealGroup className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.05}>
+            {related.map((s) => {
+              const RIcon = icons[s.icon];
+              return (
+                <RevealItem key={s.slug} className="h-full">
+                  <ButtonLink
+                    href={`/services/${s.slug}`}
+                    variant="ghost"
+                    withIcon={false}
+                    className="flex h-full w-full flex-col items-start gap-3 rounded-2xl !px-6 !py-6 text-left"
+                  >
+                    <RIcon size={22} className="text-amber-deep" />
+                    <span className="font-semibold text-ink">{s.title}</span>
+                  </ButtonLink>
+                </RevealItem>
+              );
+            })}
+          </RevealGroup>
+        </div>
       </section>
     </>
   );

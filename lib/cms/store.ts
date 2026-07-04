@@ -1,9 +1,11 @@
 import type {
+  CaseStudyRecord,
   CreateMediaInventoryInput,
   CreatePortfolioWorkInput,
   MediaInventoryRecord,
   PortfolioWorkRecord,
 } from "./types";
+import { caseStudyRepository } from "./repositories/case-study-repository";
 import { inventoryRepository } from "./repositories/inventory-repository";
 import { portfolioRepository } from "./repositories/portfolio-repository";
 
@@ -65,4 +67,31 @@ export async function updatePortfolio(
 
 export async function deletePortfolio(id: string): Promise<boolean> {
   return portfolioRepository.delete(id);
+}
+
+export async function listCaseStudies(): Promise<CaseStudyRecord[]> {
+  return caseStudyRepository.getAll();
+}
+
+export async function getCaseStudy(
+  id: string,
+): Promise<CaseStudyRecord | null> {
+  return caseStudyRepository.getById(id);
+}
+
+export async function createCaseStudy(
+  input: Partial<CaseStudyRecord>,
+): Promise<CaseStudyRecord> {
+  return caseStudyRepository.create(input);
+}
+
+export async function updateCaseStudy(
+  id: string,
+  input: Partial<CaseStudyRecord>,
+): Promise<CaseStudyRecord | null> {
+  return caseStudyRepository.update(id, input);
+}
+
+export async function deleteCaseStudy(id: string): Promise<boolean> {
+  return caseStudyRepository.delete(id);
 }

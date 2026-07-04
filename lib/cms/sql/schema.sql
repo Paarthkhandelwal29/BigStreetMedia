@@ -54,3 +54,80 @@ create index idx_media_inventory_city on media_inventory(city);
 create index idx_media_inventory_media_type on media_inventory(media_type);
 create index idx_media_inventory_featured on media_inventory(featured);
 create index idx_media_inventory_created_at on media_inventory(created_at desc);
+
+create table case_studies (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  slug text,
+  brand_id uuid,
+  brand_name text,
+  industry text,
+  campaign_type text,
+  challenge text,
+  objective text,
+  duration text,
+  cities text,
+  brief_type text,
+  featured boolean not null default false,
+  status text not null default 'published' check (status in ('draft', 'published')),
+  testimonial_quote text,
+  testimonial_name text,
+  testimonial_title text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table case_study_strategy_points (
+  id uuid primary key default gen_random_uuid(),
+  case_study_id uuid not null references case_studies(id) on delete cascade,
+  content text not null,
+  sort_order int not null default 0
+);
+
+create table case_study_execution_points (
+  id uuid primary key default gen_random_uuid(),
+  case_study_id uuid not null references case_studies(id) on delete cascade,
+  content text not null,
+  sort_order int not null default 0
+);
+
+create table case_study_media_labels (
+  id uuid primary key default gen_random_uuid(),
+  case_study_id uuid not null references case_studies(id) on delete cascade,
+  label text not null,
+  sort_order int not null default 0
+);
+
+create table case_study_results (
+  id uuid primary key default gen_random_uuid(),
+  case_study_id uuid not null references case_studies(id) on delete cascade,
+  label text not null,
+  value text not null,
+  sort_order int not null default 0
+);
+
+create table case_study_portfolio_items (
+  id uuid primary key default gen_random_uuid(),
+  case_study_id uuid not null references case_studies(id) on delete cascade,
+  portfolio_item_id uuid not null,
+  sort_order int not null default 0
+);
+
+create table case_study_portfolio_media (
+  id uuid primary key default gen_random_uuid(),
+  case_study_id uuid not null references case_studies(id) on delete cascade,
+  portfolio_media_id uuid not null,
+  sort_order int not null default 0,
+  is_featured boolean not null default false
+);
+
+create index idx_case_studies_slug on case_studies(slug);
+create index idx_case_studies_status on case_studies(status);
+create index idx_case_studies_featured on case_studies(featured);
+create index idx_case_studies_created_at on case_studies(created_at desc);
+create index idx_cs_strategy_case_id on case_study_strategy_points(case_study_id);
+create index idx_cs_execution_case_id on case_study_execution_points(case_study_id);
+create index idx_cs_media_labels_case_id on case_study_media_labels(case_study_id);
+create index idx_cs_results_case_id on case_study_results(case_study_id);
+create index idx_cs_portfolio_items_case_id on case_study_portfolio_items(case_study_id);
+create index idx_cs_portfolio_media_case_id on case_study_portfolio_media(case_study_id);
