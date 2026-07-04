@@ -1,4 +1,5 @@
 import type { IconName } from "@/lib/icons";
+import type { PortfolioCategory } from "@/data/portfolio";
 
 export type Service = {
   slug: string;
@@ -7,8 +8,9 @@ export type Service = {
   headline: string;
   icon: IconName;
   formats: string[];
-  /** Short stat chips shown in the hero */
   heroStats: { label: string; value: string }[];
+  /** Maps this service to its portfolio category for campaign cards */
+  portfolioCategory: PortfolioCategory | null;
 };
 
 export const services: Service[] = [
@@ -24,6 +26,7 @@ export const services: Service[] = [
       { value: "Best Rates", label: "Assured" },
       { value: "End-to-End", label: "Execution" },
     ],
+    portfolioCategory: "OOH",
     formats: [
       "Hoardings & Billboards",
       "Unipoles & Gantries",
@@ -46,6 +49,7 @@ export const services: Service[] = [
       { value: "Best Rates", label: "Assured" },
       { value: "End-to-End", label: "Execution" },
     ],
+    portfolioCategory: "Transit",
     formats: [
       "Bus Branding & Wraps",
       "Auto & E-Rickshaw Branding",
@@ -66,6 +70,7 @@ export const services: Service[] = [
       { value: "Trained", label: "Ground Teams" },
       { value: "End-to-End", label: "Execution" },
     ],
+    portfolioCategory: "Events",
     formats: [
       "Mall Activations",
       "RWA & Society Activations",
@@ -86,6 +91,7 @@ export const services: Service[] = [
       { value: "Best Rates", label: "Assured" },
       { value: "End-to-End", label: "Execution" },
     ],
+    portfolioCategory: "Retail Launches",
     formats: [
       "In-Store Branding",
       "Shop Front Boards",
@@ -106,6 +112,7 @@ export const services: Service[] = [
       { value: "Full", label: "Production Support" },
       { value: "End-to-End", label: "Execution" },
     ],
+    portfolioCategory: "Events",
     formats: [
       "Product Launches",
       "Store Openings",
@@ -126,6 +133,7 @@ export const services: Service[] = [
       { value: "On-Ground", label: "Staffing" },
       { value: "End-to-End", label: "Execution" },
     ],
+    portfolioCategory: "Exhibitions",
     formats: [
       "Custom Stall Design",
       "Fabrication & Setup",
@@ -145,6 +153,7 @@ export const services: Service[] = [
       { value: "Best Rates", label: "Assured" },
       { value: "End-to-End", label: "Production" },
     ],
+    portfolioCategory: null,
     formats: ["FM Spots", "RJ Mentions", "Radio Contests", "Sponsorships"],
   },
   {
@@ -159,6 +168,7 @@ export const services: Service[] = [
       { value: "Best Rates", label: "Assured" },
       { value: "End-to-End", label: "Production" },
     ],
+    portfolioCategory: null,
     formats: ["TVC Production", "Regional Channel Buys", "Prime Slots", "L-Bands & Tickers"],
   },
   {
@@ -173,6 +183,7 @@ export const services: Service[] = [
       { value: "Best Rates", label: "Assured" },
       { value: "End-to-End", label: "Execution" },
     ],
+    portfolioCategory: null,
     formats: ["On-Screen Ads", "Lobby Branding", "Multiplex Standees", "Seat Branding"],
   },
   {
@@ -187,6 +198,7 @@ export const services: Service[] = [
       { value: "Real-Time", label: "Reporting" },
       { value: "End-to-End", label: "Management" },
     ],
+    portfolioCategory: null,
     formats: ["Performance Ads", "Social Media", "SEO", "Programmatic", "Landing Pages"],
   },
   {
