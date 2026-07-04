@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/cms/auth";
-import { listInventory, listPortfolio } from "@/lib/cms/store";
+import { listCaseStudies, listInventory, listPortfolio } from "@/lib/cms/store";
 
 export default async function AdminDashboardPage() {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) redirect("/admin/login");
 
-  const [inventory, portfolio] = await Promise.all([
+  const [inventory, portfolio, caseStudies] = await Promise.all([
     listInventory(),
     listPortfolio(),
+    listCaseStudies().catch(() => []),
   ]);
 
   const cards = [
@@ -18,6 +19,12 @@ export default async function AdminDashboardPage() {
       value: portfolio.length,
       href: "/admin/portfolio",
       helper: "Each uploaded file is stored as its own portfolio record.",
+    },
+    {
+      label: "Case Studies",
+      value: caseStudies.length,
+      href: "/admin/case-studies",
+      helper: "Case studies with strategy, execution, media labels, and results.",
     },
     {
       label: "Media Inventory",

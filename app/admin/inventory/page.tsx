@@ -38,7 +38,7 @@ export default async function InventoryAdminPage({
             image URLs.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <Link
             href="/admin"
             className="text-sm font-semibold text-ink underline underline-offset-4"
@@ -49,7 +49,13 @@ export default async function InventoryAdminPage({
             href="/admin/inventory/new"
             className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white"
           >
-            Add inventory
+            Add Inventory
+          </Link>
+          <Link
+            href="/admin/inventory/batch"
+            className="rounded-full border border-[#ececec] px-5 py-2.5 text-sm font-semibold text-ink"
+          >
+            Batch Upload (AI)
           </Link>
         </div>
       </div>

@@ -2,7 +2,7 @@ import ImageKit, { toFile } from "@imagekit/nodejs";
 
 const imagekit = new ImageKit({
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
-  timeout: 10000,
+  timeout: 120000,
   maxRetries: 0,
 });
 
@@ -23,6 +23,8 @@ export async function uploadFile(buffer: Buffer, fileName: string) {
     hasPrivateKey: Boolean(privateKey),
   });
 
+  const timeout = buffer.length > 50 * 1024 * 1024 ? 180000 : 60000;
+
   const response = await imagekit.files.upload(
     {
       file: await toFile(buffer, fileName),
@@ -31,7 +33,7 @@ export async function uploadFile(buffer: Buffer, fileName: string) {
       folder: "/bigstreetmedia",
     },
     {
-      timeout: 10000,
+      timeout,
       maxRetries: 0,
     },
   );

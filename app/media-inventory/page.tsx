@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { MediaInventoryClient } from "@/components/inventory/MediaInventoryClient";
+import { listInventory } from "@/lib/cms/store";
 
 export const metadata: Metadata = {
   title: "Media Inventory - Browse Available Spaces",
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
     "Find available hoardings, bus shelters, unipoles, mall and transit media across India. Browse media inventory and check availability before your competitor does.",
 };
 
-export default function MediaInventoryPage() {
+export default async function MediaInventoryPage() {
+  const inventory = await listInventory();
+
   return (
     <>
       <PageHero
@@ -18,7 +21,7 @@ export default function MediaInventoryPage() {
         subhead="Find available media spaces across India - before your competitor does."
       />
       <div className="py-6 md:py-8">
-        <MediaInventoryClient />
+        <MediaInventoryClient items={inventory} />
       </div>
     </>
   );

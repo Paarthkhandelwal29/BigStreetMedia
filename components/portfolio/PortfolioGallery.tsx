@@ -16,6 +16,16 @@ import {
   CaretLeft,
   CaretRight,
   FunnelSimple,
+  PlayCircle,
+  ImageSquare,
+  ArrowRight,
+  ArrowsCounterClockwise,
+  Buildings,
+  Train,
+  Storefront,
+  Megaphone,
+  CalendarDots,
+  Sparkle,
 } from "@phosphor-icons/react/dist/ssr";
 
 type PortfolioGalleryProps = {
@@ -23,14 +33,40 @@ type PortfolioGalleryProps = {
 };
 
 type ActiveFormat = PortfolioFormat | "All Formats";
+type ActiveBrand = string | "All Brands";
+
+const categoryIcons = {
+  All: Buildings,
+  OOH: Buildings,
+  Transit: Train,
+  Events: CalendarDots,
+  Exhibitions: Megaphone,
+  "Retail Launches": Storefront,
+  "Special Activations": Sparkle,
+} as const;
+
+function brandBadgeText(brand: string) {
+  if (brand === "All Brands") return "★";
+
+  return brand
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || "")
+    .join("");
+}
 
 export function PortfolioGallery({ items }: PortfolioGalleryProps) {
+  const [activeBrand, setActiveBrand] = useState<ActiveBrand>("All Brands");
   const [activeCategory, setActiveCategory] = useState<
     PortfolioCategory | "All"
   >("All");
   const [activeFormat, setActiveFormat] = useState<ActiveFormat>("All Formats");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [mobileFilterView, setMobileFilterView] = useState<
+    "tabs" | "categories" | "brands" | "formats"
+  >("tabs");
   const searchParams = useSearchParams();
   const reduce = useReducedMotion();
 
@@ -49,20 +85,40 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
     }
   }, [searchParams]);
 
+  const availableBrands = useMemo(
+    () => [
+      "All Brands",
+      ...Array.from(new Set(items.map((item) => item.brandName))).sort((a, b) =>
+        a.localeCompare(b),
+      ),
+    ],
+    [items],
+  );
+
+  const brandFilteredItems = useMemo(
+    () =>
+      activeBrand === "All Brands"
+        ? items
+        : items.filter((item) => item.brandName === activeBrand),
+    [items, activeBrand],
+  );
+
   const availableCategories = useMemo(() => {
-    const categories = Array.from(new Set(items.map((item) => item.category)));
+    const categories = Array.from(
+      new Set(brandFilteredItems.map((item) => item.category)),
+    );
     return portfolioCategories.filter(
       (category) =>
         category === "All" ||
         categories.includes(category as PortfolioCategory),
     );
-  }, [items]);
+  }, [brandFilteredItems]);
 
   const formatOptions = useMemo(() => {
     if (activeCategory === "All") return [];
 
     const allowedFormats = new Set(
-      items
+      brandFilteredItems
         .filter((item) => item.category === activeCategory)
         .map((item) => item.format),
     );
@@ -70,11 +126,11 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
     return portfolioFormatsByCategory[activeCategory].filter((format) =>
       allowedFormats.has(format),
     );
-  }, [activeCategory, items]);
+  }, [activeCategory, brandFilteredItems]);
 
   const filtered = useMemo(
     () =>
-      items.filter((item) => {
+      brandFilteredItems.filter((item) => {
         const matchesCategory =
           activeCategory === "All" || item.category === activeCategory;
         const matchesFormat =
@@ -82,15 +138,33 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
 
         return matchesCategory && matchesFormat;
       }),
-    [items, activeCategory, activeFormat],
+    [brandFilteredItems, activeCategory, activeFormat],
   );
 
-  const current = lightboxIndex !== null ? filtered[lightboxIndex] : null;
+  const sortedFiltered = useMemo(
+    () =>
+      [...filtered].sort((a, b) => {
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        return 0;
+      }),
+    [filtered],
+  );
+
+  const current =
+    lightboxIndex !== null ? sortedFiltered[lightboxIndex] : null;
 
   const move = (dir: 1 | -1) => {
-    if (lightboxIndex === null || filtered.length === 0) return;
-    const next = (lightboxIndex + dir + filtered.length) % filtered.length;
+    if (lightboxIndex === null || sortedFiltered.length === 0) return;
+    const next = (lightboxIndex + dir + sortedFiltered.length) % sortedFiltered.length;
     setLightboxIndex(next);
+  };
+
+  const handleBrandSelect = (brand: ActiveBrand) => {
+    setActiveBrand(brand);
+    setActiveCategory("All");
+    setActiveFormat("All Formats");
+    setLightboxIndex(null);
   };
 
   const handleCategorySelect = (category: PortfolioCategory | "All") => {
@@ -101,6 +175,13 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
 
   const handleFormatSelect = (format: ActiveFormat) => {
     setActiveFormat(format);
+    setLightboxIndex(null);
+  };
+
+  const clearAllFilters = () => {
+    setActiveBrand("All Brands");
+    setActiveCategory("All");
+    setActiveFormat("All Formats");
     setLightboxIndex(null);
   };
 
@@ -121,7 +202,10 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
         <div className="mb-6 lg:hidden">
           <button
             type="button"
-            onClick={() => setMobileFiltersOpen(true)}
+            onClick={() => {
+              setMobileFilterView("tabs");
+              setMobileFiltersOpen(true);
+            }}
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#f0f0f0] bg-surface px-4 py-2 text-sm font-semibold text-ink transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2"
           >
             <FunnelSimple size={16} />
@@ -172,15 +256,18 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
           </div>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
+        <div className="grid gap-6 lg:grid-cols-[210px_minmax(0,1fr)_210px] lg:items-start">
           <aside className="hidden lg:sticky lg:top-24 lg:block">
-            <div className="rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-5">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+            <div className="rounded-[1.35rem] border border-[#ececec] bg-surface p-3 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+              <p className="mb-3 px-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
                 Categories
               </p>
-              <div className="flex flex-col gap-2">
+              <div className="space-y-1.5">
                 {availableCategories.map((cat) => {
                   const isActive = activeCategory === cat;
+                  const Icon =
+                    categoryIcons[cat as keyof typeof categoryIcons] ??
+                    Buildings;
                   return (
                     <button
                       key={cat}
@@ -188,24 +275,46 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                       aria-pressed={isActive}
                       onClick={() => handleCategorySelect(cat)}
                       className={cn(
-                        "min-h-11 w-full cursor-pointer rounded-2xl border px-4 py-3 text-left text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                        "flex min-h-10 w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left text-[13px] font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                         isActive
-                          ? "border-amber bg-amber text-ink"
+                          ? "border-amber bg-amber text-ink shadow-sm"
                           : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
                       )}
                     >
-                      {cat}
+                      <span
+                        className={cn(
+                          "flex h-6 w-6 items-center justify-center rounded-md border text-muted",
+                          isActive
+                            ? "border-ink/10 bg-white/70 text-ink"
+                            : "border-[#ececec] bg-surface",
+                        )}
+                      >
+                        <Icon size={15} weight="regular" />
+                      </span>
+                      <span className="flex-1">
+                        {cat === "All" ? "All" : cat}
+                      </span>
+                      {isActive ? <ArrowRight size={14} weight="bold" /> : null}
                     </button>
                   );
                 })}
               </div>
+
+              <button
+                type="button"
+                onClick={clearAllFilters}
+                className="mt-4 inline-flex items-center gap-2 px-2 text-sm font-medium text-muted transition-colors hover:text-ink"
+              >
+                <ArrowsCounterClockwise size={14} />
+                Clear All
+              </button>
             </div>
           </aside>
 
           <div>
-            {filtered.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {filtered.map((item, i) => (
+            {sortedFiltered.length > 0 ? (
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {sortedFiltered.map((item, i) => (
                   <button
                     key={item.id}
                     type="button"
@@ -220,24 +329,38 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                           className="aspect-[4/3] w-full object-cover"
                         />
                       ) : (
-                        <video
-                          src={item.mediaUrl}
-                          className="aspect-[4/3] w-full bg-black object-cover"
-                          muted
-                        />
+                        <>
+                          <video
+                            src={item.mediaUrl}
+                            className="aspect-[4/3] w-full bg-black object-cover"
+                            muted
+                          />
+                          <div className="pointer-events-none absolute inset-0 bg-ink/20" />
+                          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                            <span className="flex items-center gap-2 rounded-full bg-white/92 px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink shadow-sm">
+                              <PlayCircle size={18} weight="fill" />
+                              Video
+                            </span>
+                          </div>
+                        </>
                       )}
                       <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
                         {item.category}
                       </span>
-                      {item.featured ? (
-                        <span className="absolute right-3 top-3 rounded-full bg-amber px-2.5 py-1 text-[10px] font-semibold text-ink">
-                          Featured
-                        </span>
-                      ) : null}
                     </div>
                     <span className="block p-4">
-                      <span className="block font-display text-sm font-semibold text-ink">
-                        {item.brandName}
+                      <span className="flex items-center justify-between gap-3">
+                        <span className="block font-display text-sm font-semibold text-ink">
+                          {item.brandName}
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full border border-[#ececec] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
+                          {item.mediaType === "video" ? (
+                            <PlayCircle size={14} weight="fill" />
+                          ) : (
+                            <ImageSquare size={14} weight="fill" />
+                          )}
+                          {item.mediaType}
+                        </span>
                       </span>
                       <span className="mt-1 block text-xs text-muted">
                         {item.format} · {item.city}
@@ -257,6 +380,54 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
               </div>
             )}
           </div>
+
+          <aside className="hidden lg:sticky lg:top-24 lg:block">
+            <div className="rounded-[1.35rem] border border-[#ececec] bg-surface p-3 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+              <p className="mb-3 px-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+                Brands
+              </p>
+              <div className="max-h-[380px] space-y-1.5 overflow-y-auto">
+                {availableBrands.map((brand) => {
+                  const isActive = activeBrand === brand;
+                  return (
+                    <button
+                      key={brand}
+                      type="button"
+                      aria-pressed={isActive}
+                      onClick={() => handleBrandSelect(brand)}
+                      className={cn(
+                        "flex min-h-10 w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left text-[13px] font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                        isActive
+                          ? "border-ink bg-ink text-white shadow-sm"
+                          : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-bold",
+                          isActive
+                            ? "bg-white/15 text-white"
+                            : "bg-surface-2 text-ink",
+                        )}
+                      >
+                        {brandBadgeText(brand)}
+                      </span>
+                      <span className="flex-1 truncate">{brand}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleBrandSelect("All Brands")}
+                className="mt-4 inline-flex items-center gap-2 px-2 text-sm font-medium text-muted transition-colors hover:text-ink"
+              >
+                <Buildings size={14} />
+                View All Brands
+              </button>
+            </div>
+          </aside>
         </div>
       </div>
 
@@ -291,8 +462,38 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                 </button>
               </div>
 
-              <div className="space-y-5">
+              {mobileFilterView === "tabs" && (
+                <div className="flex flex-col gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterView("categories")}
+                    className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl border border-[#f0f0f0] bg-surface text-base font-semibold text-ink transition-all"
+                  >
+                    Categories
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterView("brands")}
+                    className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl border border-[#f0f0f0] bg-surface text-base font-semibold text-ink transition-all"
+                  >
+                    Brands
+                  </button>
+                </div>
+              )}
+
+              {mobileFilterView === "categories" && (
                 <div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleCategorySelect("All");
+                      setMobileFilterView("tabs");
+                    }}
+                    className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted transition-colors hover:text-ink"
+                  >
+                    <CaretLeft size={16} />
+                    Back
+                  </button>
                   <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                     Categories
                   </p>
@@ -304,7 +505,14 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                           key={cat}
                           type="button"
                           aria-pressed={isActive}
-                          onClick={() => handleCategorySelect(cat)}
+                          onClick={() => {
+                            handleCategorySelect(cat);
+                            if (cat === "All") {
+                              setMobileFiltersOpen(false);
+                            } else {
+                              setMobileFilterView("formats");
+                            }
+                          }}
                           className={cn(
                             "min-h-11 w-full cursor-pointer rounded-2xl border px-4 py-3 text-left text-base font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                             isActive
@@ -318,8 +526,18 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                     })}
                   </div>
                 </div>
+              )}
 
+              {mobileFilterView === "formats" && (
                 <div>
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterView("categories")}
+                    className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted transition-colors hover:text-ink"
+                  >
+                    <CaretLeft size={16} />
+                    Back
+                  </button>
                   <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
                     Formats
                   </p>
@@ -327,7 +545,10 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                     <button
                       type="button"
                       aria-pressed={activeFormat === "All Formats"}
-                      onClick={() => handleFormatSelect("All Formats")}
+                      onClick={() => {
+                        handleFormatSelect("All Formats");
+                        setMobileFiltersOpen(false);
+                      }}
                       className={cn(
                         "min-h-9 whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                         activeFormat === "All Formats"
@@ -348,7 +569,10 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                           key={format}
                           type="button"
                           aria-pressed={isActive}
-                          onClick={() => handleFormatSelect(format)}
+                          onClick={() => {
+                            handleFormatSelect(format);
+                            setMobileFiltersOpen(false);
+                          }}
                           className={cn(
                             "min-h-9 whitespace-nowrap cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
                             isActive
@@ -362,7 +586,57 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                     })}
                   </div>
                 </div>
-              </div>
+              )}
+
+              {mobileFilterView === "brands" && (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterView("tabs")}
+                    className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted transition-colors hover:text-ink"
+                  >
+                    <CaretLeft size={16} />
+                    Back
+                  </button>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                    Brands
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {availableBrands.map((brand) => {
+                      const isActive = activeBrand === brand;
+                      return (
+                        <button
+                          key={brand}
+                          type="button"
+                          aria-pressed={isActive}
+                          onClick={() => {
+                            handleBrandSelect(brand);
+                            setMobileFiltersOpen(false);
+                          }}
+                          className={cn(
+                            "flex min-h-11 w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
+                            isActive
+                              ? "border-ink bg-ink text-white"
+                              : "border-[#f0f0f0] bg-white text-ink hover:border-ink/20",
+                          )}
+                        >
+                          <span
+                            className={cn(
+                              "flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-bold",
+                              isActive
+                                ? "bg-white/15 text-white"
+                                : "bg-surface-2 text-ink",
+                            )}
+                          >
+                            {brandBadgeText(brand)}
+                          </span>
+                          <span className="flex-1 truncate">{brand}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
@@ -434,7 +708,15 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                 <span className="font-display text-lg font-semibold">
                   {current.brandName}
                 </span>
-                <span className="mt-1 block text-sm text-white/60">
+                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white">
+                  {current.mediaType === "video" ? (
+                    <PlayCircle size={14} weight="fill" />
+                  ) : (
+                    <ImageSquare size={14} weight="fill" />
+                  )}
+                  {current.mediaType}
+                </span>
+                <span className="mt-2 block text-sm text-white/60">
                   {current.category} · {current.format} · {current.city}
                 </span>
               </figcaption>

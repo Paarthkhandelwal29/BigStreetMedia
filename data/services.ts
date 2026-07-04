@@ -3,12 +3,12 @@ import type { IconName } from "@/lib/icons";
 export type Service = {
   slug: string;
   title: string;
-  /** client-first one-liner outcome */
   outcome: string;
-  /** longer benefit headline for the service page hero */
   headline: string;
   icon: IconName;
   formats: string[];
+  /** Short stat chips shown in the hero */
+  heroStats: { label: string; value: string }[];
 };
 
 export const services: Service[] = [
@@ -18,6 +18,12 @@ export const services: Service[] = [
     outcome: "Put your brand where 10 lakh+ eyes pass it every day.",
     headline: "Put Your Brand Where 10 Lakh+ Eyes See It Daily",
     icon: "billboard",
+    heroStats: [
+      { value: "PAN India", label: "Coverage" },
+      { value: "5000+", label: "Hoarding Sites" },
+      { value: "Best Rates", label: "Assured" },
+      { value: "End-to-End", label: "Execution" },
+    ],
     formats: [
       "Hoardings & Billboards",
       "Unipoles & Gantries",
@@ -34,6 +40,12 @@ export const services: Service[] = [
     outcome: "Reach commuters across the city — your ad travels with them.",
     headline: "Your Brand, Moving Through Every Street in the City",
     icon: "bus",
+    heroStats: [
+      { value: "PAN India", label: "Coverage" },
+      { value: "1000+", label: "Transit Options" },
+      { value: "Best Rates", label: "Assured" },
+      { value: "End-to-End", label: "Execution" },
+    ],
     formats: [
       "Bus Branding & Wraps",
       "Auto & E-Rickshaw Branding",
@@ -48,6 +60,12 @@ export const services: Service[] = [
     outcome: "Turn foot traffic into customers with on-ground activations.",
     headline: "Meet Your Customer Where They Already Are",
     icon: "megaphone",
+    heroStats: [
+      { value: "400+", label: "Cities Active" },
+      { value: "500+", label: "Activations Done" },
+      { value: "Trained", label: "Ground Teams" },
+      { value: "End-to-End", label: "Execution" },
+    ],
     formats: [
       "Mall Activations",
       "RWA & Society Activations",
@@ -62,6 +80,12 @@ export const services: Service[] = [
     outcome: "Own the shelf and the storefront in every market you sell in.",
     headline: "Win the Last Three Feet Before the Sale",
     icon: "store",
+    heroStats: [
+      { value: "PAN India", label: "Coverage" },
+      { value: "10,000+", label: "Outlets Branded" },
+      { value: "Best Rates", label: "Assured" },
+      { value: "End-to-End", label: "Execution" },
+    ],
     formats: [
       "In-Store Branding",
       "Shop Front Boards",
@@ -76,6 +100,12 @@ export const services: Service[] = [
     outcome: "Launch products and stores with events people talk about.",
     headline: "Make Your Launch the Thing the City Remembers",
     icon: "star",
+    heroStats: [
+      { value: "200+", label: "Events Managed" },
+      { value: "PAN India", label: "Coverage" },
+      { value: "Full", label: "Production Support" },
+      { value: "End-to-End", label: "Execution" },
+    ],
     formats: [
       "Product Launches",
       "Store Openings",
@@ -90,6 +120,12 @@ export const services: Service[] = [
     outcome: "Stand out on the floor with stalls that pull the crowd.",
     headline: "Be the Stall Everyone Stops At",
     icon: "exhibition",
+    heroStats: [
+      { value: "100+", label: "Stalls Built" },
+      { value: "Custom", label: "Stall Design" },
+      { value: "On-Ground", label: "Staffing" },
+      { value: "End-to-End", label: "Execution" },
+    ],
     formats: [
       "Custom Stall Design",
       "Fabrication & Setup",
@@ -103,6 +139,12 @@ export const services: Service[] = [
     outcome: "Stay in your customer's ear through every commute.",
     headline: "Be Heard in Every Car, Every Morning",
     icon: "radio",
+    heroStats: [
+      { value: "All Major", label: "FM Stations" },
+      { value: "PAN India", label: "Coverage" },
+      { value: "Best Rates", label: "Assured" },
+      { value: "End-to-End", label: "Production" },
+    ],
     formats: ["FM Spots", "RJ Mentions", "Radio Contests", "Sponsorships"],
   },
   {
@@ -111,6 +153,12 @@ export const services: Service[] = [
     outcome: "Land your message in the living room at prime time.",
     headline: "Reach Households at the Moment They're Watching",
     icon: "tv",
+    heroStats: [
+      { value: "Regional", label: "& National Channels" },
+      { value: "Prime", label: "Time Slots" },
+      { value: "Best Rates", label: "Assured" },
+      { value: "End-to-End", label: "Production" },
+    ],
     formats: ["TVC Production", "Regional Channel Buys", "Prime Slots", "L-Bands & Tickers"],
   },
   {
@@ -119,6 +167,12 @@ export const services: Service[] = [
     outcome: "Capture a captive audience on the big screen.",
     headline: "The One Screen No One Skips",
     icon: "cinema",
+    heroStats: [
+      { value: "500+", label: "Multiplex Screens" },
+      { value: "PAN India", label: "Coverage" },
+      { value: "Best Rates", label: "Assured" },
+      { value: "End-to-End", label: "Execution" },
+    ],
     formats: ["On-Screen Ads", "Lobby Branding", "Multiplex Standees", "Seat Branding"],
   },
   {
@@ -127,6 +181,12 @@ export const services: Service[] = [
     outcome: "Find your customer online and bring them in-store.",
     headline: "Performance That Connects Online Reach to Real Sales",
     icon: "phone",
+    heroStats: [
+      { value: "Meta &", label: "Google Certified" },
+      { value: "ROI-First", label: "Approach" },
+      { value: "Real-Time", label: "Reporting" },
+      { value: "End-to-End", label: "Management" },
+    ],
     formats: ["Performance Ads", "Social Media", "SEO", "Programmatic", "Landing Pages"],
   },
   {
@@ -135,6 +195,12 @@ export const services: Service[] = [
     outcome: "Borrow the trust creators have already built.",
     headline: "Reach Audiences Through Voices They Already Trust",
     icon: "influencer",
+    heroStats: [
+      { value: "1000+", label: "Creator Network" },
+      { value: "Micro &", label: "Macro Creators" },
+      { value: "Regional", label: "Coverage" },
+      { value: "End-to-End", label: "Management" },
+    ],
     formats: ["Macro Influencers", "Micro & Nano Creators", "Regional Creators", "Campaign Management"],
   },
   {
@@ -143,6 +209,12 @@ export const services: Service[] = [
     outcome: "Take your brand to the 65% of India that lives beyond the metros.",
     headline: "Reach the India That Most Agencies Can't",
     icon: "tractor",
+    heroStats: [
+      { value: "Tier 2 & 3", label: "Markets" },
+      { value: "Village-Level", label: "Activation" },
+      { value: "Local", label: "Ground Teams" },
+      { value: "End-to-End", label: "Execution" },
+    ],
     formats: ["Haat & Mandi Activation", "Wall Painting", "Van Campaigns", "Mela Branding"],
   },
 ];

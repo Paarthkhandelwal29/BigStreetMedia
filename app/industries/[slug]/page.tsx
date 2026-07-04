@@ -8,7 +8,6 @@ import { ServiceCard } from "@/components/shared/ServiceCard";
 import { industries, industryBySlug } from "@/data/industries";
 import { services } from "@/data/services";
 import { brands } from "@/data/brands";
-import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
 
 export function generateStaticParams() {
   return industries.map((i) => ({ slug: i.slug }));
@@ -51,12 +50,6 @@ const recommended: Record<string, string[]> = {
   government: ["ooh-media", "rural", "radio", "transit-media"],
 };
 
-const challenges = [
-  "Reaching the right audience in the right markets, not just the obvious metros",
-  "Launching fast without sacrificing execution quality on the ground",
-  "Proving reach and impact to leadership with real campaign data",
-];
-
 export default async function IndustryPage({
   params,
 }: {
@@ -79,7 +72,6 @@ export default async function IndustryPage({
   return (
     <>
       <PageHero
-        compact
         eyebrow={ind.name}
         title={ind.headline}
         subhead={ind.outcome}
@@ -88,37 +80,15 @@ export default async function IndustryPage({
           { label: "Industries", href: "/industries" },
           { label: ind.name },
         ]}
-      >
-        <ButtonLink href="/contact">Plan a campaign for {ind.name}</ButtonLink>
-      </PageHero>
-
-      {/* Challenges we solve */}
-      <section className="container-bsm py-20">
-        <SectionHeader
-          eyebrow="What We Solve"
-          title={`Challenges we solve for ${ind.name}`}
-        />
-        <RevealGroup className="mt-10 grid gap-5 md:grid-cols-3" stagger={0.08}>
-          {challenges.map((c, i) => (
-            <RevealItem key={i}>
-              <div className="h-full rounded-[1.25rem] border border-[#f0f0f0] bg-surface p-7">
-                <CheckCircle
-                  size={26}
-                  weight="fill"
-                  className="text-amber-deep"
-                />
-                <p className="mt-4 text-sm leading-relaxed text-body">{c}</p>
-              </div>
-            </RevealItem>
-          ))}
-        </RevealGroup>
-      </section>
+        sideContent={
+          <ButtonLink href="/contact">Plan a campaign for {ind.name}</ButtonLink>
+        }
+      />
 
       {/* Recommended formats */}
       <section className="bg-surface-2">
-        <div className="container-bsm py-20">
+        <div className="container-bsm py-10">
           <SectionHeader
-            eyebrow="Recommended"
             title="Formats that work for this sector"
             subhead="A starting mix — we tailor the exact plan to your product, budget, and markets."
           />

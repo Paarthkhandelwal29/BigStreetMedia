@@ -176,6 +176,22 @@
   );
 }
 
+/* Thin scrollbar utility */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-hairline);
+  border-radius: 2px;
+}
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
