@@ -24,7 +24,7 @@ export async function createInventoryAction(formData: FormData) {
 
     console.log("[inventory] upload:start", { count: files.length });
 
-    const images = await Promise.all(
+    const imageUrls = await Promise.all(
       files.map(async (file, index) => {
         console.log("[inventory] upload:file:start", {
           index,
@@ -46,6 +46,7 @@ export async function createInventoryAction(formData: FormData) {
         return imageUrl;
       }),
     );
+    const images = imageUrls.filter((url) => typeof url === "string") as string[];
 
     console.log("[inventory] upload:complete", { count: images.length });
 
