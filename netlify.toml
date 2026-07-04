@@ -1,7 +1,10 @@
-# Netlify config — static export of the Next.js site.
+# Netlify config — Next.js with @netlify/plugin-nextjs (SSR, server actions, API routes).
+# Do not set publish; the plugin handles output from .next.
 [build]
   command = "npm run build"
-  publish = "out"
 
 [build.environment]
   NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
