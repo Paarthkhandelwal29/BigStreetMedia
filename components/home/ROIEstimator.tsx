@@ -205,10 +205,9 @@ export function ROIEstimator() {
   );
 
   return (
-    <section id="roi-estimator" className="bg-surface-2 py-20">
+    <section id="roi-estimator" className="bg-surface-2 py-16">
       <div className="container-bsm">
         <Reveal className="max-w-3xl">
-          <span className="eyebrow">Campaign ROI Estimator</span>
           <h2 className="mt-5 max-w-2xl font-display text-4xl font-semibold leading-tight tracking-tight text-ink md:text-6xl">
             Estimate Your Campaign Reach
           </h2>

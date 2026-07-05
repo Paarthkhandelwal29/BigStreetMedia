@@ -14,7 +14,7 @@ export function FinalCTA() {
             "radial-gradient(55% 80% at 85% 20%, rgba(255,193,7,0.2), transparent 70%), radial-gradient(40% 60% at 10% 80%, rgba(255,193,7,0.08), transparent 70%)",
         }}
       />
-      <div className="container-bsm relative z-10 py-20 md:py-24">
+      <div className="container-bsm relative z-10 py-16">
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
           <Reveal>
             <span className="eyebrow border-white/15 bg-white/5 text-white/80">

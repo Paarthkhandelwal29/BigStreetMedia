@@ -20,16 +20,16 @@ function ServiceTile({ service, index }: { service: (typeof services)[number]; i
     >
       <Link
         href={`/services/${service.slug}`}
-        className="group flex h-full min-h-[148px] flex-col items-center justify-center gap-5 border border-[#e8e8e8] bg-white px-5 py-10 text-center transition-colors duration-200 hover:border-amber hover:bg-[#fffdf5]"
+        className="group flex h-full min-h-[190px] flex-col items-center justify-center gap-5 border border-[#e8e8e8] bg-white px-6 py-12 text-center transition-colors duration-200 hover:border-amber hover:bg-[#fffdf5]"
       >
-        <span className="flex h-14 w-14 items-center justify-center bg-amber/10 transition-colors duration-200 group-hover:bg-amber/15">
+        <span className="flex h-16 w-16 items-center justify-center bg-amber/10 transition-colors duration-200 group-hover:bg-amber/15">
           <Icon
-            size={32}
+            size={34}
             weight="regular"
             className="text-amber"
           />
         </span>
-        <span className="text-[11px] font-semibold uppercase leading-snug tracking-[0.1em] text-body transition-colors duration-200 group-hover:text-ink">
+        <span className="text-xs font-semibold uppercase leading-snug tracking-[0.1em] text-body transition-colors duration-200 group-hover:text-ink">
           {service.title}
         </span>
       </Link>
@@ -40,10 +40,9 @@ function ServiceTile({ service, index }: { service: (typeof services)[number]; i
 export function ServicesGrid() {
   return (
     <section id="services" className="scroll-mt-28 bg-surface">
-      <div className="container-bsm py-24">
+      <div className="container-bsm py-16">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <SectionHeader
-            eyebrow="Services"
             title="Every format. Every city. Every campaign."
             subhead="360° advertising — OOH to digital, Tier 1 to rural."
           />
@@ -52,7 +51,7 @@ export function ServicesGrid() {
           </ButtonLink>
         </div>
 
-        <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
+        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-5">
           {services.map((s, i) => (
             <ServiceTile key={s.slug} service={s} index={i} />
           ))}

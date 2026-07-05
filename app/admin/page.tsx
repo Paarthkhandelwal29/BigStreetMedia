@@ -44,6 +44,12 @@ export default async function AdminDashboardPage() {
       href: "/admin/inventory",
       helper: "Inventory records currently marked as featured.",
     },
+    {
+      label: "Service Media",
+      value: "—",
+      href: "/admin/service-media",
+      helper: "Upload format photos per service for the service detail pages.",
+    },
   ];
 
   return (

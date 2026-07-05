@@ -3,7 +3,6 @@ import { BrandsCarousel } from "@/components/home/BrandsCarousel";
 import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { CampaignGallery } from "@/components/home/CampaignGallery";
 import { WhyBSM } from "@/components/home/WhyBSM";
-import { IndustriesGrid } from "@/components/home/IndustriesGrid";
 import { ROIEstimator } from "@/components/home/ROIEstimator";
 import { ImpactNumbers } from "@/components/home/ImpactNumbers";
 import { FinalCTA } from "@/components/home/FinalCTA";
@@ -18,7 +17,6 @@ export default function HomePage() {
       <ServicesGrid />
       <CampaignGallery />
       <WhyBSM />
-      <IndustriesGrid />
       <ROIEstimator />
       <ImpactNumbers />
       <FinalCTA />

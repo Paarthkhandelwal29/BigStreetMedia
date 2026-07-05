@@ -8,7 +8,7 @@ import { services } from "@/data/services";
 export const metadata: Metadata = {
   title: "Services — 360° Advertising Solutions",
   description:
-    "OOH, Transit, BTL, Retail, Events, Radio, TV, Cinema, Digital, Influencer and Rural marketing — executed across 400+ Indian cities by Big Street Media.",
+    "OOH, Transit, BTL, Retail, Events, Radio, Cinema, Digital and Influencer marketing — executed across 400+ Indian cities by Big Street Media.",
 };
 
 export default function ServicesPage() {

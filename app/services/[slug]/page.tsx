@@ -9,7 +9,7 @@ import { LeadForm } from "@/components/shared/LeadForm";
 import { FAQ } from "@/components/shared/FAQ";
 import { services, serviceBySlug } from "@/data/services";
 import { cityTiers } from "@/data/cities";
-import { listPortfolio } from "@/lib/cms/store";
+import { listPortfolio, getServiceFormatImagesByService } from "@/lib/cms/store";
 import { icons } from "@/lib/icons";
 import {
   ArrowRight,
@@ -96,12 +96,19 @@ export default async function ServicePage({
   });
   const recentCampaigns = shuffled.slice(0, 4);
 
+  const formatImages = await getServiceFormatImagesByService(slug).catch(() => []);
+  const imageMap = new Map<string, string>();
+  for (const img of formatImages) {
+    imageMap.set(img.formatName, img.imageUrl);
+  }
+
   /* Build format cards — append Airport Advertising only for transit-media */
   const formatCards = [
     ...service.formats.map((f, i) => ({
       label: f,
       desc: `High-impact ${f.toLowerCase()} across major Indian cities.`,
       color: cardColors[i % cardColors.length],
+      imageUrl: imageMap.get(f) ?? null,
       isAirport: false,
     })),
     ...(service.slug === "transit-media"
@@ -109,6 +116,7 @@ export default async function ServicePage({
           label: "Airport Advertising",
           desc: "Premium brand exposure at airports across India.",
           color: "from-sky-700 to-sky-950",
+          imageUrl: imageMap.get("Airport Advertising") ?? null,
           isAirport: true,
         }]
       : []),
@@ -157,7 +165,10 @@ export default async function ServicePage({
                 className="group overflow-hidden rounded-2xl border border-[#ebebeb] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]"
               >
                 {/* Image area */}
-                <div className={`relative h-52 bg-gradient-to-br ${card.color}`}>
+                <div
+                  className={`relative h-52 ${card.imageUrl ? "" : `bg-gradient-to-br ${card.color}`}`}
+                  style={card.imageUrl ? { backgroundImage: `url(${card.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+                >
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
                   {/* Icon badge */}
                   <span className="absolute bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-full bg-amber text-ink shadow-md">

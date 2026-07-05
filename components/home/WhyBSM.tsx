@@ -38,9 +38,8 @@ const reasons: { icon: IconName; title: string; body: string }[] = [
 export function WhyBSM() {
   return (
     <section className="bg-surface-2">
-      <div className="container-bsm py-24">
+      <div className="container-bsm py-16">
         <SectionHeader
-          eyebrow="Why Big Street"
           title="Why 100+ brands choose Big Street Media"
           subhead="Not just an agency. Your dedicated campaign partner."
         />

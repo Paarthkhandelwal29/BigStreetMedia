@@ -109,9 +109,8 @@ export function CampaignGallery() {
 
   return (
     <section className="bg-surface">
-      <div className="container-bsm py-20 md:py-24">
+      <div className="container-bsm py-16">
         <SectionHeader
-          eyebrow="Campaign Gallery"
           title="Campaigns we've executed across India"
           subhead="Real work. Real brands. Real cities — OOH, transit, events, and more."
         />

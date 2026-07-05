@@ -68,3 +68,17 @@ export type CreateMediaInventoryInput = Omit<
   MediaInventoryRecord,
   "id" | "createdAt" | "updatedAt"
 >;
+
+export type ServiceFormatImageRecord = {
+  id: string;
+  serviceSlug: string;
+  formatName: string;
+  imageUrl: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateServiceFormatImageInput = Omit<
+  ServiceFormatImageRecord,
+  "id" | "createdAt" | "updatedAt"
+>;

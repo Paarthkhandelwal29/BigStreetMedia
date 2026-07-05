@@ -20,7 +20,7 @@ export function ImpactNumbers() {
             "radial-gradient(50% 50% at 50% 100%, rgba(255,193,7,0.15), transparent 70%)",
         }}
       />
-      <div className="container-bsm relative z-10 py-20 md:py-24">
+      <div className="container-bsm relative z-10 py-16">
         <SectionHeader
           eyebrow="Our Impact"
           title="Numbers that speak for themselves"
