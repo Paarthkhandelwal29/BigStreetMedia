@@ -16,7 +16,7 @@ export function BrandsCarousel() {
 
   return (
     <section className="border-b border-[#f0f0f0] bg-surface-2">
-      <div className="container-bsm py-20 md:py-24">
+      <div className="container-bsm py-16">
         <SectionHeader
           eyebrow="Trusted By"
           title="Brands that trust us with their visibility"

@@ -8,7 +8,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/layout/Logo";
 import { cn } from "@/lib/utils";
 import { services } from "@/data/services";
-import { CaretDown } from "@phosphor-icons/react/dist/ssr";
+import { CaretDown, ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 
 const LIGHT_TOP_ROUTES = new Set(["/contact", "/privacy-policy", "/sitemap"]);
 const servicePortfolioFilters: Record<string, string> = {
@@ -204,6 +204,15 @@ export function Navbar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close menu"
+              className="mb-6 flex items-center gap-2 text-sm font-medium text-body hover:text-ink transition-colors"
+            >
+              <ArrowLeft size={18} />
+              Back
+            </button>
             <ul className="flex flex-col gap-1">
               {[
                 { label: "Services", href: "/#services" },

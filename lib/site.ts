@@ -31,7 +31,6 @@ export const navLinks = [
   { label: "Services", href: "/services" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "Case Studies", href: "/case-studies" },
-  { label: "Industries", href: "/industries" },
   { label: "Media Inventory", href: "/media-inventory" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },

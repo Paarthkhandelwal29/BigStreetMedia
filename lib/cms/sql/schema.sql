@@ -131,3 +131,15 @@ create index idx_cs_media_labels_case_id on case_study_media_labels(case_study_i
 create index idx_cs_results_case_id on case_study_results(case_study_id);
 create index idx_cs_portfolio_items_case_id on case_study_portfolio_items(case_study_id);
 create index idx_cs_portfolio_media_case_id on case_study_portfolio_media(case_study_id);
+
+create table service_format_images (
+  id uuid primary key default gen_random_uuid(),
+  service_slug text not null,
+  format_name text not null,
+  image_url text not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (service_slug, format_name)
+);
+
+create index idx_sfi_service_slug on service_format_images(service_slug);

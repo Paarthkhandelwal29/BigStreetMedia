@@ -1,5 +1,4 @@
 import { services } from "@/data/services";
-import { industries } from "@/data/industries";
 import { caseStudies } from "@/data/caseStudies";
 
 /** All routable paths, grouped for the HTML sitemap and flattened for XML. */
@@ -22,13 +21,6 @@ export const routeGroups = [
     links: [
       { label: "All Services", href: "/services" },
       ...services.map((s) => ({ label: s.title, href: `/services/${s.slug}` })),
-    ],
-  },
-  {
-    title: "Industries",
-    links: [
-      { label: "All Industries", href: "/industries" },
-      ...industries.map((i) => ({ label: i.name, href: `/industries/${i.slug}` })),
     ],
   },
   {

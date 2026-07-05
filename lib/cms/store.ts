@@ -2,12 +2,15 @@ import type {
   CaseStudyRecord,
   CreateMediaInventoryInput,
   CreatePortfolioWorkInput,
+  CreateServiceFormatImageInput,
   MediaInventoryRecord,
   PortfolioWorkRecord,
+  ServiceFormatImageRecord,
 } from "./types";
 import { caseStudyRepository } from "./repositories/case-study-repository";
 import { inventoryRepository } from "./repositories/inventory-repository";
 import { portfolioRepository } from "./repositories/portfolio-repository";
+import { serviceFormatRepository } from "./repositories/service-format-repository";
 
 export async function listInventory(): Promise<MediaInventoryRecord[]> {
   return inventoryRepository.getAll();
@@ -94,4 +97,24 @@ export async function updateCaseStudy(
 
 export async function deleteCaseStudy(id: string): Promise<boolean> {
   return caseStudyRepository.delete(id);
+}
+
+export async function listServiceFormatImages(): Promise<ServiceFormatImageRecord[]> {
+  return serviceFormatRepository.getAll();
+}
+
+export async function getServiceFormatImagesByService(
+  slug: string,
+): Promise<ServiceFormatImageRecord[]> {
+  return serviceFormatRepository.getByServiceSlug(slug);
+}
+
+export async function upsertServiceFormatImage(
+  input: CreateServiceFormatImageInput,
+): Promise<ServiceFormatImageRecord> {
+  return serviceFormatRepository.upsert(input);
+}
+
+export async function deleteServiceFormatImage(id: string): Promise<boolean> {
+  return serviceFormatRepository.delete(id);
 }

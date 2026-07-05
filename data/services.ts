@@ -33,6 +33,7 @@ export const services: Service[] = [
       "Wall Painting",
       "Society Gate Branding",
       "Bus Shelters",
+      "Metro Media",
       "Airport Media",
       "Railway Media",
     ],
@@ -157,21 +158,6 @@ export const services: Service[] = [
     formats: ["FM Spots", "RJ Mentions", "Radio Contests", "Sponsorships"],
   },
   {
-    slug: "tv",
-    title: "TV Advertising",
-    outcome: "Land your message in the living room at prime time.",
-    headline: "Reach Households at the Moment They're Watching",
-    icon: "tv",
-    heroStats: [
-      { value: "Regional", label: "& National Channels" },
-      { value: "Prime", label: "Time Slots" },
-      { value: "Best Rates", label: "Assured" },
-      { value: "End-to-End", label: "Production" },
-    ],
-    portfolioCategory: null,
-    formats: ["TVC Production", "Regional Channel Buys", "Prime Slots", "L-Bands & Tickers"],
-  },
-  {
     slug: "cinema",
     title: "Cinema Advertising",
     outcome: "Capture a captive audience on the big screen.",
@@ -215,21 +201,6 @@ export const services: Service[] = [
     ],
     portfolioCategory: null,
     formats: ["Macro Influencers", "Micro & Nano Creators", "Regional Creators", "Campaign Management"],
-  },
-  {
-    slug: "rural",
-    title: "Rural Marketing",
-    outcome: "Take your brand to the 65% of India that lives beyond the metros.",
-    headline: "Reach the India That Most Agencies Can't",
-    icon: "tractor",
-    heroStats: [
-      { value: "Tier 2 & 3", label: "Markets" },
-      { value: "Village-Level", label: "Activation" },
-      { value: "Local", label: "Ground Teams" },
-      { value: "End-to-End", label: "Execution" },
-    ],
-    portfolioCategory: null,
-    formats: ["Haat & Mandi Activation", "Wall Painting", "Van Campaigns", "Mela Branding"],
   },
 ];
 

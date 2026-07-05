@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Logo } from "@/components/layout/Logo";
 import { site, whatsappLink } from "@/lib/site";
 import { services } from "@/data/services";
-import { industries } from "@/data/industries";
 import { Phone, EnvelopeSimple, WhatsappLogo, MapPin } from "@phosphor-icons/react/dist/ssr";
 
 const company = [
@@ -70,14 +69,6 @@ export function Footer() {
               </FooterLink>
             ))}
             <FooterLink href="/services">All Services →</FooterLink>
-          </FooterCol>
-
-          <FooterCol title="Industries">
-            {industries.slice(0, 6).map((i) => (
-              <FooterLink key={i.slug} href={`/industries/${i.slug}`}>
-                {i.name}
-              </FooterLink>
-            ))}
           </FooterCol>
 
           <FooterCol title="Company">
