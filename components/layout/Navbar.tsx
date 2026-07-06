@@ -242,33 +242,6 @@ export function Navbar() {
                   </button>
                 </div>
 
-                {/* Profile Card / Support Strategist */}
-                <div className="mt-5 flex items-center gap-3 border-b border-[#f0f0f0] pb-4">
-                  <div className="h-10 w-10 shrink-0 rounded-full bg-amber/15 text-amber-deep flex items-center justify-center font-bold text-sm">
-                    PK
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-sm text-ink leading-tight">Paarth Khandelwal</span>
-                    <span className="text-[11px] text-body leading-none mt-0.5">Campaign Strategist</span>
-                  </div>
-                </div>
-
-                {/* Search Bar */}
-                <div className="mt-4 relative">
-                  <input
-                    type="text"
-                    placeholder="Search inventory..."
-                    readOnly
-                    onClick={() => {
-                      setOpen(false);
-                      window.location.href = "/media-inventory";
-                    }}
-                    className="w-full bg-[#f8f9fa] border border-transparent rounded-xl py-2 pl-9 pr-4 text-xs text-body placeholder:text-body/50 focus:outline-none focus:border-amber/40 cursor-pointer"
-                  />
-                  <span className="absolute left-3 top-2.5 text-body/50">
-                    <MagnifyingGlass size={14} />
-                  </span>
-                </div>
 
                 {/* Navigation Links list */}
                 <nav className="mt-5 flex flex-col gap-1">

@@ -110,12 +110,41 @@ export function MediaInventoryClient({
           </aside>
 
           <section>
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <p className="text-sm text-muted">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              {/* On Desktop/Tablet: Show the count of items found */}
+              <p className="text-sm text-muted hidden lg:block">
                 {filtered.length} media space{filtered.length === 1 ? "" : "s"}{" "}
                 found
               </p>
-              <div className="flex items-center gap-3">
+
+              {/* On Mobile: Show the city search filter bar */}
+              <div className="relative flex-1 lg:hidden">
+                <MagnifyingGlass
+                  size={17}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
+                />
+                <input
+                  type="text"
+                  value={citySearch}
+                  onChange={(e) => setCitySearch(e.target.value)}
+                  placeholder="Search by city"
+                  aria-label="Search inventory by city"
+                  autoComplete="off"
+                  className="h-10 w-full rounded-full border border-[#eeeeee] bg-white pl-10 pr-8 text-sm font-medium text-ink outline-none transition-colors placeholder:text-muted focus:border-amber focus:ring-2 focus:ring-amber/30"
+                />
+                {citySearch && (
+                  <button
+                    type="button"
+                    onClick={() => setCitySearch("")}
+                    aria-label="Clear city search"
+                    className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 md:gap-3 shrink-0">
                 <button
                   type="button"
                   onClick={() => setFiltersOpen((open) => !open)}
@@ -139,9 +168,9 @@ export function MediaInventoryClient({
                       setType("All Types");
                       setFiltersOpen(false);
                     }}
-                    className="text-sm font-medium text-ink underline underline-offset-4"
+                    className="text-sm font-medium text-ink underline underline-offset-4 hidden sm:inline-block"
                   >
-                    Reset filters
+                    Reset
                   </button>
                 )}
               </div>
