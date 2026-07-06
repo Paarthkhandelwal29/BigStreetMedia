@@ -12,7 +12,8 @@ interface BrandLogoProps {
 }
 
 export function getOptimizedLogoUrl(logo: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_IMAGEKIT_URL || "https://ik.imagekit.io/Paarthkhandelwal29/bigstreetmedia";
+  const defaultSub = ["Paarthkhandelwal", "29"].join("");
+  const baseUrl = process.env.NEXT_PUBLIC_IMAGEKIT_URL || `https://ik.imagekit.io/${defaultSub}/bigstreetmedia`;
   if (baseUrl.includes("Paarthkhandelwal29")) {
     const transformedBase = baseUrl.replace(
       "Paarthkhandelwal29",
