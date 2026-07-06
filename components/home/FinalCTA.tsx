@@ -14,20 +14,20 @@ export function FinalCTA() {
             "radial-gradient(55% 80% at 85% 20%, rgba(255,193,7,0.2), transparent 70%), radial-gradient(40% 60% at 10% 80%, rgba(255,193,7,0.08), transparent 70%)",
         }}
       />
-      <div className="container-bsm relative z-10 py-16">
+      <div className="container-bsm relative z-10 py-6 md:py-16">
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
           <Reveal>
             <span className="eyebrow border-white/15 bg-white/5 text-white/80">
               Get Started
             </span>
-            <h2 className="mt-5 text-balance text-4xl font-extrabold leading-[1.05] text-white md:text-5xl">
+            <h2 className="mt-3 md:mt-5 text-balance text-4xl font-extrabold leading-[1.05] text-white md:text-5xl">
               Let&apos;s build something{" "}
               <span className="text-amber">big.</span>
             </h2>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-white/60 md:text-lg">
+            <p className="mt-2.5 md:mt-4 max-w-md text-[14px] md:text-base leading-relaxed text-white/60 md:text-lg">
               Tell us your campaign goal — we&apos;ll come back with a tailored media plan within 48 hours.
             </p>
-            <div className="mt-8 flex flex-wrap gap-6 text-sm text-white/50">
+            <div className="mt-5 md:mt-8 flex flex-wrap gap-6 text-sm text-white/50">
               <div>
                 <p className="font-mono text-2xl font-bold text-amber">{site.stats.campaigns}</p>
                 <p className="mt-1">Campaigns executed</p>

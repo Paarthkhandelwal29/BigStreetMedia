@@ -6,9 +6,11 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   brands,
   brandCategories,
+  getBrandIndustry,
   type Brand,
   type BrandCategory,
 } from "@/data/brands";
+import { BrandLogo } from "./BrandLogo";
 import { caseStudies } from "@/data/caseStudies";
 import { whatsappLink } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -24,7 +26,9 @@ export function BrandsGrid() {
 
   const filtered = useMemo(
     () =>
-      active === "all" ? brands : brands.filter((b) => b.industry === active),
+      active === "all"
+        ? brands
+        : brands.filter((b) => getBrandIndustry(b.category) === active),
     [active],
   );
 
@@ -59,12 +63,12 @@ export function BrandsGrid() {
           {filtered.map((b) => {
             const cs = caseStudyForBrand(b.name);
             const content = (
-              <span className="flex h-24 items-center justify-center font-display text-lg font-semibold text-ink/70 grayscale transition-all duration-300 group-hover:text-ink group-hover:grayscale-0">
-                {b.name}
-              </span>
+              <div className="flex h-[120px] w-full items-center justify-center grayscale transition-all duration-300 group-hover:grayscale-0">
+                <BrandLogo name={b.name} logo={b.logo} scale={b.scale} />
+              </div>
             );
             const className =
-              "group relative block rounded-[1.25rem] border border-[#f0f0f0] bg-surface px-4 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.06)] cursor-pointer";
+              "group relative block rounded-[1.25rem] border border-[#f0f0f0] bg-surface px-2.5 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.06)] cursor-pointer";
             return cs ? (
               <Link
                 key={b.name}
@@ -127,7 +131,7 @@ export function BrandsGrid() {
                 </button>
               </div>
               <p className="mt-1 text-sm capitalize text-muted">
-                {selected.industry}
+                {selected.category}
               </p>
               <p className="mt-4 text-sm leading-relaxed text-body">
                 We&apos;ve executed campaigns for {selected.name} across

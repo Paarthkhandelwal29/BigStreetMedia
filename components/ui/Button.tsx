@@ -20,7 +20,7 @@ const variants: Record<Variant, string> = {
 
 const sizes: Record<Size, string> = {
   md: "px-5 py-2.5 text-sm",
-  lg: "px-6 py-3.5 text-[15px]",
+  lg: "px-5 py-2.5 text-sm md:px-6 md:py-3.5 md:text-[15px]",
 };
 
 function IconChip({ variant }: { variant: Variant }) {

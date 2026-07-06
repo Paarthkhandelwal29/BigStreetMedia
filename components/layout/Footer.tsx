@@ -31,7 +31,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="container-bsm py-16">
+      <div className="container-bsm py-6 md:py-16">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <Logo light className="h-auto" />

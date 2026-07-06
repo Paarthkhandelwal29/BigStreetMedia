@@ -11,7 +11,7 @@ const impact = [
 
 export function ImpactNumbers() {
   return (
-    <section className="relative overflow-hidden bg-ink">
+    <section className="relative overflow-hidden bg-ink hidden md:block">
       <div
         className="absolute inset-0 opacity-40"
         aria-hidden
@@ -20,7 +20,7 @@ export function ImpactNumbers() {
             "radial-gradient(50% 50% at 50% 100%, rgba(255,193,7,0.15), transparent 70%)",
         }}
       />
-      <div className="container-bsm relative z-10 py-16">
+      <div className="container-bsm relative z-10 py-6 md:py-16">
         <SectionHeader
           eyebrow="Our Impact"
           title="Numbers that speak for themselves"
@@ -30,7 +30,7 @@ export function ImpactNumbers() {
           className="mx-auto items-center"
         />
 
-        <RevealGroup className="mt-14 grid grid-cols-2 gap-y-12 md:grid-cols-4" stagger={0.1}>
+        <RevealGroup className="mt-6 md:mt-14 grid grid-cols-2 gap-y-12 md:grid-cols-4" stagger={0.1}>
           {impact.map((s) => (
             <RevealItem key={s.label} className="flex flex-col items-center text-center">
               <AnimatedCounter

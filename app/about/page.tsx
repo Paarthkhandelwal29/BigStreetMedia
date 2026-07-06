@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/ui/Section";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { site } from "@/lib/site";
-import { Target, Eye, Heart, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
+import { Target, Eye, Heart } from "@phosphor-icons/react/dist/ssr";
 
 export const metadata: Metadata = {
   title: "About — 20 Years, 400 Cities, One Mission",
@@ -42,13 +42,6 @@ const mvv = [
   },
 ];
 
-const team = [
-  { name: "Founder & Managing Director", role: "Leadership", years: "Since 2004" },
-  { name: "Head of Operations", role: "Execution", years: "12 years" },
-  { name: "Head of Media Planning", role: "Strategy", years: "9 years" },
-  { name: "Head of Client Servicing", role: "Accounts", years: "7 years" },
-];
-
 export default function AboutPage() {
   return (
     <>
@@ -77,10 +70,12 @@ export default function AboutPage() {
         <div className="container-bsm py-24">
           <div className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <Reveal>
-              <div className="aspect-[4/5] max-w-sm overflow-hidden rounded-[1.5rem] border-2 border-amber bg-surface">
-                <div className="flex h-full items-center justify-center text-xs uppercase tracking-widest text-muted">
-                  Founder Photo
-                </div>
+              <div className="aspect-[4/5] max-w-sm overflow-hidden rounded-[1.5rem] border-2 border-amber">
+                <img
+                  src="https://ik.imagekit.io/Paarthkhandelwal29/bigstreetmedia/Aditya-Khandelwal.png"
+                  alt="Founder & Managing Director, Big Street Media"
+                  className="h-full w-full object-cover"
+                />
               </div>
             </Reveal>
             <Reveal delay={0.1}>
@@ -102,8 +97,8 @@ export default function AboutPage() {
                 </p>
               </blockquote>
               <p className="mt-6 font-display font-semibold text-ink">
-                Founder &amp; Managing Director
-                <span className="block text-sm font-normal text-muted">{site.name}</span>
+                Aditya Khandelwal
+                <span className="block text-sm font-normal text-muted">Founder &amp; Managing Director, {site.name}</span>
               </p>
             </Reveal>
           </div>
@@ -126,34 +121,6 @@ export default function AboutPage() {
             </RevealItem>
           ))}
         </RevealGroup>
-      </section>
-
-      {/* Team */}
-      <section className="bg-surface-2">
-        <div className="container-bsm py-24">
-          <SectionHeader
-            eyebrow="The Team"
-            title="The people who execute it"
-            subhead="Placeholders for now — real names and photos drop in here as they're provided."
-          />
-          <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" stagger={0.06}>
-            {team.map((t, i) => (
-              <RevealItem key={i}>
-                <div className="group rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-5">
-                  <div className="flex aspect-square items-center justify-center rounded-[1rem] bg-surface-2 text-xs uppercase tracking-widest text-muted">
-                    Photo
-                  </div>
-                  <h3 className="mt-4 font-display text-base font-semibold text-ink">{t.name}</h3>
-                  <p className="text-sm text-muted">{t.role}</p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="text-xs text-muted">{t.years}</span>
-                    <LinkedinLogo size={18} className="text-muted transition-colors group-hover:text-amber-deep" />
-                  </div>
-                </div>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </div>
       </section>
 
       <FinalCTA />

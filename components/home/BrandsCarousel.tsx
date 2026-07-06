@@ -1,70 +1,106 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { SectionHeader } from "@/components/ui/Section";
-import { BrandWordmark } from "@/components/shared/BrandWordmark";
-import { brands, brandCategories, type BrandCategory } from "@/data/brands";
-import { cn } from "@/lib/utils";
+import { useMemo } from "react";
+import { brands, type Brand } from "@/data/brands";
+import { BrandLogo } from "@/components/brands/BrandLogo";
+
+// Curated rows for balanced brand presentation across rows
+const row1Names = [
+  "Hero",
+  "LG",
+  "Style Baazar",
+  "Adani Cement",
+  "Cashify",
+  "Tata Motors",
+  "Extramarks",
+  "Gulf Oil",
+  "V-Mart",
+  "L&T",
+  "Reliance Digital",
+  "ILBS",
+  "Citykart",
+  "Sensodyne"
+];
+
+const row2Names = [
+  "TVS",
+  "Ather",
+  "Britannica Education",
+  "Fenesta",
+  "The Times Group",
+  "Ecozen",
+  "Youtag",
+  "Gallantt TMT",
+  "Vishal Mega Mart",
+  "Trends",
+  "V-Bazaar",
+  "Shyam Steel",
+  "Ambuja Cement",
+  "Luminous"
+];
+
+function MarqueeRow({
+  brandsList,
+  direction,
+}: {
+  brandsList: Brand[];
+  direction: "left" | "right";
+}) {
+  const marqueeItems = useMemo(() => [...brandsList, ...brandsList], [brandsList]);
+  const animClass = direction === "left" ? "animate-marquee-left-new" : "animate-marquee-right-new";
+
+  return (
+    <div className="marquee-row overflow-x-hidden overflow-y-visible py-2.5 md:py-6">
+      {/* 
+        The parent flex wrapper holds the single scrolling container.
+        Using pr-[40px] md:pr-[60px] lg:pr-[80px] on the container ensures 
+        that the trailing gap after the 28th item matches the inner gaps.
+        This provides a mathematically perfect loop when translating by -50%.
+        Using overflow-y-visible ensures scaled logos are not clipped vertically.
+      */}
+      <div className="marquee-mask w-full overflow-x-hidden overflow-y-visible">
+        <div className={`flex w-max shrink-0 items-center gap-[40px] md:gap-[60px] lg:gap-[80px] pr-[40px] md:pr-[60px] lg:pr-[80px] ${animClass}`}>
+          {marqueeItems.map((b, i) => (
+            <div
+              key={`${b.name}-${i}`}
+              className="flex items-center justify-center h-[50px] md:h-[62px] lg:h-[75px]"
+            >
+              <BrandLogo name={b.name} logo={b.logo} scale={b.scale} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function BrandsCarousel() {
-  const [active, setActive] = useState<BrandCategory | "all">("all");
-
-  const filtered = useMemo(
-    () => (active === "all" ? brands : brands.filter((b) => b.industry === active)),
-    [active]
+  const row1Brands = useMemo(
+    () => row1Names.map((name) => brands.find((b) => b.name === name)!).filter(Boolean),
+    []
+  );
+  
+  const row2Brands = useMemo(
+    () => row2Names.map((name) => brands.find((b) => b.name === name)!).filter(Boolean),
+    []
   );
 
   return (
-    <section className="border-b border-[#f0f0f0] bg-surface-2">
-      <div className="container-bsm py-16">
-        <SectionHeader
-          eyebrow="Trusted By"
-          title="Brands that trust us with their visibility"
-          subhead="100+ national brands across automobile, FMCG, retail, education, and more."
-          align="center"
-          className="mx-auto items-center"
-        />
-
-        <div className="mt-8 flex flex-wrap justify-center gap-2">
-          {brandCategories.map((cat) => {
-            const isActive = active === cat.key;
-            return (
-              <button
-                key={cat.key}
-                type="button"
-                aria-pressed={isActive}
-                onClick={() => setActive(cat.key)}
-                className={cn(
-                  "min-h-9 cursor-pointer rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2",
-                  isActive
-                    ? "border-amber bg-amber text-ink shadow-[0_2px_8px_rgba(255,193,7,0.25)]"
-                    : "border-[#f0f0f0] bg-surface text-body hover:border-ink/20 hover:text-ink"
-                )}
-              >
-                {cat.label}
-              </button>
-            );
-          })}
+    <section className="border-b border-[#f0f0f0] bg-surface-2 py-6 md:py-20 select-none">
+      <div className="container-bsm">
+        <div className="mx-auto max-w-3xl text-center mb-8 md:mb-16">
+          <h2 className="font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+            Brands That Trust Big Street
+          </h2>
+          <p className="hidden md:block mt-4 text-base md:text-lg text-body/80">
+            We&apos;ve partnered with leading brands across retail, FMCG, automobiles, education, finance and more.
+          </p>
         </div>
+      </div>
 
-        {active === "all" ? (
-          <div className="marquee-track marquee-mask mt-10 overflow-hidden py-2">
-            <div className="animate-marquee flex w-max items-center gap-4">
-              {[...brands, ...brands].map((b, i) => (
-                <BrandWordmark key={`${b.name}-${i}`} name={b.name} compact className="hover:-translate-y-0.5 hover:border-amber/40 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]" />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="mt-10 flex flex-wrap justify-center gap-3">
-            {filtered.map((b) => (
-              <BrandWordmark key={b.name} name={b.name} className="hover:-translate-y-0.5 hover:border-amber/40 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]" />
-            ))}
-            {filtered.length === 0 && (
-              <p className="text-sm text-muted">More brands in this sector coming soon.</p>
-            )}
-          </div>
-        )}
+      <div className="space-y-8">
+        <MarqueeRow brandsList={row1Brands} direction="right" />
+        <MarqueeRow brandsList={row2Brands} direction="left" />
       </div>
     </section>
   );

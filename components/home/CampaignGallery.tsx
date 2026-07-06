@@ -62,7 +62,7 @@ function CampaignCard({
     <button
       type="button"
       onClick={onClick}
-      className="group relative aspect-[4/3] w-full overflow-hidden rounded-[1.25rem] border border-[#f0f0f0] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 cursor-pointer"
+      className="group relative shrink-0 aspect-auto w-[250px] h-[180px] md:aspect-[4/3] md:w-full md:h-auto overflow-hidden rounded-2xl md:rounded-[1.25rem] border border-[#f0f0f0] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 cursor-pointer snap-center"
       aria-label={`View ${item.brand} campaign`}
     >
       <div
@@ -109,13 +109,13 @@ export function CampaignGallery() {
 
   return (
     <section className="bg-surface">
-      <div className="container-bsm py-16">
+      <div className="container-bsm py-6 md:py-16">
         <SectionHeader
           title="Campaigns we've executed across India"
           subhead="Real work. Real brands. Real cities — OOH, transit, events, and more."
         />
 
-        <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="mt-6 md:mt-12 flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 scrollbar-none md:grid md:grid-cols-3 md:gap-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {items.map((item) => (
             <CampaignCard key={item.brand} item={item} onClick={() => setLightbox(item)} />
           ))}
@@ -123,11 +123,10 @@ export function CampaignGallery() {
 
         <div className="mt-10 text-center">
           <Link
-            href="/case-studies"
-            className="group inline-flex items-center gap-2 rounded-full border border-[#ececec] bg-surface px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-200 hover:border-amber hover:shadow-[0_4px_16px_rgba(255,193,7,0.15)]"
+            href="/portfolio"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-amber-deep hover:text-amber transition-colors"
           >
-            See All Campaigns
-            <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+            View All Campaigns →
           </Link>
         </div>
       </div>
