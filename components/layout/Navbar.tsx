@@ -8,7 +8,19 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/layout/Logo";
 import { cn } from "@/lib/utils";
 import { services } from "@/data/services";
-import { CaretDown, ArrowLeft } from "@phosphor-icons/react/dist/ssr";
+import {
+  CaretDown,
+  X,
+  House,
+  List,
+  Database,
+  Images,
+  ChartBar,
+  Info,
+  PhoneCall,
+  MagnifyingGlass
+} from "@phosphor-icons/react/dist/ssr";
+import { site } from "@/lib/site";
 
 const LIGHT_TOP_ROUTES = new Set(["/contact", "/privacy-policy", "/sitemap"]);
 const servicePortfolioFilters: Record<string, string> = {
@@ -73,10 +85,10 @@ export function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-40">
-      <div className="container-bsm pt-4">
+      <div className="container-bsm pt-2 sm:pt-4">
         <nav
           className={cn(
-            "flex w-full items-center justify-between gap-4 rounded-full px-4 py-2.5 sm:px-5 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+            "flex w-full items-center justify-between gap-4 rounded-full px-3.5 py-1.5 sm:px-5 sm:py-2.5 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
             scrolled
               ? "border border-[#ececec] bg-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl"
               : "border border-transparent bg-white/0"
@@ -194,64 +206,143 @@ export function Navbar() {
       </nav>
       </div>
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay (Sidebar Navigation Drawer) */}
       <AnimatePresence>
         {open && (
-          <motion.div
-            className="fixed inset-0 z-30 flex flex-col bg-white/95 px-6 pb-10 pt-28 backdrop-blur-2xl lg:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <button
-              type="button"
+          <>
+            {/* Semi-transparent Backdrop overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setOpen(false)}
-              aria-label="Close menu"
-              className="mb-6 flex items-center gap-2 text-sm font-medium text-body hover:text-ink transition-colors"
+              className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
+            />
+
+            {/* Sliding Panel */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 220 }}
+              className="fixed right-0 top-0 bottom-0 w-[300px] max-w-[85vw] bg-white p-5 shadow-2xl flex flex-col justify-between overflow-y-auto z-40 rounded-l-[1.75rem] lg:hidden"
             >
-              <ArrowLeft size={18} />
-              Back
-            </button>
-            <ul className="flex flex-col gap-1">
-              {[
-                { label: "Services", href: "/#services" },
-                { label: "Media Inventory", href: "/media-inventory" },
-                { label: "Portfolio", href: "/portfolio" },
-                { label: "Case Studies", href: "/case-studies" },
-                { label: "About", href: "/about" },
-              ].map((link, i) => {
-                const active = pathname === link.href || (link.href !== "/about" && pathname.startsWith(link.href));
-                return (
-                  <motion.li
-                    key={link.href}
-                    initial={reduce ? false : { opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 * i + 0.05, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              <div className="flex flex-col">
+                {/* Header: Logo + Close button */}
+                <div className="flex items-center justify-between">
+                  <Logo className="h-7 w-auto" />
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f8f9fa] text-body hover:text-ink transition-colors cursor-pointer"
+                    aria-label="Close menu"
                   >
-                    <Link
-                      href={link.href}
-                      className={cn(
-                        "block border-b border-[#f0f0f0] py-4 font-display text-2xl text-ink",
-                        active && "text-amber"
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-                  </motion.li>
-                );
-              })}
-            </ul>
-            <div className="mt-8">
-              <ButtonLink
-                href="/contact"
-                withIcon={false}
-                className="w-full justify-center !rounded-[6px] !font-semibold !px-5 !py-3 !bg-amber !text-ink hover:!bg-amber-deep border-none shadow-none active:scale-[0.98]"
-              >
-                Get Free Media Plan
-              </ButtonLink>
-            </div>
-          </motion.div>
+                    <X size={16} />
+                  </button>
+                </div>
+
+                {/* Profile Card / Support Strategist */}
+                <div className="mt-5 flex items-center gap-3 border-b border-[#f0f0f0] pb-4">
+                  <div className="h-10 w-10 shrink-0 rounded-full bg-amber/15 text-amber-deep flex items-center justify-center font-bold text-sm">
+                    PK
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-sm text-ink leading-tight">Paarth Khandelwal</span>
+                    <span className="text-[11px] text-body leading-none mt-0.5">Campaign Strategist</span>
+                  </div>
+                </div>
+
+                {/* Search Bar */}
+                <div className="mt-4 relative">
+                  <input
+                    type="text"
+                    placeholder="Search inventory..."
+                    readOnly
+                    onClick={() => {
+                      setOpen(false);
+                      window.location.href = "/media-inventory";
+                    }}
+                    className="w-full bg-[#f8f9fa] border border-transparent rounded-xl py-2 pl-9 pr-4 text-xs text-body placeholder:text-body/50 focus:outline-none focus:border-amber/40 cursor-pointer"
+                  />
+                  <span className="absolute left-3 top-2.5 text-body/50">
+                    <MagnifyingGlass size={14} />
+                  </span>
+                </div>
+
+                {/* Navigation Links list */}
+                <nav className="mt-5 flex flex-col gap-1">
+                  {[
+                    { label: "Home", href: "/", icon: House },
+                    { label: "Services", href: "/#services", icon: List },
+                    { label: "Media Inventory", href: "/media-inventory", icon: Database },
+                    { label: "Portfolio", href: "/portfolio", icon: Images },
+                    { label: "Case Studies", href: "/case-studies", icon: ChartBar },
+                    { label: "About Us", href: "/about", icon: Info },
+                  ].map((link) => {
+                    const Icon = link.icon;
+                    // Active check:
+                    const active =
+                      pathname === link.href ||
+                      (link.href !== "/" && pathname.startsWith(link.href));
+
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-200",
+                          active
+                            ? "bg-amber/10 text-amber-deep font-semibold"
+                            : "text-body hover:bg-surface hover:text-ink"
+                        )}
+                      >
+                        <Icon size={18} className={active ? "text-amber-deep" : "text-body/70"} />
+                        {link.label}
+                      </Link>
+                    );
+                  })}
+                </nav>
+
+                {/* Promo Upgrade Box */}
+                <div className="bg-amber/5 border border-amber/15 rounded-2xl p-4 text-center mt-5">
+                  <h4 className="font-bold text-xs text-ink leading-tight">Need a Custom Plan? 🚀</h4>
+                  <p className="text-[10px] text-body mt-1.5 leading-normal">
+                    Get a free media plan and unlock the best advertising rates across India.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      window.location.href = "/contact";
+                    }}
+                    className="mt-3 w-full bg-amber text-ink hover:bg-amber-deep py-2 rounded-xl text-xs font-semibold shadow-sm transition-all active:scale-[0.98] cursor-pointer"
+                  >
+                    Get Free Plan
+                  </button>
+                </div>
+              </div>
+
+              {/* Bottom Utilities: Help & Contact */}
+              <div className="flex flex-col gap-2 border-t border-[#f0f0f0] pt-4 mt-6">
+                <Link
+                  href="/contact"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 py-1.5 px-2 rounded-lg text-xs font-medium text-body hover:text-ink transition-colors"
+                >
+                  <Info size={16} className="text-body/60" />
+                  Help & Information
+                </Link>
+                <a
+                  href={`tel:${site.phones[0]}`}
+                  className="flex items-center gap-3 py-1.5 px-2 rounded-lg text-xs font-medium text-body hover:text-ink transition-colors"
+                >
+                  <PhoneCall size={16} className="text-body/60" />
+                  Call Support: {site.phones[0]}
+                </a>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

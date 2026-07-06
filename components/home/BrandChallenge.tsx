@@ -28,7 +28,7 @@ const challenges = [
 export function BrandChallenge() {
   return (
     <section className="bg-surface">
-      <div className="container-bsm py-16">
+      <div className="container-bsm py-6 md:py-16">
         <SectionHeader
           eyebrow="Start Here"
           title="What's your brand challenge?"

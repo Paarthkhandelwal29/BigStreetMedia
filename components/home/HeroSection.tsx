@@ -66,7 +66,7 @@ export function HeroSection() {
         };
 
   return (
-    <section className="relative flex min-h-[100dvh] flex-col items-center justify-between overflow-hidden">
+    <section className="relative flex min-h-[55dvh] md:min-h-[100dvh] flex-col items-center justify-between overflow-hidden">
       <div className="absolute inset-0 bg-ink" aria-hidden />
       <div
         className="absolute inset-0 opacity-50"
@@ -92,7 +92,7 @@ export function HeroSection() {
         aria-hidden
       />
 
-      <div className="container-bsm relative z-10 flex flex-1 flex-col items-center justify-center pt-28 pb-6 text-center">
+      <div className="container-bsm relative z-10 flex flex-1 flex-col items-center justify-center pt-16 md:pt-28 pb-4 md:pb-6 text-center">
         <motion.span
           {...rise(0)}
           className="eyebrow border-white/15 bg-white/5 text-white/80"
@@ -102,7 +102,7 @@ export function HeroSection() {
 
         <motion.h1
           {...rise(0.08)}
-          className="mt-5 max-w-4xl text-balance text-4xl font-extrabold leading-[1.05] text-white sm:text-5xl md:text-6xl lg:text-7xl"
+          className="mt-3 md:mt-5 max-w-4xl text-balance text-[32px] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] md:leading-[1.05] text-white"
         >
           Creating Visibility.
           <br />
@@ -111,7 +111,7 @@ export function HeroSection() {
 
         <motion.p
           {...rise(0.16)}
-          className="mt-5 max-w-xl text-pretty text-sm leading-relaxed text-white/70 sm:text-base md:text-lg"
+          className="hidden md:block mt-3 md:mt-5 max-w-xl text-pretty text-[15px] leading-relaxed text-white/70 sm:text-base md:text-lg"
         >
           From a single hoarding to a 400-city campaign — Big Street Media
           executes advertising that reaches your customer wherever they live,
@@ -120,28 +120,42 @@ export function HeroSection() {
 
         <motion.div
           {...rise(0.24)}
-          className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center"
+          className="mt-5 md:mt-8 flex flex-col gap-2 sm:gap-3 sm:flex-row sm:justify-center w-full max-w-[280px] sm:max-w-none"
         >
           <ButtonLink href="/services">Explore Services</ButtonLink>
           <ButtonLink href="/contact" variant="ghost-light">
             Get Free Media Plan
           </ButtonLink>
         </motion.div>
+
+        {/* Compact statistics trust strip for mobile */}
+        <motion.div
+          {...rise(0.28)}
+          className="flex md:hidden items-center justify-center flex-wrap gap-x-2.5 gap-y-1 text-amber/90 font-medium text-[13px] tracking-wide mt-6 border-t border-white/10 pt-4 w-full max-w-[280px]"
+        >
+          <span>20+ Years</span>
+          <span className="text-white/20">•</span>
+          <span>1000+ Campaigns</span>
+          <span className="text-white/20">•</span>
+          <span>400+ Cities</span>
+          <span className="text-white/20">•</span>
+          <span>100+ Brands</span>
+        </motion.div>
       </div>
 
       <motion.div
         {...rise(0.32)}
-        className="container-bsm relative z-10 pb-10 md:pb-12"
+        className="container-bsm relative z-10 pb-6 md:pb-12 w-full hidden md:block"
       >
-        <div className="section-divider mb-5 opacity-30" aria-hidden />
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+        <div className="section-divider mb-3 md:mb-5 opacity-30" aria-hidden />
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="glass-dark flex flex-col items-center justify-center px-3 py-3.5 sm:px-4 sm:py-4"
+              className="glass-dark flex flex-col items-center justify-center px-2 py-2 sm:px-4 sm:py-4 h-[68px] sm:h-auto"
             >
               <HeroCounter value={stat.value} suffix={stat.suffix} />
-              <span className="mt-1.5 text-center text-[10px] font-medium uppercase tracking-[0.1em] text-amber/90 sm:text-[11px]">
+              <span className="mt-1 text-center text-[8px] sm:text-[10px] md:text-[11px] font-medium uppercase tracking-[0.08em] text-amber/90 leading-tight">
                 {stat.label}
               </span>
             </div>

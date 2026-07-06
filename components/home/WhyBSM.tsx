@@ -35,16 +35,43 @@ const reasons: { icon: IconName; title: string; body: string }[] = [
   },
 ];
 
+const mobileBullets = [
+  { icon: "map", title: "PAN India Reach", desc: "PAN India execution in 400+ cities" },
+  { icon: "megaphone", title: "coordinated agency", desc: "Single agency for OOH, BTL, Transit & Retail" },
+  { icon: "handshake", title: "Dedicated managers", desc: "Dedicated campaign managers" },
+  { icon: "rupee", title: "Transparent Pricing", desc: "Transparent pricing" },
+  { icon: "lightning", title: "End-to-end execution", desc: "End-to-end execution" },
+];
+
 export function WhyBSM() {
   return (
     <section className="bg-surface-2">
-      <div className="container-bsm py-16">
+      <div className="container-bsm py-6 md:py-16">
         <SectionHeader
           title="Why 100+ brands choose Big Street Media"
           subhead="Not just an agency. Your dedicated campaign partner."
         />
 
-        <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" stagger={0.07}>
+        {/* Mobile compact bullet points */}
+        <div className="mt-6 md:hidden flex flex-col gap-4">
+          {mobileBullets.map((b) => {
+            const Icon = icons[b.icon as IconName];
+            return (
+              <div key={b.title} className="flex items-start gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-amber/10 text-amber-deep">
+                  <Icon size={14} weight="bold" />
+                </span>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-sm text-ink leading-tight">✓ {b.title}</span>
+                  <span className="text-xs text-body leading-normal mt-0.5">{b.desc}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Desktop/Tablet card grid */}
+        <RevealGroup className="hidden md:grid mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" stagger={0.07}>
           {reasons.map((r) => {
             const Icon = icons[r.icon];
             return (

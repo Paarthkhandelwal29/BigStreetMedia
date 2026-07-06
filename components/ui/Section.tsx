@@ -28,7 +28,7 @@ export function SectionHeader({
       {eyebrow && <span className="eyebrow">{eyebrow}</span>}
       <h2
         className={cn(
-          "max-w-3xl text-balance text-3xl font-bold leading-[1.08] md:text-[2.75rem]",
+          "max-w-3xl text-balance text-[32px] font-bold leading-[1.1] md:text-[2.75rem] md:leading-[1.08]",
           // Amber left-border accent only on light-background sections and left-aligned headings
           !dark && align !== "center" && "section-heading",
           dark ? "text-white" : "text-ink"

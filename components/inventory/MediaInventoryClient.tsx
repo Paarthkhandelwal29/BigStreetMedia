@@ -11,6 +11,8 @@ import {
   FunnelSimple,
   CaretLeft,
   CaretRight,
+  ArrowsOut,
+  SquaresFour,
 } from "@phosphor-icons/react/dist/ssr";
 
 type InventoryViewItem = {
@@ -166,10 +168,89 @@ export function MediaInventoryClient({
               )}
             </AnimatePresence>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-0 divide-y divide-[#f0f0f0] md:grid-cols-2 md:gap-4 md:divide-none xl:grid-cols-3">
               {filtered.map((item) => (
                 <div key={item.id} className="h-full">
-                  <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[#eeeeee] bg-surface transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(0,0,0,0.06)]">
+                  {/* Mobile High-Density Row View */}
+                  <article className="flex md:hidden items-center gap-3.5 border-b border-[#f0f0f0] py-3.5 bg-surface transition-colors duration-200">
+                    {/* Left: Thumbnail image button */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openLightbox(
+                          filtered.findIndex((entry) => entry.id === item.id),
+                        )
+                      }
+                      disabled={!item.imageUrl}
+                      className="relative block aspect-[16/10] w-[96px] shrink-0 overflow-hidden rounded-lg bg-surface-2 text-left disabled:cursor-default"
+                    >
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.landmark}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-[9px] uppercase tracking-wider text-muted font-semibold">
+                          No Photo
+                        </div>
+                      )}
+                      <span className="absolute left-1.5 top-1.5 rounded-full bg-amber/90 px-1.5 py-0.5 text-[8px] font-bold text-ink uppercase tracking-wide">
+                        {item.type.split(" ")[0]}
+                      </span>
+                    </button>
+
+                    {/* Middle: Details content */}
+                    <div className="flex-1 min-w-0 pr-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openLightbox(
+                            filtered.findIndex((entry) => entry.id === item.id),
+                          )
+                        }
+                        disabled={!item.imageUrl}
+                        className="text-left block w-full focus:outline-none cursor-pointer"
+                      >
+                        <h3 className="font-display text-xs font-bold text-ink leading-snug line-clamp-1">
+                          {item.landmark}
+                        </h3>
+                        <p className="text-[10px] text-body/80 mt-0.5 line-clamp-1">
+                          {item.city}
+                        </p>
+                      </button>
+
+                      <div className="mt-1.5 flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5 text-[10px] text-body/70">
+                          <SquaresFour size={12} className="text-amber-deep shrink-0" />
+                          <span className="line-clamp-1">{item.type}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[10px] text-body/70">
+                          <ArrowsOut size={12} className="text-amber-deep shrink-0" />
+                          <span className="line-clamp-1">{item.size}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: Chevron arrow */}
+                    {item.imageUrl && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openLightbox(
+                            filtered.findIndex((entry) => entry.id === item.id),
+                          )
+                        }
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-body hover:text-ink hover:bg-surface-3 transition-colors cursor-pointer"
+                        aria-label="View Photo"
+                      >
+                        <CaretRight size={14} weight="bold" />
+                      </button>
+                    )}
+                  </article>
+
+                  {/* Desktop/Tablet Card View */}
+                  <article className="hidden md:flex h-full flex-col overflow-hidden rounded-2xl border border-[#eeeeee] bg-surface transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(0,0,0,0.06)]">
                     <button
                       type="button"
                       onClick={() =>

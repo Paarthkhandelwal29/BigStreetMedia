@@ -96,7 +96,7 @@ function estimateCampaignROI({
 
 function toggleClass(isActive: boolean) {
   const base =
-    "min-h-11 cursor-pointer rounded-full border px-4 py-2 text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 active:scale-[0.98]";
+    "min-h-9 md:min-h-11 cursor-pointer rounded-full border px-3 py-1.5 md:px-4 md:py-2 text-[12px] md:text-sm font-medium transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 active:scale-[0.98]";
 
   return isActive
     ? `${base} border-amber bg-amber text-ink shadow-[inset_0_-1px_0_rgba(17,17,17,0.12)] hover:bg-amber-deep`
@@ -124,7 +124,7 @@ function ToggleGroup<T extends string | number>({
   onChange,
 }: ToggleGroupProps<T>) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <div
         id={id}
         className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted"
@@ -166,14 +166,14 @@ function Metric({
   suffix?: string;
 }) {
   return (
-    <div className="border-t border-[#f0f0f0] pt-5 first:border-t-0 first:pt-0">
-      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+    <div className="border-t border-[#f0f0f0] pt-3.5 md:pt-5 first:border-t-0 first:pt-0">
+      <p className="text-[10px] md:text-[0.68rem] font-semibold uppercase tracking-[0.12em] md:tracking-[0.18em] text-muted">
         {label}
       </p>
       <div className="mt-2 flex items-end gap-2">
         <AnimatedCounter
           value={value}
-          className="text-3xl font-semibold leading-none text-ink md:text-4xl"
+          className="text-2xl md:text-4xl font-semibold leading-none text-ink"
         />
         {suffix ? (
           <span className="pb-1 text-sm font-medium text-muted">{suffix}</span>
@@ -205,23 +205,23 @@ export function ROIEstimator() {
   );
 
   return (
-    <section id="roi-estimator" className="bg-surface-2 py-16">
+    <section id="roi-estimator" className="bg-surface-2 py-6 md:py-16">
       <div className="container-bsm">
         <Reveal className="max-w-3xl">
-          <h2 className="mt-5 max-w-2xl font-display text-4xl font-semibold leading-tight tracking-tight text-ink md:text-6xl">
+          <h2 className="mt-3 md:mt-5 max-w-2xl font-display text-2xl md:text-6xl font-semibold leading-tight tracking-tight text-ink">
             Estimate Your Campaign Reach
           </h2>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-body">
+          <p className="mt-2 md:mt-5 max-w-2xl text-[13px] md:text-lg leading-relaxed md:leading-8 text-body">
             Get a rough sense of what your budget can achieve across India.
           </p>
         </Reveal>
 
         <Reveal
           delay={0.12}
-          className="mt-12 rounded-[1.6rem] bg-surface-2 p-2 ring-1 ring-black/5"
+          className="mt-6 md:mt-12 rounded-[1.6rem] bg-surface-2 p-1.5 md:p-2 ring-1 ring-black/5"
         >
-          <div className="grid gap-8 rounded-[1.25rem] bg-surface p-6 md:grid-cols-[1.08fr_0.92fr] md:gap-10 md:p-10">
-            <div className="space-y-8">
+          <div className="grid gap-5 rounded-[1.25rem] bg-surface p-4 md:grid-cols-[1.08fr_0.92fr] md:gap-10 md:p-10">
+            <div className="space-y-5 md:space-y-8">
               <ToggleGroup
                 id="roi-campaign-type"
                 label="Campaign type"
@@ -264,13 +264,13 @@ export function ROIEstimator() {
               />
             </div>
 
-            <aside className="rounded-[1rem] border border-[#f0f0f0] bg-surface-2 p-5 md:p-7">
-              <div className="flex items-center justify-between gap-4 border-b border-[#f0f0f0] pb-5">
+            <aside className="rounded-[1rem] border border-[#f0f0f0] bg-surface-2 p-4 md:p-7">
+              <div className="flex items-center justify-between gap-4 border-b border-[#f0f0f0] pb-4 md:pb-5">
                 <div>
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <p className="text-[10px] md:text-[0.68rem] font-semibold uppercase tracking-[0.12em] md:tracking-[0.18em] text-muted">
                     Live estimate
                   </p>
-                  <p className="mt-2 text-sm leading-6 text-body">
+                  <p className="mt-1 md:mt-2 text-xs md:text-sm leading-normal md:leading-6 text-body">
                     Based on Indian OOH planning benchmarks.
                   </p>
                 </div>
@@ -280,7 +280,7 @@ export function ROIEstimator() {
                 />
               </div>
 
-              <div className="mt-6 space-y-5">
+              <div className="mt-4 md:mt-6 space-y-4 md:space-y-5">
                 <Metric
                   label="Estimated Impressions"
                   value={`${formatIndianNumber(estimate.impressions)}+`}

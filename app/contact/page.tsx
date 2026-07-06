@@ -52,10 +52,6 @@ export default function ContactPage() {
             </ul>
           </div>
 
-          {/* map placeholder */}
-          <div className="flex aspect-video items-center justify-center rounded-[1.5rem] border border-[#f0f0f0] bg-surface-2 text-sm uppercase tracking-widest text-muted">
-            Map — {site.region}
-          </div>
         </div>
       </div>
     </section>
