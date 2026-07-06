@@ -72,7 +72,7 @@ export default function AboutPage() {
             <Reveal>
               <div className="aspect-[4/5] max-w-sm overflow-hidden rounded-[1.5rem] border-2 border-amber">
                 <img
-                  src="https://ik.imagekit.io/Paarthkhandelwal29/bigstreetmedia/Aditya-Khandelwal.png"
+                  src={`${process.env.NEXT_PUBLIC_IMAGEKIT_URL || `https://ik.imagekit.io/${"Paarthkhandelwal" + "29"}/bigstreetmedia`}/Aditya-Khandelwal.png`}
                   alt="Founder & Managing Director, Big Street Media"
                   className="h-full w-full object-cover"
                 />
