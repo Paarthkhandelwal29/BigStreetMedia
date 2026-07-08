@@ -194,22 +194,26 @@
 
 @keyframes marquee-left-new {
   0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(-100%, 0, 0); }
 }
 
 @keyframes marquee-right-new {
-  0% { transform: translate3d(-50%, 0, 0); }
+  0% { transform: translate3d(-100%, 0, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
 
 .animate-marquee-left-new {
   animation: marquee-left-new 45s linear infinite;
   will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .animate-marquee-right-new {
   animation: marquee-right-new 45s linear infinite;
   will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (min-width: 768px) {
@@ -224,11 +228,6 @@
   .animate-marquee-right-new {
     animation-duration: 60s;
   }
-}
-
-.marquee-row:hover .animate-marquee-left-new,
-.marquee-row:hover .animate-marquee-right-new {
-  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {

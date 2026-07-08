@@ -4,7 +4,6 @@ import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { CampaignGallery } from "@/components/home/CampaignGallery";
 import { WhyBSM } from "@/components/home/WhyBSM";
 import { ROIEstimator } from "@/components/home/ROIEstimator";
-import { ImpactNumbers } from "@/components/home/ImpactNumbers";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { LocalBusinessSchema } from "@/components/shared/Schema";
 
@@ -18,7 +17,6 @@ export default function HomePage() {
       <CampaignGallery />
       <WhyBSM />
       <ROIEstimator />
-      <ImpactNumbers />
       <FinalCTA />
     </>
   );

@@ -166,17 +166,17 @@ function Metric({
   suffix?: string;
 }) {
   return (
-    <div className="border-t border-[#f0f0f0] pt-3.5 md:pt-5 first:border-t-0 first:pt-0">
-      <p className="text-[10px] md:text-[0.68rem] font-semibold uppercase tracking-[0.12em] md:tracking-[0.18em] text-muted">
+    <div className="border-l border-[#f0f0f0] pl-2.5 md:border-l-0 md:pl-0 md:border-t md:pt-5 first:border-l-0 first:pl-0 first:md:border-t-0 first:md:pt-0">
+      <p className="text-[9px] md:text-[0.68rem] font-semibold uppercase tracking-[0.06em] md:tracking-[0.18em] text-muted leading-tight">
         {label}
       </p>
-      <div className="mt-2 flex items-end gap-2">
+      <div className="mt-1 md:mt-2 flex items-end gap-1 md:gap-2">
         <AnimatedCounter
           value={value}
-          className="text-2xl md:text-4xl font-semibold leading-none text-ink"
+          className="font-mono text-xs sm:text-sm md:text-4xl font-semibold leading-none text-ink"
         />
         {suffix ? (
-          <span className="pb-1 text-sm font-medium text-muted">{suffix}</span>
+          <span className="pb-0.5 text-[9px] sm:text-sm font-medium text-muted">{suffix}</span>
         ) : null}
       </div>
     </div>
@@ -280,9 +280,9 @@ export function ROIEstimator() {
                 />
               </div>
 
-              <div className="mt-4 md:mt-6 space-y-4 md:space-y-5">
+              <div className="mt-4 md:mt-6 grid grid-cols-3 gap-2 md:block md:space-y-5">
                 <Metric
-                  label="Estimated Impressions"
+                  label="Est. Impressions"
                   value={`${formatIndianNumber(estimate.impressions)}+`}
                 />
                 <Metric
@@ -295,12 +295,26 @@ export function ROIEstimator() {
                 />
 
                 <div className="border-t border-[#f0f0f0] pt-5">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted mb-2.5">
                     Recommended Media Mix
                   </p>
-                  <p className="mt-2 text-base font-semibold leading-7 text-ink">
-                    {estimate.mediaMix}
-                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {estimate.mediaMix.split("·").map((item) => {
+                      const trimmed = item.trim();
+                      const parts = trimmed.split(" ");
+                      const percentage = parts[0];
+                      const label = parts.slice(1).join(" ");
+                      return (
+                        <span
+                          key={trimmed}
+                          className="inline-flex shrink-0 items-center rounded-lg bg-surface border border-[#e5e5e5] px-2 py-1 text-[11px] shadow-sm"
+                        >
+                          <span className="font-mono font-extrabold text-ink mr-1">{percentage}</span>
+                          <span className="text-[10px] text-muted">{label}</span>
+                        </span>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 

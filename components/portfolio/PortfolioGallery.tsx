@@ -313,7 +313,7 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
 
           <div>
             {sortedFiltered.length > 0 ? (
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {sortedFiltered.map((item, i) => (
                   <button
                     key={item.id}
@@ -337,32 +337,32 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                           />
                           <div className="pointer-events-none absolute inset-0 bg-ink/20" />
                           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                            <span className="flex items-center gap-2 rounded-full bg-white/92 px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink shadow-sm">
-                              <PlayCircle size={18} weight="fill" />
+                            <span className="flex items-center gap-1 sm:gap-2 rounded-full bg-white/92 px-2 py-1 sm:px-3 sm:py-2 text-[9px] sm:text-xs font-semibold uppercase tracking-[0.14em] text-ink shadow-sm">
+                              <PlayCircle size={14} weight="fill" className="sm:h-[18px] sm:w-[18px]" />
                               Video
                             </span>
                           </div>
                         </>
                       )}
-                      <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
+                      <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-ink sm:left-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[10px]">
                         {item.category}
                       </span>
                     </div>
-                    <span className="block p-4">
-                      <span className="flex items-center justify-between gap-3">
-                        <span className="block font-display text-sm font-semibold text-ink">
+                    <span className="block p-3 sm:p-4">
+                      <span className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                        <span className="block font-display text-xs sm:text-sm font-semibold text-ink line-clamp-1">
                           {item.brandName}
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded-full border border-[#ececec] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
+                        <span className="inline-flex w-fit items-center gap-0.5 sm:gap-1 rounded-full border border-[#ececec] px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
                           {item.mediaType === "video" ? (
-                            <PlayCircle size={14} weight="fill" />
+                            <PlayCircle size={10} weight="fill" className="sm:h-[14px] sm:w-[14px]" />
                           ) : (
-                            <ImageSquare size={14} weight="fill" />
+                            <ImageSquare size={10} weight="fill" className="sm:h-[14px] sm:w-[14px]" />
                           )}
                           {item.mediaType}
                         </span>
                       </span>
-                      <span className="mt-1 block text-xs text-muted">
+                      <span className="mt-1 block text-[10px] sm:text-xs text-muted line-clamp-1">
                         {item.format} · {item.city}
                       </span>
                     </span>

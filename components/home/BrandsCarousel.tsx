@@ -46,26 +46,31 @@ function MarqueeRow({
   brandsList: Brand[];
   direction: "left" | "right";
 }) {
-  const marqueeItems = useMemo(() => [...brandsList, ...brandsList], [brandsList]);
   const animClass = direction === "left" ? "animate-marquee-left-new" : "animate-marquee-right-new";
 
   return (
-    <div className="marquee-row overflow-x-hidden overflow-y-visible py-2.5 md:py-6">
-      {/* 
-        The parent flex wrapper holds the single scrolling container.
-        Using pr-[40px] md:pr-[60px] lg:pr-[80px] on the container ensures 
-        that the trailing gap after the 28th item matches the inner gaps.
-        This provides a mathematically perfect loop when translating by -50%.
-        Using overflow-y-visible ensures scaled logos are not clipped vertically.
-      */}
-      <div className="marquee-mask w-full overflow-x-hidden overflow-y-visible">
-        <div className={`flex w-max shrink-0 items-center gap-[40px] md:gap-[60px] lg:gap-[80px] pr-[40px] md:pr-[60px] lg:pr-[80px] ${animClass}`}>
-          {marqueeItems.map((b, i) => (
+    <div className="marquee-row overflow-x-hidden overflow-y-visible py-2.5 md:py-6 pointer-events-none">
+      <div className="marquee-mask w-full overflow-x-hidden overflow-y-visible flex select-none">
+        {/* Track 1 */}
+        <div className={`flex shrink-0 items-center gap-[40px] md:gap-[60px] lg:gap-[80px] pr-[40px] md:pr-[60px] lg:pr-[80px] ${animClass}`}>
+          {brandsList.map((b, i) => (
             <div
-              key={`${b.name}-${i}`}
+              key={`${b.name}-t1-${i}`}
               className="flex items-center justify-center h-[50px] md:h-[62px] lg:h-[75px]"
             >
-              <BrandLogo name={b.name} logo={b.logo} scale={b.scale} />
+              <BrandLogo name={b.name} logo={b.logo} scale={b.scale} priority={true} />
+            </div>
+          ))}
+        </div>
+
+        {/* Track 2 (Identical duplicate for seamless infinite loop) */}
+        <div className={`flex shrink-0 items-center gap-[40px] md:gap-[60px] lg:gap-[80px] pr-[40px] md:pr-[60px] lg:pr-[80px] ${animClass}`} aria-hidden="true">
+          {brandsList.map((b, i) => (
+            <div
+              key={`${b.name}-t2-${i}`}
+              className="flex items-center justify-center h-[50px] md:h-[62px] lg:h-[75px]"
+            >
+              <BrandLogo name={b.name} logo={b.logo} scale={b.scale} priority={true} />
             </div>
           ))}
         </div>

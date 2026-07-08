@@ -67,60 +67,43 @@ export function HeroSection() {
 
   return (
     <section className="relative flex min-h-[55dvh] md:min-h-[100dvh] flex-col items-center justify-between overflow-hidden">
-      <div className="absolute inset-0 bg-ink" aria-hidden />
-      <div
-        className="absolute inset-0 opacity-50"
-        aria-hidden
-        style={{
-          backgroundImage:
-            "radial-gradient(60% 60% at 50% 0%, rgba(255,193,7,0.22), transparent 70%), radial-gradient(50% 50% at 85% 90%, rgba(255,179,0,0.12), transparent 70%)",
-        }}
-      />
-      <div
-        className="absolute inset-0 opacity-[0.06]"
-        aria-hidden
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-          maskImage:
-            "radial-gradient(circle at 50% 40%, black, transparent 75%)",
-        }}
-      />
-      <div
-        className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50"
-        aria-hidden
-      />
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0 z-0 bg-ink">
+        <img
+          src="https://ik.imagekit.io/Paarthkhandelwal29/bigstreetmedia/ChatGPT%20Image%20Jul%208,%202026,%2011_36_04%20PM.png"
+          alt="Big Street Media Billboard Background"
+          className="h-full w-full object-cover object-center opacity-30"
+        />
+        {/* Radial dark vignette overlay centered behind the text to enhance contrast */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(17,17,17,0.88)_0%,rgba(17,17,17,0.55)_60%,rgba(17,17,17,0.8)_100%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70" />
+      </div>
 
       <div className="container-bsm relative z-10 flex flex-1 flex-col items-center justify-center pt-16 md:pt-28 pb-4 md:pb-6 text-center">
         <motion.span
           {...rise(0)}
-          className="eyebrow border-white/15 bg-white/5 text-white/80"
+          className="relative z-10 eyebrow border-white/15 bg-white/5 text-white/80"
         >
           Established 2004 · PAN India
         </motion.span>
 
         <motion.h1
           {...rise(0.08)}
-          className="mt-3 md:mt-5 max-w-4xl text-balance text-[32px] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] md:leading-[1.05] text-white"
+          className="relative z-10 mt-3 md:mt-5 max-w-4xl text-balance text-[32px] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] md:leading-[1.05] text-white"
         >
-          Creating Visibility.
-          <br />
-          Building <span className="text-amber">Brands.</span>
+          <span className="text-amber">BIG STREET.</span> Bigger Impact. PAN-India.
         </motion.h1>
 
         <motion.p
           {...rise(0.16)}
-          className="hidden md:block mt-3 md:mt-5 max-w-xl text-pretty text-[15px] leading-relaxed text-white/70 sm:text-base md:text-lg"
+          className="relative z-10 mt-3 md:mt-5 max-w-xl text-pretty text-[15px] leading-relaxed text-white/70 sm:text-base md:text-lg"
         >
-          From a single hoarding to a 400-city campaign — Big Street Media
-          executes advertising that reaches your customer wherever they live,
-          work, and travel.
+          Get a rough sense of what your budget can achieve across India.
         </motion.p>
 
         <motion.div
           {...rise(0.24)}
-          className="mt-5 md:mt-8 flex flex-col gap-2 sm:gap-3 sm:flex-row sm:justify-center w-full max-w-[280px] sm:max-w-none"
+          className="relative z-10 mt-5 md:mt-8 flex flex-col gap-2 sm:gap-3 sm:flex-row sm:justify-center w-full max-w-[280px] sm:max-w-none"
         >
           <ButtonLink href="/services">Explore Services</ButtonLink>
           <ButtonLink href="/contact" variant="ghost-light">

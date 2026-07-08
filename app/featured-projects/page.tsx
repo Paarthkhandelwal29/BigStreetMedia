@@ -7,7 +7,7 @@ import { caseStudies } from "@/data/caseStudies";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 
 export const metadata: Metadata = {
-  title: "Case Studies — Real Campaigns, Real Results",
+  title: "Featured Projects — Real Campaigns, Real Results",
   description:
     "How Big Street Media helped India's top brands hit their objectives — strategy, execution, and measured results across OOH, transit, events and retail.",
 };
@@ -17,7 +17,7 @@ export default function CaseStudiesPage() {
     <>
       <PageHero
         compact
-        eyebrow="Case Studies"
+        eyebrow="Featured Projects"
         title="Real campaigns. Real results."
         subhead="Here's how we helped some of India's top brands achieve their objectives — starting with their problem, not our activity."
       />
@@ -27,7 +27,7 @@ export default function CaseStudiesPage() {
           {caseStudies.map((cs) => (
             <RevealItem key={cs.slug} className="h-full">
               <Link
-                href={`/case-studies/${cs.slug}`}
+                href={`/featured-projects/${cs.slug}`}
                 className="group flex h-full flex-col rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-7 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.06)]"
               >
                 <div className="flex items-center justify-between">

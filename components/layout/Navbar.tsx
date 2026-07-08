@@ -79,7 +79,7 @@ export function Navbar() {
 
   const servicesActive = pathname.startsWith("/services");
   const portfolioActive = pathname === "/portfolio";
-  const caseStudiesActive = pathname.startsWith("/case-studies");
+  const caseStudiesActive = pathname.startsWith("/featured-projects");
   const mediaInventoryActive = pathname === "/media-inventory";
   const aboutActive = pathname === "/about";
 
@@ -160,8 +160,8 @@ export function Navbar() {
 
           {/* Case Studies */}
           <li>
-            <Link href="/case-studies" className={navLinkClass(caseStudiesActive, lightText)}>
-              Case Studies
+            <Link href="/featured-projects" className={navLinkClass(caseStudiesActive, lightText)}>
+              Featured Projects
             </Link>
           </li>
 
@@ -250,7 +250,7 @@ export function Navbar() {
                     { label: "Services", href: "/#services", icon: List },
                     { label: "Media Inventory", href: "/media-inventory", icon: Database },
                     { label: "Portfolio", href: "/portfolio", icon: Images },
-                    { label: "Case Studies", href: "/case-studies", icon: ChartBar },
+                    { label: "Featured Projects", href: "/featured-projects", icon: ChartBar },
                     { label: "About Us", href: "/about", icon: Info },
                   ].map((link) => {
                     const Icon = link.icon;
