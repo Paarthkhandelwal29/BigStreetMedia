@@ -29,12 +29,12 @@ function CampaignCard({
         <img
           src={item.image}
           alt=""
-          className="h-full w-full object-cover opacity-70 mix-blend-luminosity transition-all duration-750 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105 group-hover:opacity-90 group-hover:mix-blend-normal"
+          className="h-full w-full object-cover transition-all duration-750 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
         />
         {/* Brand color overlay wash */}
         <div
           className={cn(
-            "absolute inset-0 bg-gradient-to-br mix-blend-multiply opacity-50 transition-opacity duration-500 group-hover:opacity-20",
+            "absolute inset-0 bg-gradient-to-br mix-blend-multiply opacity-30 transition-opacity duration-500 group-hover:opacity-15",
             item.gradient
           )}
           aria-hidden

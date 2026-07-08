@@ -45,15 +45,15 @@ export default async function CaseStudyPage({
   const dbItems = await listPortfolio().catch(() => []);
   
   // Map local hardcoded portfolio items as robust fallback
+  // Items without an image use cs.image as fallback so portfolio items show even without CMS uploads
   const localItemsMapped = localPortfolio
-    .filter((item) => item.image)
     .map((item) => ({
       id: item.id,
       brandName: item.brand,
       category: item.category,
       format: item.format,
       city: item.city,
-      mediaUrl: item.image!,
+      mediaUrl: item.image ?? cs.image,
       mediaType: "image" as const,
       featured: !!item.featured,
       createdAt: new Date().toISOString(),
@@ -75,8 +75,8 @@ export default async function CaseStudyPage({
     return itemBrand.includes(csBrand) || csBrand.includes(itemBrand);
   });
 
-  // Fallback to the main project image if no photos exist
-  let galleryPhotos = [...matchedPhotos];
+  // Cap at 4 photos and fallback to main project image if none matched
+  let galleryPhotos = [...matchedPhotos].slice(0, 4);
   if (galleryPhotos.length === 0 && cs.image) {
     galleryPhotos = [
       {
