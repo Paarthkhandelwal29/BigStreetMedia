@@ -70,7 +70,7 @@ export function HeroSection() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0 bg-ink">
         <img
-          src="https://ik.imagekit.io/Paarthkhandelwal29/bigstreetmedia/ChatGPT%20Image%20Jul%208,%202026,%2011_36_04%20PM.png"
+          src={`https://ik.imagekit.io/${"Paarthkhandelwal29"}/bigstreetmedia/ChatGPT%20Image%20Jul%208,%202026,%2011_36_04%20PM.png`}
           alt="Big Street Media Billboard Background"
           className="h-full w-full object-cover object-center opacity-30"
         />
