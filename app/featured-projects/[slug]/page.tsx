@@ -9,6 +9,8 @@ import { AnimatedCounter } from "@/components/shared/AnimatedCounter";
 import { caseStudies, caseStudyBySlug } from "@/data/caseStudies";
 import { ArrowUpRight, Quotes } from "@phosphor-icons/react/dist/ssr";
 import { CaseStudyGallery } from "@/components/shared/CaseStudyGallery";
+import { listPortfolio } from "@/lib/cms/store";
+import { portfolio as localPortfolio } from "@/data/portfolio";
 
 export function generateStaticParams() {
   return caseStudies.map((c) => ({ slug: c.slug }));
@@ -38,6 +40,59 @@ export default async function CaseStudyPage({
   if (!cs) notFound();
 
   const related = caseStudies.filter((c) => c.slug !== cs.slug).slice(0, 3);
+
+  // Fetch portfolio items from CMS repository
+  const dbItems = await listPortfolio().catch(() => []);
+  
+  // Map local hardcoded portfolio items as robust fallback
+  const localItemsMapped = localPortfolio
+    .filter((item) => item.image)
+    .map((item) => ({
+      id: item.id,
+      brandName: item.brand,
+      category: item.category,
+      format: item.format,
+      city: item.city,
+      mediaUrl: item.image!,
+      mediaType: "image" as const,
+      featured: !!item.featured,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }));
+
+  const allPortfolio = [...dbItems];
+  const dbIds = new Set(dbItems.map((item) => item.id));
+  for (const item of localItemsMapped) {
+    if (!dbIds.has(item.id)) {
+      allPortfolio.push(item);
+    }
+  }
+
+  // Filter photos matching this case study brand (case-insensitive)
+  const matchedPhotos = allPortfolio.filter((item) => {
+    const itemBrand = item.brandName.toLowerCase();
+    const csBrand = cs.brand.toLowerCase();
+    return itemBrand.includes(csBrand) || csBrand.includes(itemBrand);
+  });
+
+  // Fallback to the main project image if no photos exist
+  let galleryPhotos = [...matchedPhotos];
+  if (galleryPhotos.length === 0 && cs.image) {
+    galleryPhotos = [
+      {
+        id: `fallback-${cs.slug}`,
+        brandName: cs.brand,
+        category: "OOH" as const,
+        format: cs.campaignType,
+        city: cs.brief.cities.split(",")[0].trim(),
+        mediaUrl: cs.image,
+        mediaType: "image" as const,
+        featured: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    ];
+  }
 
   return (
     <>
@@ -203,19 +258,8 @@ export default async function CaseStudyPage({
           </div>
         </section>
 
-        {/* Gallery placeholder */}
-        <section className="container-bsm py-20">
-          <SectionHeader eyebrow="Campaign Gallery" title="On the ground" subhead="Real campaign photography drops in here once assets are added." />
-          <RevealGroup className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4" stagger={0.05}>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <RevealItem key={i}>
-                <div className="flex aspect-square items-center justify-center rounded-[1.25rem] border border-[#f0f0f0] bg-surface-2 text-xs uppercase tracking-widest text-muted">
-                  {cs.brand} · {i + 1}
-                </div>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </section>
+        {/* Campaign Gallery */}
+        <CaseStudyGallery brand={cs.brand} photos={galleryPhotos} />
 
         {/* Testimonial */}
         {cs.testimonial && (
@@ -427,7 +471,7 @@ export default async function CaseStudyPage({
         )}
 
         {/* Project Gallery */}
-        <CaseStudyGallery brand={cs.brand} />
+        <CaseStudyGallery brand={cs.brand} photos={galleryPhotos} isMobile />
 
         {/* Testimonial */}
         {cs.testimonial && (
