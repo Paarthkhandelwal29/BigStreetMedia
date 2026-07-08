@@ -72,12 +72,12 @@ export function BrandsGrid() {
             return cs ? (
               <Link
                 key={b.name}
-                href={`/case-studies/${cs.slug}`}
+                href={`/featured-projects/${cs.slug}`}
                 className={className}
               >
                 {content}
                 <span className="absolute right-3 top-3 rounded-full bg-amber/15 px-2 py-0.5 text-[10px] font-semibold text-amber-deep">
-                  Case Study
+                  Featured Project
                 </span>
               </Link>
             ) : (

@@ -6,7 +6,7 @@ import { Phone, EnvelopeSimple, WhatsappLogo, MapPin } from "@phosphor-icons/rea
 
 const company = [
   { label: "About", href: "/about" },
-  { label: "Case Studies", href: "/case-studies" },
+  { label: "Featured Projects", href: "/featured-projects" },
   { label: "Media Inventory", href: "/media-inventory" },
   { label: "Contact", href: "/contact" },
 ];

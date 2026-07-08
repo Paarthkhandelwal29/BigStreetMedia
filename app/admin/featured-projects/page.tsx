@@ -37,9 +37,9 @@ export default async function CaseStudiesAdminPage({
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="eyebrow">Admin</p>
-          <h1 className="mt-3 text-3xl font-bold text-ink">Case Studies</h1>
+          <h1 className="mt-3 text-3xl font-bold text-ink">Featured Projects</h1>
           <p className="mt-3 text-sm text-muted">
-            Manage case study records. Each case study can include strategy,
+            Manage featured project records. Each project can include strategy,
             execution, media labels, and results.
           </p>
         </div>
@@ -51,10 +51,10 @@ export default async function CaseStudiesAdminPage({
             Dashboard
           </Link>
           <Link
-            href="/admin/case-studies/new"
+            href="/admin/featured-projects/new"
             className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white"
           >
-            Add case study
+            Add project
           </Link>
         </div>
       </div>
@@ -136,7 +136,7 @@ export default async function CaseStudiesAdminPage({
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
                     <Link
-                      href={`/admin/case-studies/${item.id}`}
+                      href={`/admin/featured-projects/${item.id}`}
                       className="text-sm font-semibold text-ink underline underline-offset-4"
                     >
                       Edit
@@ -145,7 +145,7 @@ export default async function CaseStudiesAdminPage({
                       action={async () => {
                         "use server";
                         await deleteCaseStudy(item.id);
-                        revalidatePath("/admin/case-studies");
+                        revalidatePath("/admin/featured-projects");
                       }}
                     >
                       <button
@@ -165,7 +165,7 @@ export default async function CaseStudiesAdminPage({
                   colSpan={7}
                   className="px-4 py-10 text-center text-sm text-muted"
                 >
-                  No case studies found.
+                  No featured projects found.
                 </td>
               </tr>
             )}

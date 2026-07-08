@@ -15,6 +15,13 @@ export type CaseStudy = {
   media: string[];
   results: { label: string; value: string }[];
   testimonial?: { quote: string; name: string; title: string };
+  image: string;
+  icon: "ooh" | "transit" | "events";
+  gradient: string;
+  description: string;
+  overview?: string;
+  servicesDelivered?: { title: string; description: string }[];
+  executionProcess?: string[];
 };
 
 export const caseStudies: CaseStudy[] = [
@@ -54,6 +61,37 @@ export const caseStudies: CaseStudy[] = [
       name: "Marketing Lead",
       title: "V-Mart",
     },
+    image: "/images/v_mart_launch.png",
+    icon: "ooh",
+    gradient: "from-[#ff4e50] to-[#f9d423]",
+    description: "High-impact 360° launch campaign spanning OOH, transit wraps, and signature Varanasi boat branding.",
+    overview: "For several years, Big Street Media has partnered with V-Mart to execute marketing campaigns across multiple cities in India.\n\nOur role has ranged from launching new retail stores and executing outdoor advertising campaigns to managing transit branding and rural marketing initiatives.\n\nEach campaign required meticulous planning, vendor coordination, field execution and transparent reporting to ensure every activity was delivered according to brand standards.",
+    servicesDelivered: [
+      {
+        title: "Store Launch Activations",
+        description: "Launching new V-Mart stores with complete on-ground execution including branding, event setup and promotional activities.",
+      },
+      {
+        title: "Outdoor Advertising",
+        description: "Identifying premium advertising locations, leasing media spaces, installation and campaign monitoring.",
+      },
+      {
+        title: "Transit Branding",
+        description: "Branding auto-rickshaws, e-rickshaws and boats across multiple cities with geo-tagged reporting.",
+      },
+      {
+        title: "Rural Marketing",
+        description: "Executing promotional campaigns to increase brand visibility in high-potential rural markets.",
+      },
+    ],
+    executionProcess: [
+      "Brief",
+      "Planning & Coordination",
+      "Production & Procurement",
+      "On-ground Execution",
+      "Quality Verification",
+      "Reporting",
+    ],
   },
   {
     slug: "extramarks-exhibition",
@@ -82,6 +120,37 @@ export const caseStudies: CaseStudy[] = [
       { label: "Cities Covered", value: "2" },
       { label: "Impressions", value: "60 Lakh+" },
       { label: "Campaign Duration", value: "28 Days" },
+    ],
+    image: "/images/ooh_hoarding.png",
+    icon: "ooh",
+    gradient: "from-[#111111] via-[#1c1c1c] to-[#2d2a1f]",
+    description: "High-visibility hoarding campaign across prime arterial roads and education corridors.",
+    overview: "Extramarks wanted to create an outstanding brand presence at a highly crowded education expo in Delhi and Lucknow, while reinforcing its city-wide reach during the critical school and coaching admission season.\n\nOur partnership focused on delivering an end-to-end activation model, wrapping major corridors with outdoor media and implementing interactive stalls to capture, qualify, and deliver high-potential student leads to the sales team.",
+    servicesDelivered: [
+      {
+        title: "Exhibition Stall Design & Fabrication",
+        description: "Designing and constructing an engaging exhibition stall on the busy expo floor with integrated interactive lead capture systems.",
+      },
+      {
+        title: "High-Impact OOH Campaigns",
+        description: "Deploying prime billboard and hoarding placements near major schools, coaching hubs, and high-traffic student corridors.",
+      },
+      {
+        title: "Lead Generation Strategy",
+        description: "Implementing data capture workflows to gather and qualify prospective student leads on-ground during the admission season.",
+      },
+      {
+        title: "Brand Positioning",
+        description: "Sustaining city-wide awareness and top-of-mind brand recall throughout the critical educational admission window.",
+      },
+    ],
+    executionProcess: [
+      "Brief",
+      "Stall Fabrication",
+      "OOH Installation",
+      "Expo Activation",
+      "Quality Check",
+      "Reporting",
     ],
   },
   {
@@ -112,6 +181,37 @@ export const caseStudies: CaseStudy[] = [
       { label: "Impressions", value: "1.2 Crore+" },
       { label: "Campaign Duration", value: "56 Days" },
     ],
+    image: "/images/transit_wrap.png",
+    icon: "transit",
+    gradient: "from-[#0d2818] via-[#1a3a2a] to-[#111111]",
+    description: "Auto rickshaw wrap campaign delivering hyper-local reach across high-traffic zones.",
+    overview: "Cashify aimed to drive massive city-wide awareness on a performance budget. The campaign focused on establishing high-frequency repetition among daily commuters without incurring the premium costs associated with traditional static hoardings.\n\nBy leveraging transit media as a canvas, we created a mobile outdoor network that moved with the target audience throughout Lucknow and Kanpur.",
+    servicesDelivered: [
+      {
+        title: "Transit Media Wrap",
+        description: "Full vehicle wraps on e-rickshaws and auto-rickshaws for highly visible mobile advertising.",
+      },
+      {
+        title: "Targeted Route Planning",
+        description: "Concentrating the vehicle fleet around busy electronics markets, transit hubs, and high-density neighborhoods.",
+      },
+      {
+        title: "Hyper-local Penetration",
+        description: "Generating high-frequency repetitive brand impressions across dense residential areas on a strict performance budget.",
+      },
+      {
+        title: "Fleet Tracking & Verification",
+        description: "Monitoring transit execution and providing geo-tagged display verification to track daily route coverage.",
+      },
+    ],
+    executionProcess: [
+      "Brief",
+      "Fleet Selection",
+      "Wrap Production",
+      "Installation",
+      "Quality Audits",
+      "Reporting",
+    ],
   },
   {
     slug: "gulf-oil-awards",
@@ -140,6 +240,37 @@ export const caseStudies: CaseStudy[] = [
       { label: "Cities Covered", value: "1" },
       { label: "Satisfaction", value: "Top-rated" },
       { label: "Campaign Duration", value: "1 Day" },
+    ],
+    image: "/images/tata_event.png",
+    icon: "events",
+    gradient: "from-[#1a1a2e] via-[#16213e] to-[#0f3460]",
+    description: "Premium awards evening celebrating dealer networks with full event production and staging.",
+    overview: "Gulf Oil required a flawless corporate dealer awards function in Delhi that celebrated its retail network, rewarded high performers, and reinforced premium brand values.\n\nBig Street Media managed the entire production lifecycle end to end, enabling the client's internal marketing team to host delegates and focus entirely on relationship-building.",
+    servicesDelivered: [
+      {
+        title: "Event Production & Management",
+        description: "End-to-end management of premium awards ceremonies including stage design, fabrication, and show logistics.",
+      },
+      {
+        title: "Creative Branding & AV",
+        description: "Designing high-impact stage backgrounds, custom promotional collateral, lighting design, and premium AV production.",
+      },
+      {
+        title: "Dealer Engagement Activations",
+        description: "Curating on-stage award flows, dealer recognition sequences, and engagement activities to build strong partner relations.",
+      },
+      {
+        title: "On-ground Coordination",
+        description: "Running tight registration setups, guest relations, scheduling, and live run-of-show support.",
+      },
+    ],
+    executionProcess: [
+      "Brief",
+      "Venue Selection",
+      "Staging & AV Design",
+      "Collateral Printing",
+      "Live Show Execution",
+      "Post-event Reporting",
     ],
   },
 ];

@@ -9,6 +9,7 @@ interface BrandLogoProps {
   logo: string;
   className?: string;
   scale?: number;
+  priority?: boolean;
 }
 
 export function getOptimizedLogoUrl(logo: string) {
@@ -31,7 +32,7 @@ function getInitials(companyName: string): string {
   return (parts[0][0] + parts[1][0]).toUpperCase();
 }
 
-export function BrandLogo({ name, logo, className, scale }: BrandLogoProps) {
+export function BrandLogo({ name, logo, className, scale, priority }: BrandLogoProps) {
   const [failed, setFailed] = useState(false);
 
   if (!logo || failed) {
@@ -63,7 +64,8 @@ export function BrandLogo({ name, logo, className, scale }: BrandLogoProps) {
         alt={name}
         height={42}
         width={180}
-        loading="lazy"
+        loading={priority ? "eager" : "lazy"}
+        priority={priority}
         decoding="async"
         sizes="(max-width: 768px) 120px, 180px"
         className={cn(

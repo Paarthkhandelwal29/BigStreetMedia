@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createCaseStudyAction } from "@/app/admin/case-studies/new/actions";
+import { createCaseStudyAction } from "@/app/admin/featured-projects/new/actions";
 
 type StrItem = { id: string; value: string };
 
@@ -86,7 +86,7 @@ export default function NewCaseStudyPage() {
 
     if (result.success) {
       setSuccess("Case study saved successfully.");
-      router.push("/admin/case-studies");
+      router.push("/admin/featured-projects");
       return;
     }
 

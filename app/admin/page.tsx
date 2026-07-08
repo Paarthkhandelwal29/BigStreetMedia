@@ -21,10 +21,10 @@ export default async function AdminDashboardPage() {
       helper: "Each uploaded file is stored as its own portfolio record.",
     },
     {
-      label: "Case Studies",
+      label: "Featured Projects",
       value: caseStudies.length,
-      href: "/admin/case-studies",
-      helper: "Case studies with strategy, execution, media labels, and results.",
+      href: "/admin/featured-projects",
+      helper: "Featured projects with strategy, execution, media labels, and results.",
     },
     {
       label: "Media Inventory",

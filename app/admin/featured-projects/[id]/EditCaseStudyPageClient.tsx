@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateCaseStudyAction } from "@/app/admin/case-studies/[id]/actions";
+import { updateCaseStudyAction } from "@/app/admin/featured-projects/[id]/actions";
 import type { CaseStudyRecord } from "@/lib/cms/types";
 
 export function EditCaseStudyPageClient({
@@ -21,7 +21,7 @@ export function EditCaseStudyPageClient({
     const formData = new FormData(event.currentTarget);
     const result = await updateCaseStudyAction(item.id, formData);
     if (result.success) {
-      router.push("/admin/case-studies");
+      router.push("/admin/featured-projects");
       return;
     }
     setError(result.error || "Unable to update case study.");

@@ -12,7 +12,7 @@ export const routeGroups = [
       { label: "Media Inventory", href: "/media-inventory" },
       { label: "Media Planning", href: "/media-planning" },
       { label: "Portfolio", href: "/portfolio" },
-      { label: "Case Studies", href: "/case-studies" },
+      { label: "Featured Projects", href: "/featured-projects" },
       { label: "Brands", href: "/brands" },
     ],
   },
@@ -24,8 +24,8 @@ export const routeGroups = [
     ],
   },
   {
-    title: "Case Studies",
-    links: caseStudies.map((c) => ({ label: c.brand, href: `/case-studies/${c.slug}` })),
+    title: "Featured Projects",
+    links: caseStudies.map((c) => ({ label: c.brand, href: `/featured-projects/${c.slug}` })),
   },
 ];
 
