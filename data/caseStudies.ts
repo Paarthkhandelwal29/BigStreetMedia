@@ -21,7 +21,9 @@ export type CaseStudy = {
   description: string;
   overview?: string;
   servicesDelivered?: { title: string; description: string }[];
-  executionProcess?: string[];
+  executionProcess?: string[] | { title: string; description: string }[];
+  highlights?: string[];
+  overviewBullets?: { text: string; subBullets?: string[] }[];
 };
 
 export const caseStudies: CaseStudy[] = [
@@ -29,7 +31,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "v-mart-store-launches",
     brand: "V-Mart",
     industry: "Retail & Fashion",
-    campaignType: "360° Launch",
+    campaignType: "360° Launch Campaign",
     challenge:
       "V-Mart was opening new stores across Tier 2 and Tier 3 towns and needed each launch to drive footfall from day one — not slowly build awareness over months.",
     brief: {
@@ -92,12 +94,35 @@ export const caseStudies: CaseStudy[] = [
       "Quality Verification",
       "Reporting",
     ],
+    overviewBullets: [
+      {
+        text: "Big Street Media has collaborated with V-Mart for several years to execute marketing campaigns across multiple cities in India.",
+      },
+      {
+        text: "Scope of Services:",
+        subBullets: [
+          "Launching new retail stores.",
+          "Executing outdoor advertising campaigns.",
+          "Managing transit branding.",
+          "Implementing rural marketing initiatives.",
+        ],
+      },
+      {
+        text: "Operational Excellence: Every campaign involved:",
+        subBullets: [
+          "Meticulous planning.",
+          "Vendor coordination.",
+          "Field execution.",
+          "Transparent reporting to ensure adherence to brand standards.",
+        ],
+      },
+    ],
   },
   {
     slug: "extramarks-exhibition",
     brand: "Extramarks",
     industry: "Education",
-    campaignType: "Exhibition + OOH",
+    campaignType: "360° Launch Campaign",
     challenge:
       "Extramarks needed to stand out at a crowded education expo and sustain visibility across the city during the admission season.",
     brief: {
@@ -125,39 +150,70 @@ export const caseStudies: CaseStudy[] = [
     icon: "ooh",
     gradient: "from-[#111111] via-[#1c1c1c] to-[#2d2a1f]",
     description: "High-visibility hoarding campaign across prime arterial roads and education corridors.",
-    overview: "Extramarks wanted to create an outstanding brand presence at a highly crowded education expo in Delhi and Lucknow, while reinforcing its city-wide reach during the critical school and coaching admission season.\n\nOur partnership focused on delivering an end-to-end activation model, wrapping major corridors with outdoor media and implementing interactive stalls to capture, qualify, and deliver high-potential student leads to the sales team.",
+    overview: "Big Street Media partnered with Extramarks to execute large-scale branding, deployment and event management projects across India.\n\nOur team personally travelled to 400+ cities, covering locations from Jammu to Kerala and Gujarat to Arunachal Pradesh, to deploy school branding boards while maintaining consistent quality and timely execution across every site.\n\nBeyond school deployments, we managed end-to-end exhibitions, executed transit branding campaigns, fabricated and installed arch gates, and provided PAN India Outdoor Advertising (OOH) solutions through our trusted vendor network. Every project was delivered with meticulous planning, seamless coordination and transparent reporting.",
+    highlights: [
+      "400+ Cities Covered",
+      "PAN India Execution",
+      "School Board Deployments",
+      "End-to-End Exhibition Management",
+      "Bus Branding Campaigns",
+      "Arch Gate Fabrication & Installation",
+      "Nationwide OOH Media Solutions",
+    ],
     servicesDelivered: [
       {
-        title: "Exhibition Stall Design & Fabrication",
-        description: "Designing and constructing an engaging exhibition stall on the busy expo floor with integrated interactive lead capture systems.",
+        title: "School Board Deployment",
+        description: "Personally executed school branding board installations across 400+ cities, ensuring standardized deployment, timely completion and consistent brand visibility across educational institutions.",
       },
       {
-        title: "High-Impact OOH Campaigns",
-        description: "Deploying prime billboard and hoarding placements near major schools, coaching hubs, and high-traffic student corridors.",
+        title: "Exhibition Management",
+        description: "Executed exhibitions from concept to completion, including stall design, fabrication, transportation, installation, venue coordination, host hiring, on-ground management and dismantling.",
       },
       {
-        title: "Lead Generation Strategy",
-        description: "Implementing data capture workflows to gather and qualify prospective student leads on-ground during the admission season.",
+        title: "PAN India OOH Media",
+        description: "Delivered outdoor advertising solutions across India through our extensive vendor network, including media planning, site procurement, campaign execution and monitoring.",
       },
       {
-        title: "Brand Positioning",
-        description: "Sustaining city-wide awareness and top-of-mind brand recall throughout the critical educational admission window.",
+        title: "Bus Branding",
+        description: "Designed, produced and installed bus branding campaigns across multiple cities to maximize brand visibility and audience reach.",
+      },
+      {
+        title: "Arch Gate Fabrication & Installation",
+        description: "Fabricated and installed customized entrance arch gates for schools, exhibitions and promotional campaigns with high-quality finishing and structural reliability.",
       },
     ],
     executionProcess: [
-      "Brief",
-      "Stall Fabrication",
-      "OOH Installation",
-      "Expo Activation",
-      "Quality Check",
-      "Reporting",
+      {
+        title: "Project Brief",
+        description: "Understanding campaign objectives, branding guidelines, timelines, deployment locations and execution requirements.",
+      },
+      {
+        title: "Planning & Coordination",
+        description: "Preparing city-wise deployment schedules, coordinating logistics, assigning execution teams and collaborating with regional vendors where required.",
+      },
+      {
+        title: "Production & Logistics",
+        description: "Fabricating branding materials, exhibition structures and campaign assets, followed by nationwide transportation and material dispatch.",
+      },
+      {
+        title: "On-Ground Execution",
+        description: "Executing school board installations, exhibition setups, bus branding, arch gate installations and OOH campaigns while ensuring adherence to brand standards.",
+      },
+      {
+        title: "Quality Verification",
+        description: "Conducting on-site inspections, verifying installation quality and ensuring every execution met client expectations before project completion.",
+      },
+      {
+        title: "Reporting",
+        description: "Providing geo-tagged photographs, completion reports and execution documentation to maintain complete transparency across every activity.",
+      },
     ],
   },
   {
     slug: "cashify-transit",
     brand: "Cashify",
     industry: "Consumer Electronics",
-    campaignType: "Transit Media",
+    campaignType: "360° Launch Campaign",
     challenge:
       "Cashify wanted city-wide awareness on a performance budget — reaching commuters repeatedly without premium hoarding costs.",
     brief: {
@@ -185,92 +241,62 @@ export const caseStudies: CaseStudy[] = [
     icon: "transit",
     gradient: "from-[#0d2818] via-[#1a3a2a] to-[#111111]",
     description: "Auto rickshaw wrap campaign delivering hyper-local reach across high-traffic zones.",
-    overview: "Cashify aimed to drive massive city-wide awareness on a performance budget. The campaign focused on establishing high-frequency repetition among daily commuters without incurring the premium costs associated with traditional static hoardings.\n\nBy leveraging transit media as a canvas, we created a mobile outdoor network that moved with the target audience throughout Lucknow and Kanpur.",
+    overview: "For several years, Big Street Media has partnered with Cashify to execute high-impact marketing campaigns across multiple cities in India.\n\nOur role has included managing outdoor advertising campaigns in over 50 cities, supporting store launch activations across the country, and executing transit media and on-ground promotional activities.\n\nFrom media planning and site execution to branding installations and field operations, every campaign was delivered with meticulous planning, coordinated execution and transparent reporting to ensure maximum brand visibility and consistency.",
+    highlights: [
+      "50+ Cities Covered",
+      "PAN India Store Launch Support",
+      "Outdoor Advertising Campaigns",
+      "Transit Media Branding",
+      "Leaflet Distribution",
+      "Kiosk Activations",
+    ],
     servicesDelivered: [
       {
-        title: "Transit Media Wrap",
-        description: "Full vehicle wraps on e-rickshaws and auto-rickshaws for highly visible mobile advertising.",
+        title: "Outdoor Advertising",
+        description: "Executed hoarding and billboard campaigns across 50+ cities, including media planning, site procurement, installation, campaign monitoring and maintenance.",
       },
       {
-        title: "Targeted Route Planning",
-        description: "Concentrating the vehicle fleet around busy electronics markets, transit hubs, and high-density neighborhoods.",
+        title: "Store Launch Activations",
+        description: "Supported the launch of multiple Cashify stores across India with complete on-ground branding, installation and execution.",
       },
       {
-        title: "Hyper-local Penetration",
-        description: "Generating high-frequency repetitive brand impressions across dense residential areas on a strict performance budget.",
+        title: "Transit Media Branding",
+        description: "Managed branding campaigns across auto-rickshaws, cabs and other transit media to maximize visibility in high-footfall locations.",
       },
       {
-        title: "Fleet Tracking & Verification",
-        description: "Monitoring transit execution and providing geo-tagged display verification to track daily route coverage.",
+        title: "Kiosk Activations",
+        description: "Designed and executed promotional kiosk activities to engage customers, generate leads and strengthen brand presence at strategic locations.",
+      },
+      {
+        title: "Leaflet Distribution",
+        description: "Planned and managed targeted leaflet distribution campaigns to drive awareness and increase footfall during store launches and promotional campaigns.",
       },
     ],
     executionProcess: [
-      "Brief",
-      "Fleet Selection",
-      "Wrap Production",
-      "Installation",
-      "Quality Audits",
-      "Reporting",
-    ],
-  },
-  {
-    slug: "gulf-oil-awards",
-    brand: "Gulf Oil",
-    industry: "FMCG / Lubricants",
-    campaignType: "Corporate Event",
-    challenge:
-      "Gulf Oil needed a flawless dealer awards function that reinforced the brand and rewarded its distribution network.",
-    brief: {
-      objective: "Dealer Engagement",
-      duration: "1 event",
-      cities: "Delhi",
-      type: "Events & Production",
-    },
-    strategy: [
-      "Produce a premium awards evening that made dealers feel valued and the brand feel large.",
-      "Manage every detail end to end so the client's team could host, not run logistics.",
-    ],
-    execution: [
-      "Full event production: venue, staging, AV, branding, and on-ground coordination.",
-      "Tight run-of-show kept the evening on schedule from registration to closing.",
-    ],
-    media: ["Event Production", "Stage Branding", "AV"],
-    results: [
-      { label: "Total Reach", value: "500+ Dealers" },
-      { label: "Cities Covered", value: "1" },
-      { label: "Satisfaction", value: "Top-rated" },
-      { label: "Campaign Duration", value: "1 Day" },
-    ],
-    image: "/images/tata_event.png",
-    icon: "events",
-    gradient: "from-[#1a1a2e] via-[#16213e] to-[#0f3460]",
-    description: "Premium awards evening celebrating dealer networks with full event production and staging.",
-    overview: "Gulf Oil required a flawless corporate dealer awards function in Delhi that celebrated its retail network, rewarded high performers, and reinforced premium brand values.\n\nBig Street Media managed the entire production lifecycle end to end, enabling the client's internal marketing team to host delegates and focus entirely on relationship-building.",
-    servicesDelivered: [
       {
-        title: "Event Production & Management",
-        description: "End-to-end management of premium awards ceremonies including stage design, fabrication, and show logistics.",
+        title: "Campaign Brief",
+        description: "Understanding campaign objectives, target markets, timelines and branding requirements.",
       },
       {
-        title: "Creative Branding & AV",
-        description: "Designing high-impact stage backgrounds, custom promotional collateral, lighting design, and premium AV production.",
+        title: "Planning & Coordination",
+        description: "Identifying suitable advertising locations, planning city-wise execution and coordinating with regional teams and media partners.",
       },
       {
-        title: "Dealer Engagement Activations",
-        description: "Curating on-stage award flows, dealer recognition sequences, and engagement activities to build strong partner relations.",
+        title: "Production & Procurement",
+        description: "Printing campaign creatives, producing branding materials and arranging logistics for timely deployment.",
       },
       {
-        title: "On-ground Coordination",
-        description: "Running tight registration setups, guest relations, scheduling, and live run-of-show support.",
+        title: "On-Ground Execution",
+        description: "Installing hoardings and billboards, executing transit branding, managing store launch branding and conducting promotional activities.",
       },
-    ],
-    executionProcess: [
-      "Brief",
-      "Venue Selection",
-      "Staging & AV Design",
-      "Collateral Printing",
-      "Live Show Execution",
-      "Post-event Reporting",
+      {
+        title: "Quality Verification",
+        description: "Inspecting every installation and activity to ensure brand consistency, execution quality and compliance with campaign standards.",
+      },
+      {
+        title: "Reporting",
+        description: "Providing geo-tagged photographs, execution reports and campaign completion documentation for complete transparency and performance tracking.",
+      },
     ],
   },
 ];

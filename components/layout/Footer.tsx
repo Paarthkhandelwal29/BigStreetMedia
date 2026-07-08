@@ -32,8 +32,8 @@ export function Footer() {
       </div>
 
       <div className="container-bsm py-6 md:py-16">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-2 gap-8 md:gap-12 lg:grid-cols-5">
+          <div className="col-span-2 lg:col-span-2">
             <Logo light className="h-auto" />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/60">
               {site.tagline} A 360° advertising agency executing campaigns across{" "}

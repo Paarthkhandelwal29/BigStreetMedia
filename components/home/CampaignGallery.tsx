@@ -83,7 +83,7 @@ export function CampaignGallery() {
           subhead="Real work. Real brands. Real cities — OOH, transit, events, and more."
         />
 
-        <div className="mt-6 md:mt-12 flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 scrollbar-none md:grid md:grid-cols-4 md:gap-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="mt-6 md:mt-12 flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 scrollbar-none md:grid md:grid-cols-3 md:gap-6 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {caseStudies.map((item) => (
             <CampaignCard key={item.brand} item={item} />
           ))}

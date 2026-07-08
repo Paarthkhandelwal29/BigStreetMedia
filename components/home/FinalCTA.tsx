@@ -27,18 +27,18 @@ export function FinalCTA() {
             <p className="mt-2.5 md:mt-4 max-w-md text-[14px] md:text-base leading-relaxed text-white/60 md:text-lg">
               Tell us your campaign goal — we&apos;ll come back with a tailored media plan within 48 hours.
             </p>
-            <div className="mt-5 md:mt-8 flex flex-wrap gap-6 text-sm text-white/50">
+            <div className="mt-5 md:mt-8 grid grid-cols-3 gap-2 text-white/50 text-[11px] md:text-sm">
               <div>
-                <p className="font-mono text-2xl font-bold text-amber">{site.stats.campaigns}</p>
-                <p className="mt-1">Campaigns executed</p>
+                <p className="font-mono text-xl md:text-2xl font-bold text-amber leading-none">{site.stats.campaigns}</p>
+                <p className="mt-1 leading-tight">Campaigns executed</p>
               </div>
               <div>
-                <p className="font-mono text-2xl font-bold text-amber">{site.stats.cities}</p>
-                <p className="mt-1">Cities covered</p>
+                <p className="font-mono text-xl md:text-2xl font-bold text-amber leading-none">{site.stats.cities}</p>
+                <p className="mt-1 leading-tight">Cities covered</p>
               </div>
               <div>
-                <p className="font-mono text-2xl font-bold text-amber">{site.stats.years}</p>
-                <p className="mt-1">Years of experience</p>
+                <p className="font-mono text-xl md:text-2xl font-bold text-amber leading-none">{site.stats.years}</p>
+                <p className="mt-1 leading-tight">Years of experience</p>
               </div>
             </div>
             <ButtonLink

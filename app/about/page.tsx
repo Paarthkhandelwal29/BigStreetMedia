@@ -53,7 +53,7 @@ export default function AboutPage() {
       />
 
       {/* Timeline */}
-      <section className="container-bsm py-24">
+      <section className="container-bsm py-12 md:py-24">
         <SectionHeader eyebrow="Our Story" title="Two decades of putting brands on the map" />
         <RevealGroup className="mt-12 grid gap-px overflow-hidden rounded-[1.5rem] border border-[#f0f0f0] bg-[#f0f0f0] sm:grid-cols-2 lg:grid-cols-3" stagger={0.05}>
           {milestones.map((m) => (
@@ -65,9 +65,8 @@ export default function AboutPage() {
         </RevealGroup>
       </section>
 
-      {/* Founder message */}
       <section className="bg-surface-2">
-        <div className="container-bsm py-24">
+        <div className="container-bsm py-12 md:py-24">
           <div className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <Reveal>
               <div className="aspect-[4/5] max-w-sm overflow-hidden rounded-[1.5rem] border-2 border-amber">
@@ -106,7 +105,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission / Vision / Values */}
-      <section className="container-bsm py-24">
+      <section className="container-bsm py-12 md:py-24">
         <SectionHeader eyebrow="What Drives Us" title="Mission, vision, values" />
         <RevealGroup className="mt-12 grid gap-5 md:grid-cols-3" stagger={0.08}>
           {mvv.map((m) => (
