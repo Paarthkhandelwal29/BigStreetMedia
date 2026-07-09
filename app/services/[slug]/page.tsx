@@ -19,7 +19,104 @@ import {
   Lightning,
   UserCircle,
   Airplane,
+  Signpost,
+  PaintBrush,
+  House,
+  Bus,
+  Train,
+  Car,
+  Storefront,
+  Gift,
+  Tent,
+  Lightbulb,
+  ShoppingCart,
+  Briefcase,
+  Trophy,
+  Wrench,
+  Users,
+  QrCode,
+  Microphone,
+  Television,
+  Chair,
+  Target,
+  ShareNetwork,
+  Globe,
+  Browser,
+  Star,
+  ListChecks,
 } from "@phosphor-icons/react/dist/ssr";
+
+const formatIcons: Record<string, any> = {
+  // OOH Media
+  "Hoardings & Billboards": Signpost,
+  "Unipoles & Gantries": Signpost,
+  "Wall Painting": PaintBrush,
+  "Society Gate Branding": House,
+  "Bus Shelters": Bus,
+  "Metro Media": Train,
+  "Airport Media": Airplane,
+  "Railway Media": Train,
+  "Airport Advertising": Airplane,
+
+  // Transit Media
+  "Bus Branding & Wraps": Bus,
+  "Auto & E-Rickshaw Branding": Car,
+  "Cab Branding": Car,
+  "Metro Station Media": Train,
+  "Railway Station Media": Train,
+
+  // BTL Activations
+  "Mall Activations": Storefront,
+  "RWA & Society Activations": Users,
+  "Sampling Campaigns": Gift,
+  "Road Shows": Car,
+  "Canopy & Kiosk Activities": Tent,
+
+  // Retail Branding
+  "In-Store Branding": Storefront,
+  "Shop Front Boards": Signpost,
+  "Dealer Branding": Handshake,
+  "Glow Sign Boards": Lightbulb,
+  "POS & Visual Merchandising": ShoppingCart,
+
+  // Events & Launches
+  "Product Launches": Gift,
+  "Store Openings": Storefront,
+  "Dealer Meets": Handshake,
+  "Corporate Events": Briefcase,
+  "Award Functions": Trophy,
+
+  // Exhibition Management
+  "Custom Stall Design": PaintBrush,
+  "Fabrication & Setup": Wrench,
+  "On-Ground Staffing": Users,
+  "Lead Capture Systems": QrCode,
+
+  // Radio Advertising
+  "FM Spots": Microphone,
+  "RJ Mentions": Microphone,
+  "Radio Contests": Trophy,
+  "Sponsorships": Handshake,
+
+  // Cinema Advertising
+  "On-Screen Ads": Television,
+  "Lobby Branding": Signpost,
+  "Multiplex Standees": Signpost,
+  "Seat Branding": Chair,
+
+  // Digital Marketing
+  "Performance Ads": Target,
+  "Social Media": ShareNetwork,
+  "SEO": Globe,
+  "Programmatic": Wrench,
+  "Landing Pages": Browser,
+
+  // Influencer Marketing
+  "Macro Influencers": Star,
+  "Micro & Nano Creators": Users,
+  "Regional Creators": Globe,
+  "Campaign Management": ListChecks,
+};
 
 export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
@@ -102,25 +199,14 @@ export default async function ServicePage({
     imageMap.set(img.formatName, img.imageUrl);
   }
 
-  /* Build format cards — append Airport Advertising only for transit-media */
-  const formatCards = [
-    ...service.formats.map((f, i) => ({
-      label: f,
-      desc: `High-impact ${f.toLowerCase()} across major Indian cities.`,
-      color: cardColors[i % cardColors.length],
-      imageUrl: imageMap.get(f) ?? null,
-      isAirport: false,
-    })),
-    ...(service.slug === "transit-media"
-      ? [{
-          label: "Airport Advertising",
-          desc: "Premium brand exposure at airports across India.",
-          color: "from-sky-700 to-sky-950",
-          imageUrl: imageMap.get("Airport Advertising") ?? null,
-          isAirport: true,
-        }]
-      : []),
-  ];
+  /* Build format cards */
+  const formatCards = service.formats.map((f, i) => ({
+    label: f,
+    desc: `High-impact ${f.toLowerCase()} across major Indian cities.`,
+    color: cardColors[i % cardColors.length],
+    imageUrl: imageMap.get(f) ?? null,
+    isAirport: false,
+  }));
 
   const topCities = [
     ...cityTiers["Tier 1"],
@@ -145,7 +231,7 @@ export default async function ServicePage({
 
       {/* ── Format cards — 3 per row ── */}
       <section className="bg-surface">
-        <div className="container-bsm py-14">
+        <div className="container-bsm py-8 md:py-14">
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <h2 className="section-heading text-xl font-bold text-ink md:text-2xl">
               Reach commuters at every touchpoint
@@ -158,30 +244,33 @@ export default async function ServicePage({
             </Link>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {formatCards.map((card, i) => (
-              <div
-                key={card.label}
-                className="group overflow-hidden rounded-2xl border border-[#ebebeb] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]"
-              >
-                {/* Image area */}
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+            {formatCards.map((card, i) => {
+              const CardIcon = formatIcons[card.label] || Icon;
+              return (
                 <div
-                  className={`relative h-52 ${card.imageUrl ? "" : `bg-gradient-to-br ${card.color}`}`}
-                  style={card.imageUrl ? { backgroundImage: `url(${card.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+                  key={card.label}
+                  className="group overflow-hidden rounded-xl sm:rounded-2xl border border-[#ebebeb] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)]"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
-                  {/* Icon badge */}
-                  <span className="absolute bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-full bg-amber text-ink shadow-md">
-                    {card.isAirport ? <Airplane size={22} /> : <Icon size={22} />}
-                  </span>
+                  {/* Image area */}
+                  <div
+                    className={`relative h-28 xs:h-36 sm:h-52 ${card.imageUrl ? "" : `bg-gradient-to-br ${card.color}`}`}
+                    style={card.imageUrl ? { backgroundImage: `url(${card.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
+                    {/* Icon badge */}
+                    <span className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-amber text-ink shadow-md">
+                      <CardIcon className="h-4 w-4 sm:h-[22px] sm:w-[22px]" />
+                    </span>
+                  </div>
+                  {/* Text */}
+                  <div className="p-3 sm:p-5">
+                    <p className="text-sm sm:text-base font-semibold text-ink">{card.label}</p>
+                    <p className="mt-1 text-xs sm:text-sm sm:mt-1.5 leading-relaxed text-muted">{card.desc}</p>
+                  </div>
                 </div>
-                {/* Text */}
-                <div className="p-5">
-                  <p className="text-base font-semibold text-ink">{card.label}</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted">{card.desc}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -189,7 +278,7 @@ export default async function ServicePage({
       {/* ── Info panel: large Campaigns left + Cities & Why BSM stacked right ── */}
       {recentCampaigns.length > 0 && (
       <section className="bg-surface-2">
-        <div className="container-bsm py-14">
+        <div className="container-bsm py-8 md:py-14">
           <div className="grid gap-5 md:grid-cols-[1.8fr_0.8fr]">
 
             {/* Left — Our Recent Campaigns (large) */}
@@ -277,7 +366,7 @@ export default async function ServicePage({
 
       {/* ── FAQ ── */}
       <section className="bg-surface">
-        <div className="container-bsm py-14">
+        <div className="container-bsm py-8 md:py-14">
           <SectionHeader eyebrow="FAQ" title="Questions clients ask us" align="center" className="mx-auto items-center" />
           <div className="mt-8">
             <FAQ items={faqsFor(service.title)} />
@@ -287,7 +376,7 @@ export default async function ServicePage({
 
       {/* ── Lead form ── */}
       <section className="bg-surface-2">
-        <div className="container-bsm py-14">
+        <div className="container-bsm py-8 md:py-14">
           <div className="mx-auto max-w-2xl">
             <SectionHeader
               eyebrow="Let's Talk"
@@ -314,7 +403,7 @@ export default async function ServicePage({
 
       {/* ── Related services ── */}
       <section className="bg-surface">
-        <div className="container-bsm py-14">
+        <div className="container-bsm py-8 md:py-14">
           <SectionHeader eyebrow="Explore More" title="Related services" />
           <RevealGroup className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.05}>
             {related.map((s) => {

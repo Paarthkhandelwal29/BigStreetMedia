@@ -55,13 +55,20 @@ export default function AboutPage() {
       {/* Timeline */}
       <section className="container-bsm py-12 md:py-24">
         <SectionHeader eyebrow="Our Story" title="Two decades of putting brands on the map" />
-        <RevealGroup className="mt-12 grid gap-px overflow-hidden rounded-[1.5rem] border border-[#f0f0f0] bg-[#f0f0f0] sm:grid-cols-2 lg:grid-cols-3" stagger={0.05}>
+        <RevealGroup className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-[1.5rem] border border-[#f0f0f0] bg-[#f0f0f0] sm:grid-cols-2 lg:grid-cols-3" stagger={0.05}>
           {milestones.map((m) => (
-            <RevealItem key={m.year} className="bg-surface p-7">
-              <span className="font-mono text-2xl font-bold text-amber-deep">{m.year}</span>
-              <p className="mt-3 text-sm leading-relaxed text-body">{m.text}</p>
+            <RevealItem key={m.year} className="bg-surface p-4 sm:p-7">
+              <span className="font-mono text-xl sm:text-2xl font-bold text-amber-deep">{m.year}</span>
+              <p className="mt-2 sm:mt-3 text-xs sm:text-sm leading-relaxed text-body">{m.text}</p>
             </RevealItem>
           ))}
+          {/* Mobile-only milestone card to maintain 2-column symmetry */}
+          <RevealItem className="bg-surface p-4 sm:p-7 lg:hidden">
+            <span className="font-mono text-xl sm:text-2xl font-bold text-amber-deep">2026</span>
+            <p className="mt-2 sm:mt-3 text-xs sm:text-sm leading-relaxed text-body">
+              Expanded into a 360° marketing and advertising partner.
+            </p>
+          </RevealItem>
         </RevealGroup>
       </section>
 

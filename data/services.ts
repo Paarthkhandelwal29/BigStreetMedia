@@ -155,7 +155,7 @@ export const services: Service[] = [
       { value: "End-to-End", label: "Production" },
     ],
     portfolioCategory: null,
-    formats: ["FM Spots", "RJ Mentions", "Radio Contests", "Sponsorships"],
+    formats: ["FM Spots", "RJ Mentions", "Radio Contests"],
   },
   {
     slug: "cinema",
@@ -185,7 +185,7 @@ export const services: Service[] = [
       { value: "End-to-End", label: "Management" },
     ],
     portfolioCategory: null,
-    formats: ["Performance Ads", "Social Media", "SEO", "Programmatic", "Landing Pages"],
+    formats: ["Performance Ads", "Social Media", "SEO", "Landing Pages"],
   },
   {
     slug: "influencer",

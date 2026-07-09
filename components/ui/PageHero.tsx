@@ -98,18 +98,37 @@ export function PageHero({
               {sideContent ? (
                 sideContent
               ) : (
-                /* Stat chips grid (service pages) */
-                <div className="grid grid-cols-2 gap-2 md:min-w-[260px]">
-                  {stats!.map((s) => (
-                    <div
-                      key={s.label}
-                      className="flex flex-col rounded-xl border border-white/15 bg-white/8 px-4 py-3 backdrop-blur-sm"
-                    >
-                      <span className="text-base font-extrabold leading-tight text-white">{s.value}</span>
-                      <span className="mt-0.5 text-[11px] font-medium leading-tight text-amber">{s.label}</span>
-                    </div>
-                  ))}
-                </div>
+                <>
+                  {/* Stat chips grid (service pages) - Desktop only */}
+                  <div className="hidden md:grid grid-cols-2 gap-2 md:min-w-[260px]">
+                    {stats!.map((s) => (
+                      <div
+                        key={s.label}
+                        className="flex flex-col rounded-xl border border-white/15 bg-white/8 px-4 py-3 backdrop-blur-sm"
+                      >
+                        <span className="text-base font-extrabold leading-tight text-white">{s.value}</span>
+                        <span className="mt-0.5 text-[11px] font-medium leading-tight text-amber">{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Simple text strip - Mobile only */}
+                  <div
+                    className={cn(
+                      "flex md:hidden items-center flex-wrap gap-x-2.5 gap-y-1 text-amber/90 font-medium text-[13px] tracking-wide border-t border-white/10 pt-4 w-full",
+                      align === "center" ? "justify-center text-center" : "justify-start text-left"
+                    )}
+                  >
+                    {stats!.map((s, idx) => (
+                      <div key={s.label} className="flex items-center gap-x-2.5">
+                        {idx > 0 && <span className="text-white/20" aria-hidden>•</span>}
+                        <span>
+                          {s.value} {s.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           )}

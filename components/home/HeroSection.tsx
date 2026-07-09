@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
 import { CaretDown } from "@phosphor-icons/react/dist/ssr";
+import { services } from "@/data/services";
+import { icons } from "@/lib/icons";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -143,6 +146,38 @@ export function HeroSection() {
               </span>
             </div>
           ))}
+        </div>
+      </motion.div>
+
+      {/* Full-width Services Bar at the absolute bottom of the hero section */}
+      <motion.div
+        {...rise(0.36)}
+        className="w-full bg-black/60 backdrop-blur-md border-t border-white/10 py-3.5 relative z-10 mt-auto"
+      >
+        <div className="container-bsm flex items-center justify-start xl:justify-center gap-x-7 gap-y-2 overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          {services
+            .filter((s) => s.slug !== "radio" && s.slug !== "digital")
+            .map((s) => {
+              const Icon = icons[s.icon];
+              const displayTitle =
+                s.slug === "ooh-media"
+                  ? "Outdoor"
+                  : s.slug === "influencer"
+                  ? "Influencer"
+                  : s.slug === "cinema"
+                  ? "Cinema"
+                  : s.title;
+              return (
+                <Link
+                  key={s.slug}
+                  href={`/services/${s.slug}`}
+                  className="flex items-center gap-2 shrink-0 text-white/80 hover:text-amber transition-colors text-xs font-semibold tracking-wider uppercase focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber focus-visible:ring-offset-1 rounded px-1"
+                >
+                  {Icon && <Icon size={14} className="text-amber" />}
+                  <span>{displayTitle}</span>
+                </Link>
+              );
+            })}
         </div>
       </motion.div>
 
