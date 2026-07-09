@@ -59,6 +59,11 @@ export const metadata: Metadata = {
       "Creating Visibility. Building Brands. 1000+ campaigns executed across India.",
   },
   robots: { index: true, follow: true },
+  icons: {
+    icon: "/logo-dark.png",
+    shortcut: "/logo-dark.png",
+    apple: "/logo-dark.png",
+  },
 };
 
 export default function RootLayout({
