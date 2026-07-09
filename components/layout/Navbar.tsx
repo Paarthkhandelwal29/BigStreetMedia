@@ -25,7 +25,6 @@ import { site } from "@/lib/site";
 const LIGHT_TOP_ROUTES = new Set(["/contact", "/privacy-policy", "/sitemap"]);
 const servicePortfolioFilters: Record<string, string> = {
   "ooh-media": "OOH",
-  "transit-media": "Transit",
   "btl-activations": "Events",
   "retail-branding": "Store Launch",
   "events-launches": "Events",

@@ -111,12 +111,6 @@ export function MediaInventoryClient({
 
           <section>
             <div className="mb-4 flex items-center justify-between gap-3">
-              {/* On Desktop/Tablet: Show the count of items found */}
-              <p className="text-sm text-muted hidden lg:block">
-                {filtered.length} media space{filtered.length === 1 ? "" : "s"}{" "}
-                found
-              </p>
-
               {/* On Mobile: Show the city search filter bar */}
               <div className="relative flex-1 lg:hidden">
                 <MagnifyingGlass
@@ -485,10 +479,7 @@ function FilterPanel({
         </div>
       </FilterBlock>
 
-      <p className="border-t border-[#f5f5f5] pt-4 text-sm leading-relaxed text-muted">
-        Media inventory is updated from the admin panel and reflects the latest
-        available inventory locations.
-      </p>
+
 
       {onApply && (
         <button

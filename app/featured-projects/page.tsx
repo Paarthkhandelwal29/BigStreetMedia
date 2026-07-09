@@ -23,9 +23,9 @@ export default function CaseStudiesPage() {
       />
 
       <section className="container-bsm py-8 md:py-10">
-        <RevealGroup className="grid grid-cols-1 gap-5 md:grid-cols-2" stagger={0.06}>
+        <RevealGroup className="flex overflow-x-auto snap-x snap-mandatory gap-5 pb-4 md:grid md:grid-cols-3 md:pb-0 scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]" stagger={0.06}>
           {caseStudies.map((cs) => (
-            <RevealItem key={cs.slug} className="h-full">
+            <RevealItem key={cs.slug} className="h-full shrink-0 snap-center w-[290px] sm:w-[340px] md:w-auto">
               <Link
                 href={`/featured-projects/${cs.slug}`}
                 className="group flex h-full flex-col rounded-[1.5rem] border border-[#f0f0f0] bg-surface p-7 transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(0,0,0,0.06)]"
