@@ -12,6 +12,7 @@ import { ArrowUpRight, Quotes } from "@phosphor-icons/react/dist/ssr";
 import { CaseStudyGallery } from "@/components/shared/CaseStudyGallery";
 import { listPortfolio } from "@/lib/cms/store";
 import { portfolio as localPortfolio } from "@/data/portfolio";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export function generateStaticParams() {
   return caseStudies.map((c) => ({ slug: c.slug }));
@@ -26,8 +27,11 @@ export async function generateMetadata({
   const cs = caseStudyBySlug(slug);
   if (!cs) return {};
   return {
-    title: `${cs.brand} — ${cs.campaignType} Featured Project`,
-    description: cs.challenge,
+    title: `${cs.brand} | PAN India ${cs.campaignType} Advertising Campaign`,
+    description: `National campaign case study: How Big Street Media executed the ${cs.brand} ${cs.campaignType} campaign across major Indian cities.`,
+    alternates: {
+      canonical: `/featured-projects/${slug}`,
+    },
   };
 }
 
@@ -97,6 +101,13 @@ export default async function CaseStudyPage({
 
   return (
     <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Featured Projects", item: "/featured-projects" },
+          { name: cs.brand, item: `/featured-projects/${cs.slug}` },
+        ]}
+      />
       <PageHero
         compact
         eyebrow={`${cs.brand} · ${cs.campaignType}`}

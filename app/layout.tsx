@@ -29,6 +29,9 @@ const siteUrl = "https://bigstreetmedia.in";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: "./",
+  },
   title: {
     default: "Big Street Media | 360° Outdoor Advertising, Billboard & OOH Agency Noida, Delhi NCR",
     template: "%s | Big Street Media & Advertisers",
