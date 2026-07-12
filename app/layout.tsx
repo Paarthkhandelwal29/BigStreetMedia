@@ -29,16 +29,26 @@ const siteUrl = "https://bigstreetmedia.in";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: "./",
+  },
   title: {
-    default: "Big Street Media & Advertisers | 360° Advertising Agency India",
+    default: "Big Street Media | 360° Outdoor Advertising, Billboard & OOH Agency Noida, Delhi NCR",
     template: "%s | Big Street Media & Advertisers",
   },
   description:
-    "India's trusted 360° advertising agency since 2004. OOH, Transit, BTL, Events, Retail Branding, Digital — PAN India coverage across 400+ cities.",
+    "India's trusted 360° advertising agency in Noida & Bareilly since 2004. Experts in Outdoor Advertising (OOH), Billboard Hoardings, Transit Media, BTL Activations, and Retail Branding.",
   keywords: [
-    "advertising agency India",
-    "OOH advertising India",
-    "360 degree advertising agency",
+    "outdoor advertising Noida",
+    "outdoor media agency Noida",
+    "OOH advertising Noida",
+    "billboard advertising Noida",
+    "hoarding advertising Noida",
+    "outdoor advertising Delhi NCR",
+    "OOH advertising Delhi NCR",
+    "billboard advertising India",
+    "transit advertising Noida",
+    "BTL activation agency Noida",
     "transit advertising India",
     "BTL activation agency India",
   ],
@@ -47,16 +57,17 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: siteUrl,
     siteName: "Big Street Media & Advertisers",
-    title: "Big Street Media & Advertisers",
+    title: "Big Street Media | 360° Outdoor Advertising & OOH Agency",
     description:
-      "Creating Visibility. Building Brands. 1000+ campaigns executed across India.",
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+      "Creating Visibility. Building Brands. 1000+ campaigns executed in Noida, Delhi NCR, Mumbai, Bengaluru, and PAN India.",
+    images: [{ url: "/logo.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Big Street Media & Advertisers",
     description:
-      "Creating Visibility. Building Brands. 1000+ campaigns executed across India.",
+      "Creating Visibility. Building Brands. 1000+ campaigns executed in Noida, Delhi NCR, Mumbai, Bengaluru, and PAN India.",
+    images: [{ url: "/logo.png" }],
   },
   robots: { index: true, follow: true },
   icons: {

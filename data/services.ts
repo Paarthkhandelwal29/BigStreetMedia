@@ -16,9 +16,9 @@ export type Service = {
 export const services: Service[] = [
   {
     slug: "ooh-media",
-    title: "OOH Media",
-    outcome: "Put your brand where 10 lakh+ eyes pass it every day.",
-    headline: "Put Your Brand Where 10 Lakh+ Eyes See It Daily",
+    title: "Outdoor Advertising (OOH)",
+    outcome: "Connect with commuters and local shoppers using premium outdoor billboard hoarding campaigns in Delhi NCR, Noida, Mumbai, Bengaluru, and PAN India.",
+    headline: "High-Impact Outdoor Advertising & OOH Billboards Nationwide",
     icon: "billboard",
     heroStats: [
       { value: "PAN India", label: "Coverage" },

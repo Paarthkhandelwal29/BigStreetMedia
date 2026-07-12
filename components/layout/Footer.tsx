@@ -85,7 +85,7 @@ export function Footer() {
             <EnvelopeSimple size={16} /> {site.email}
           </a>
           <span className="flex items-center gap-2">
-            <MapPin size={16} /> {site.region}
+            <MapPin size={16} /> {site.address}, {site.region}
           </span>
         </div>
       </div>

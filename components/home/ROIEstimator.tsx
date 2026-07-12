@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { whatsappLink } from "@/lib/site";
 
 const campaignTypes = [
-  "OOH Hoardings",
+  "Outdoor Hoardings",
   "Transit Media",
   "Events",
   "Combined 360°",
@@ -44,7 +44,7 @@ type EstimateOutput = {
 };
 
 const impressionsPerLakh: Record<CampaignType, number> = {
-  "OOH Hoardings": 180000,
+  "Outdoor Hoardings": 180000,
   "Transit Media": 220000,
   Events: 60000,
   "Combined 360°": 150000,
@@ -64,7 +64,7 @@ const baseCities: Record<CityTier, number> = {
 };
 
 const mediaMixes: Record<CampaignType, string> = {
-  "OOH Hoardings": "80% OOH · 15% Transit · 5% Digital",
+  "Outdoor Hoardings": "80% OOH · 15% Transit · 5% Digital",
   "Transit Media": "70% Transit · 20% OOH · 10% Digital",
   Events: "60% Events · 25% OOH · 15% Digital",
   "Combined 360°": "45% OOH · 30% Transit · 15% Digital · 10% Events",
@@ -184,7 +184,7 @@ function Metric({
 }
 
 export function ROIEstimator() {
-  const [campaignType, setCampaignType] = useState<CampaignType>("OOH Hoardings");
+  const [campaignType, setCampaignType] = useState<CampaignType>("Outdoor Hoardings");
   const [budget, setBudget] = useState<Budget>(10);
   const [cityTier, setCityTier] = useState<CityTier>("Tier 1");
   const [duration, setDuration] = useState<Duration>("1 Month");

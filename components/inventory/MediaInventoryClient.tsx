@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { MediaInventoryRecord } from "@/lib/cms/types";
 import { cn } from "@/lib/utils";
@@ -40,6 +41,11 @@ export function MediaInventoryClient({
   );
   const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
   const reduce = useReducedMotion();
+  const [visibleCount, setVisibleCount] = useState(12);
+
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [citySearch, type]);
   const hasActiveFilters = citySearch.trim() || type !== "All Types";
 
   const inventory = useMemo<InventoryViewItem[]>(
@@ -192,7 +198,7 @@ export function MediaInventoryClient({
             </AnimatePresence>
 
             <div className="grid grid-cols-1 gap-0 divide-y divide-[#f0f0f0] md:grid-cols-2 md:gap-4 md:divide-none xl:grid-cols-3">
-              {filtered.map((item) => (
+              {filtered.slice(0, visibleCount).map((item) => (
                 <div key={item.id} className="h-full">
                   {/* Mobile High-Density Row View */}
                   <article className="flex md:hidden items-center gap-3.5 border-b border-[#f0f0f0] py-3.5 bg-surface transition-colors duration-200">
@@ -208,10 +214,12 @@ export function MediaInventoryClient({
                       className="relative block aspect-[16/10] w-[96px] shrink-0 overflow-hidden rounded-lg bg-surface-2 text-left disabled:cursor-default"
                     >
                       {item.imageUrl ? (
-                        <img
+                        <Image
                           src={item.imageUrl}
                           alt={item.landmark}
-                          className="h-full w-full object-cover"
+                          fill
+                          sizes="96px"
+                          className="object-cover"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center text-[9px] uppercase tracking-wider text-muted font-semibold">
@@ -286,13 +294,15 @@ export function MediaInventoryClient({
                     >
                       {item.imageUrl ? (
                         <>
-                          <img
+                          <Image
                             src={item.imageUrl}
                             alt={item.landmark}
-                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent" />
-                          <span className="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
+                          <div className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent z-10" />
+                          <span className="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink z-10">
                             View Photo{item.images.length > 1 ? "s" : ""}
                           </span>
                         </>
@@ -327,6 +337,17 @@ export function MediaInventoryClient({
                 </div>
               ))}
             </div>
+            {visibleCount < filtered.length && (
+              <div className="mt-8 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((prev) => prev + 12)}
+                  className="rounded-full bg-ink px-6 py-2.5 text-xs font-semibold text-white transition-all hover:bg-amber hover:text-ink shadow-sm"
+                >
+                  Load More Spaces ({filtered.length - visibleCount} remaining)
+                </button>
+              </div>
+            )}
             {filtered.length === 0 && (
               <p className="rounded-2xl border border-[#eeeeee] bg-surface px-5 py-10 text-center text-sm text-muted">
                 No spaces match these filters. Try widening your search.
@@ -389,11 +410,14 @@ export function MediaInventoryClient({
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="overflow-hidden rounded-[1.5rem] bg-surface-2">
-                <img
+              <div className="overflow-hidden rounded-[1.5rem] bg-surface-2 relative min-h-[300px]">
+                <Image
                   src={currentImage}
                   alt={currentItem.landmark}
+                  width={1200}
+                  height={800}
                   className="max-h-[75vh] w-full object-contain"
+                  priority
                 />
               </div>
               <figcaption className="mt-4 text-center text-white">

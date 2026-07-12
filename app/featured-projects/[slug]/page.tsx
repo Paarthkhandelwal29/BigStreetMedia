@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeader } from "@/components/ui/Section";
@@ -11,6 +12,7 @@ import { ArrowUpRight, Quotes } from "@phosphor-icons/react/dist/ssr";
 import { CaseStudyGallery } from "@/components/shared/CaseStudyGallery";
 import { listPortfolio } from "@/lib/cms/store";
 import { portfolio as localPortfolio } from "@/data/portfolio";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export function generateStaticParams() {
   return caseStudies.map((c) => ({ slug: c.slug }));
@@ -25,8 +27,11 @@ export async function generateMetadata({
   const cs = caseStudyBySlug(slug);
   if (!cs) return {};
   return {
-    title: `${cs.brand} — ${cs.campaignType} Featured Project`,
-    description: cs.challenge,
+    title: `${cs.brand} | PAN India ${cs.campaignType} Advertising Campaign`,
+    description: `National campaign case study: How Big Street Media executed the ${cs.brand} ${cs.campaignType} campaign across major Indian cities.`,
+    alternates: {
+      canonical: `/featured-projects/${slug}`,
+    },
   };
 }
 
@@ -96,6 +101,13 @@ export default async function CaseStudyPage({
 
   return (
     <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Featured Projects", item: "/featured-projects" },
+          { name: cs.brand, item: `/featured-projects/${cs.slug}` },
+        ]}
+      />
       <PageHero
         compact
         eyebrow={`${cs.brand} · ${cs.campaignType}`}
@@ -118,11 +130,13 @@ export default async function CaseStudyPage({
             </Reveal>
             <div className="flex flex-col gap-6">
               <Reveal delay={0.1}>
-                <div className="overflow-hidden rounded-[1.5rem] border border-[#f0f0f0] shadow-sm aspect-[4/3] w-full">
-                  <img
+                <div className="relative overflow-hidden rounded-[1.5rem] border border-[#f0f0f0] shadow-sm aspect-[4/3] w-full">
+                  <Image
                     src={cs.image}
                     alt={`${cs.brand} campaign execution`}
-                    className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 500px"
+                    className="object-cover transition-transform duration-700 hover:scale-105"
                   />
                 </div>
               </Reveal>
@@ -332,12 +346,14 @@ export default async function CaseStudyPage({
                 <p className="text-justify">{firstPara}</p>
                 
                 {/* Full-width Image */}
-                <div className="overflow-hidden rounded-xl border border-[#f0f0f0] aspect-[16/10] w-full shadow-sm">
-                  <img
+                <div className="relative overflow-hidden rounded-xl border border-[#f0f0f0] aspect-[16/10] w-full shadow-sm">
+                  <Image
                     src={cs.image}
                     alt={`${cs.brand} execution`}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
+                    fill
+                    sizes="(max-width: 640px) 100vw, 500px"
+                    className="object-cover"
+                    priority
                   />
                 </div>
 

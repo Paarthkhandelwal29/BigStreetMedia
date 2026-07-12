@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { PortfolioWorkRecord } from "@/lib/cms/types";
 import {
   X,
@@ -87,11 +88,12 @@ export function CaseStudyGallery({ brand, photos, isMobile = false }: CaseStudyG
           >
             <div className={cn("relative w-full overflow-hidden", aspectClass)}>
               {photo.mediaType === "image" ? (
-                <img
+                <Image
                   src={photo.mediaUrl}
                   alt={`${photo.brandName} - ${photo.format}`}
-                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                  loading="lazy"
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="object-cover transition-transform duration-700 hover:scale-105"
                 />
               ) : (
                 <>
@@ -207,12 +209,15 @@ export function CaseStudyGallery({ brand, photos, isMobile = false }: CaseStudyG
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="overflow-hidden rounded-[1.5rem] bg-surface-2">
+              <div className="overflow-hidden rounded-[1.5rem] bg-surface-2 relative min-h-[300px]">
                 {current.mediaType === "image" ? (
-                  <img
+                  <Image
                     src={current.mediaUrl}
                     alt={`${current.brandName} - ${current.format}`}
+                    width={1200}
+                    height={800}
                     className="max-h-[70vh] md:max-h-[75vh] w-full object-contain mx-auto"
+                    priority
                   />
                 ) : (
                   <video

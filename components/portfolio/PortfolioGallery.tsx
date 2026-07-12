@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
@@ -63,6 +64,11 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
   >("All");
   const [activeFormat, setActiveFormat] = useState<ActiveFormat>("All Formats");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(12);
+
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [activeBrand, activeCategory, activeFormat]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [mobileFilterView, setMobileFilterView] = useState<
     "tabs" | "categories" | "brands" | "formats"
@@ -313,62 +319,77 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
 
           <div>
             {sortedFiltered.length > 0 ? (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {sortedFiltered.map((item, i) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setLightboxIndex(i)}
-                    className="group relative block w-full overflow-hidden rounded-[1.25rem] border border-[#f0f0f0] bg-surface-2 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.08)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber"
-                  >
-                    <div className="relative">
-                      {item.mediaType === "image" ? (
-                        <img
-                          src={item.mediaUrl}
-                          alt={`${item.brandName} - ${item.format}`}
-                          className="aspect-[4/3] w-full object-cover"
-                        />
-                      ) : (
-                        <>
-                          <video
+              <>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  {sortedFiltered.slice(0, visibleCount).map((item, i) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setLightboxIndex(i)}
+                      className="group relative block w-full overflow-hidden rounded-[1.25rem] border border-[#f0f0f0] bg-surface-2 text-left transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.08)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber"
+                    >
+                      <div className="relative aspect-[4/3] w-full overflow-hidden">
+                        {item.mediaType === "image" ? (
+                          <Image
                             src={item.mediaUrl}
-                            className="aspect-[4/3] w-full bg-black object-cover"
-                            muted
+                            alt={`${item.brandName} - ${item.format}`}
+                            fill
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className="object-cover"
                           />
-                          <div className="pointer-events-none absolute inset-0 bg-ink/20" />
-                          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                            <span className="flex items-center gap-1 sm:gap-2 rounded-full bg-white/92 px-2 py-1 sm:px-3 sm:py-2 text-[9px] sm:text-xs font-semibold uppercase tracking-[0.14em] text-ink shadow-sm">
-                              <PlayCircle size={14} weight="fill" className="sm:h-[18px] sm:w-[18px]" />
-                              Video
-                            </span>
-                          </div>
-                        </>
-                      )}
-                      <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-ink sm:left-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[10px]">
-                        {item.category}
-                      </span>
-                    </div>
-                    <span className="block p-3 sm:p-4">
-                      <span className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-                        <span className="block font-display text-xs sm:text-sm font-semibold text-ink line-clamp-1">
-                          {item.brandName}
+                        ) : (
+                          <>
+                            <video
+                              src={item.mediaUrl}
+                              className="aspect-[4/3] w-full bg-black object-cover"
+                              muted
+                            />
+                            <div className="pointer-events-none absolute inset-0 bg-ink/20" />
+                            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                              <span className="flex items-center gap-1 sm:gap-2 rounded-full bg-white/92 px-2 py-1 sm:px-3 sm:py-2 text-[9px] sm:text-xs font-semibold uppercase tracking-[0.14em] text-ink shadow-sm">
+                                <PlayCircle size={14} weight="fill" className="sm:h-[18px] sm:w-[18px]" />
+                                Video
+                              </span>
+                            </div>
+                          </>
+                        )}
+                        <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-ink sm:left-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[10px]">
+                          {item.category}
                         </span>
-                        <span className="inline-flex w-fit items-center gap-0.5 sm:gap-1 rounded-full border border-[#ececec] px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
-                          {item.mediaType === "video" ? (
-                            <PlayCircle size={10} weight="fill" className="sm:h-[14px] sm:w-[14px]" />
-                          ) : (
-                            <ImageSquare size={10} weight="fill" className="sm:h-[14px] sm:w-[14px]" />
-                          )}
-                          {item.mediaType}
+                      </div>
+                      <span className="block p-3 sm:p-4">
+                        <span className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                          <span className="block font-display text-xs sm:text-sm font-semibold text-ink line-clamp-1">
+                            {item.brandName}
+                          </span>
+                          <span className="inline-flex w-fit items-center gap-0.5 sm:gap-1 rounded-full border border-[#ececec] px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
+                            {item.mediaType === "video" ? (
+                              <PlayCircle size={10} weight="fill" className="sm:h-[14px] sm:w-[14px]" />
+                            ) : (
+                              <ImageSquare size={10} weight="fill" className="sm:h-[14px] sm:w-[14px]" />
+                            )}
+                            {item.mediaType}
+                          </span>
+                        </span>
+                        <span className="mt-1 block text-[10px] sm:text-xs text-muted line-clamp-1">
+                          {item.format} · {item.city}
                         </span>
                       </span>
-                      <span className="mt-1 block text-[10px] sm:text-xs text-muted line-clamp-1">
-                        {item.format} · {item.city}
-                      </span>
-                    </span>
-                  </button>
-                ))}
-              </div>
+                    </button>
+                  ))}
+                </div>
+                {visibleCount < sortedFiltered.length && (
+                  <div className="mt-8 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setVisibleCount((prev) => prev + 12)}
+                      className="rounded-full bg-ink px-6 py-2.5 text-xs font-semibold text-white transition-all hover:bg-amber hover:text-ink shadow-sm"
+                    >
+                      Load More Projects ({sortedFiltered.length - visibleCount} remaining)
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="rounded-[1.5rem] border border-dashed border-[#e6e6e6] bg-surface px-6 py-12 text-center">
                 <p className="text-base font-medium text-ink">
@@ -689,12 +710,15 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="overflow-hidden rounded-[1.5rem] bg-surface-2">
+              <div className="overflow-hidden rounded-[1.5rem] bg-surface-2 relative min-h-[300px]">
                 {current.mediaType === "image" ? (
-                  <img
+                  <Image
                     src={current.mediaUrl}
                     alt={`${current.brandName} - ${current.format}`}
+                    width={1200}
+                    height={800}
                     className="max-h-[75vh] w-full object-contain"
+                    priority
                   />
                 ) : (
                   <video

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
+import Image from "next/image";
 import { ButtonLink } from "@/components/ui/Button";
 import { CaretDown } from "@phosphor-icons/react/dist/ssr";
 import { services } from "@/data/services";
@@ -72,10 +73,13 @@ export function HeroSection() {
     <section className="relative flex min-h-[55dvh] md:min-h-[100dvh] flex-col items-center justify-between overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0 bg-ink">
-        <img
+        <Image
           src={`https://ik.imagekit.io/${"Paarthkhandelwal29"}/bigstreetmedia/ChatGPT%20Image%20Jul%208,%202026,%2011_36_04%20PM.png`}
           alt="Big Street Media Billboard Background"
-          className="h-full w-full object-cover object-center opacity-30"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-30"
         />
         {/* Radial dark vignette overlay centered behind the text to enhance contrast */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(17,17,17,0.88)_0%,rgba(17,17,17,0.55)_60%,rgba(17,17,17,0.8)_100%)]" />
@@ -83,40 +87,35 @@ export function HeroSection() {
       </div>
 
       <div className="container-bsm relative z-10 flex flex-1 flex-col items-center justify-center pt-16 md:pt-28 pb-4 md:pb-6 text-center">
-        <motion.span
-          {...rise(0)}
+        <span
           className="relative z-10 eyebrow border-white/15 bg-white/5 text-white/80"
         >
           Established 2004 · PAN India
-        </motion.span>
+        </span>
 
-        <motion.h1
-          {...rise(0.08)}
+        <h1
           className="relative z-10 mt-3 md:mt-5 max-w-4xl text-balance text-[32px] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] md:leading-[1.05] text-white"
         >
           <span className="text-amber">BIG STREET.</span> Bigger Impact. PAN-India.
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          {...rise(0.16)}
+        <p
           className="relative z-10 mt-3 md:mt-5 max-w-xl text-pretty text-[15px] leading-relaxed text-white/70 sm:text-base md:text-lg"
         >
           Get a rough sense of what your budget can achieve across India.
-        </motion.p>
+        </p>
 
-        <motion.div
-          {...rise(0.24)}
+        <div
           className="relative z-10 mt-5 md:mt-8 flex flex-col gap-2 sm:gap-3 sm:flex-row sm:justify-center w-full max-w-[280px] sm:max-w-none"
         >
           <ButtonLink href="/services">Explore Services</ButtonLink>
           <ButtonLink href="/contact" variant="ghost-light">
             Get Free Media Plan
           </ButtonLink>
-        </motion.div>
+        </div>
 
         {/* Compact statistics trust strip for mobile */}
-        <motion.div
-          {...rise(0.28)}
+        <div
           className="flex md:hidden items-center justify-center flex-wrap gap-x-2.5 gap-y-1 text-amber/90 font-medium text-[13px] tracking-wide mt-6 border-t border-white/10 pt-4 w-full max-w-[280px]"
         >
           <span>20+ Years</span>
@@ -126,11 +125,10 @@ export function HeroSection() {
           <span>400+ Cities</span>
           <span className="text-white/20">•</span>
           <span>100+ Brands</span>
-        </motion.div>
+        </div>
       </div>
 
-      <motion.div
-        {...rise(0.32)}
+      <div
         className="container-bsm relative z-10 pb-6 md:pb-12 w-full hidden md:block"
       >
         <div className="section-divider mb-3 md:mb-5 opacity-30" aria-hidden />
@@ -147,11 +145,10 @@ export function HeroSection() {
             </div>
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Full-width Services Bar at the absolute bottom of the hero section */}
-      <motion.div
-        {...rise(0.36)}
+      <div
         className="w-full bg-black/60 backdrop-blur-md border-t border-white/10 py-3.5 relative z-10 mt-auto"
       >
         <div className="container-bsm flex items-center justify-start xl:justify-center gap-x-7 gap-y-2 overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -179,7 +176,7 @@ export function HeroSection() {
               );
             })}
         </div>
-      </motion.div>
+      </div>
 
       {!reduce && (
         <motion.div

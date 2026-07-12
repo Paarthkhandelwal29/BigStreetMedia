@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { MediaInventoryClient } from "@/components/inventory/MediaInventoryClient";
 import { listInventory } from "@/lib/cms/store";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export const metadata: Metadata = {
-  title: "Media Inventory - Browse Available Spaces",
+  title: "Media Inventory Noida | Hoarding & Billboard Spaces Delhi NCR",
   description:
-    "Find available hoardings, bus shelters, unipoles, mall and transit media across India. Browse media inventory and check availability before your competitor does.",
+    "Browse available billboard, hoarding, and transit media advertising inventory in Noida, Delhi NCR, and PAN India. Check live availability and rates.",
 };
 
 export default async function MediaInventoryPage() {
@@ -14,6 +15,12 @@ export default async function MediaInventoryPage() {
 
   return (
     <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Media Inventory", item: "/media-inventory" },
+        ]}
+      />
       <PageHero
         compact
         eyebrow="Media Inventory"

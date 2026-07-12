@@ -18,7 +18,7 @@ export function ServiceCard({ service }: { service: Service }) {
       <h3 className="mt-4 sm:mt-5 text-sm sm:text-base font-semibold text-ink">{service.title}</h3>
       <p className="mt-1 flex-1 text-xs sm:text-sm leading-relaxed text-body">{service.outcome}</p>
       <span className="mt-3 sm:mt-4 inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-ink">
-        Explore
+        Explore {service.title}
         <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
       </span>
     </Link>
