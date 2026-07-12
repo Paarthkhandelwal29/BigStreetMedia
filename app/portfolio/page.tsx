@@ -4,11 +4,12 @@ import { PageHero } from "@/components/ui/PageHero";
 import { PortfolioGallery } from "@/components/portfolio/PortfolioGallery";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { listPortfolio } from "@/lib/cms/store";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export const metadata: Metadata = {
-  title: "Portfolio — Our Work Across India",
+  title: "Our Advertising Campaign Portfolio | OOH & BTL Agency India",
   description:
-    "Real campaigns executed by Big Street Media — OOH, transit, events, exhibitions, store launches and signature Varanasi boat branding across India.",
+    "Explore our gallery of advertising campaigns executed across India. Real photos of hoarding locations, transit branding, retail signs, and experiential activations.",
 };
 
 export default async function PortfolioPage() {
@@ -16,6 +17,12 @@ export default async function PortfolioPage() {
 
   return (
     <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Portfolio", item: "/portfolio" },
+        ]}
+      />
       <PageHero
         compact
         eyebrow="Portfolio"

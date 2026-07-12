@@ -13,6 +13,7 @@ export const site = {
     number: "916398930211",
     defaultText: "Hi, I'd like to know more about your services",
   },
+  address: "Mahadev Colony, Sector 73, Noida",
   region: "Uttar Pradesh, India",
   stats: {
     years: "20+",

@@ -2,16 +2,24 @@ import type { Metadata } from "next";
 import { MultiStepContactForm } from "@/components/contact/MultiStepContactForm";
 import { site, whatsappLink } from "@/lib/site";
 import { Phone, WhatsappLogo, EnvelopeSimple, MapPin } from "@phosphor-icons/react/dist/ssr";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export const metadata: Metadata = {
-  title: "Contact — Let's Plan Your Next Campaign",
+  title: "Contact Big Street Media | Noida & Bareilly Ad Agency",
   description:
-    "Reach Big Street Media by phone, WhatsApp, or email. Share your campaign brief and we'll come back with a tailored media plan within 48 hours.",
+    "Get in touch with Big Street Media. Contact our Noida office or send us a campaign brief for a free tailored national OOH, transit, or BTL media plan.",
 };
 
 export default function ContactPage() {
   return (
-    <section className="container-bsm py-16 pt-32">
+    <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Contact", item: "/contact" },
+        ]}
+      />
+      <section className="container-bsm py-16 pt-32">
       <span className="eyebrow">Get in touch</span>
       <h1 className="mt-5 max-w-2xl font-display text-4xl font-extrabold leading-[1.08] text-ink md:text-5xl">
         Let&apos;s plan your next campaign
@@ -47,7 +55,9 @@ export default function ContactPage() {
                 </a>
               </ContactRow>
               <ContactRow icon={<MapPin size={18} />} label="Office">
-                <span className="font-medium text-ink">{site.region}</span>
+                <span className="font-medium text-ink">
+                  {site.address}, {site.region}
+                </span>
               </ContactRow>
             </ul>
           </div>
@@ -55,6 +65,7 @@ export default function ContactPage() {
         </div>
       </div>
     </section>
+    </>
   );
 }
 

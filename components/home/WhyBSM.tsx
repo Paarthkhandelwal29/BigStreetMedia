@@ -5,42 +5,42 @@ import { icons, type IconName } from "@/lib/icons";
 const reasons: { icon: IconName; title: string; body: string }[] = [
   {
     icon: "map",
-    title: "PAN India Reach",
-    body: "Ground teams in 400+ cities ensure flawless execution — not just planning.",
+    title: "PAN India Campaign Execution",
+    body: "Flawless on-ground planning and execution across Mumbai, Bengaluru, Delhi NCR, Noida, and 400+ cities nationwide.",
   },
   {
     icon: "megaphone",
-    title: "ATL + BTL + TTL",
-    body: "One agency, every format. OOH, transit, radio, digital, events — coordinated.",
+    title: "360° Advertising Solutions",
+    body: "Integrated ATL & BTL media formats. Single agency accountability for Outdoor Advertising (OOH), Transit Media, Retail Branding, and Events.",
   },
   {
     icon: "handshake",
-    title: "Single Point Accountability",
-    body: "One contact manages your entire campaign. No juggling multiple vendors.",
+    title: "20+ Years of Trust",
+    body: "Established in 2004, serving 100+ national brands with transparent coordination and single-point contact accountability.",
   },
   {
     icon: "lightning",
-    title: "Fast Execution",
-    body: "From brief to live campaign in days. Agile teams, pre-approved vendor network.",
+    title: "Agile Execution & Vendor Network",
+    body: "From strategy to campaign rollout in days. Leverage our verified nationwide vendor network for immediate media deployment.",
   },
   {
     icon: "gear",
-    title: "Custom Strategy Per Brand",
-    body: "No copy-paste plans. Every campaign is built around your product, market, and budget.",
+    title: "Tailored Brand Strategy",
+    body: "No cookie-cutter campaigns. Every campaign is designed around your budget, brand objectives, and target consumer demography.",
   },
   {
     icon: "rupee",
-    title: "Cost-Efficient Planning",
-    body: "Our vendor network and 20 years of rate negotiation deliver more reach per rupee.",
+    title: "Proven Campaign ROI",
+    body: "1000+ campaigns executed. Our industry experience and buying power ensure highly competitive media rates and maximum reach.",
   },
 ];
 
 const mobileBullets = [
-  { icon: "map", title: "PAN India Reach", desc: "PAN India execution in 400+ cities" },
-  { icon: "megaphone", title: "coordinated agency", desc: "Single agency for OOH, BTL, Transit & Retail" },
-  { icon: "handshake", title: "Dedicated managers", desc: "Dedicated campaign managers" },
-  { icon: "rupee", title: "Transparent Pricing", desc: "Transparent pricing" },
-  { icon: "lightning", title: "End-to-end execution", desc: "End-to-end execution" },
+  { icon: "map", title: "PAN India Execution", desc: "National presence across 400+ cities" },
+  { icon: "megaphone", title: "360° Ad Solutions", desc: "Integrated Outdoor, Transit Media, & BTL campaigns" },
+  { icon: "handshake", title: "20+ Years of Trust", desc: "Established in 2004, serving 100+ brands" },
+  { icon: "rupee", title: "Competitive Rates", desc: "Verified vendor network pricing advantage" },
+  { icon: "lightning", title: "Turn-key Delivery", desc: "End-to-end campaign deployment & monitoring" },
 ];
 
 export function WhyBSM() {

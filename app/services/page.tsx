@@ -4,16 +4,23 @@ import { ServiceCard } from "@/components/shared/ServiceCard";
 import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { services } from "@/data/services";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export const metadata: Metadata = {
-  title: "Services — 360° Advertising Solutions",
+  title: "Outdoor Advertising & OOH Services Noida | Transit & BTL Media",
   description:
-    "OOH, Transit, BTL, Retail, Events, Radio, Cinema, Digital and Influencer marketing — executed across 400+ Indian cities by Big Street Media.",
+    "Explore our 360° outdoor advertising (OOH) & media services in Noida & PAN India. Experts in billboard hoardings, transit wraps, retail branding, and BTL activations.",
 };
 
 export default function ServicesPage() {
   return (
     <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Services", item: "/services" },
+        ]}
+      />
       <PageHero
         compact
         eyebrow="Services"

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { SectionHeader } from "@/components/ui/Section";
 import { ArrowUpRight, MegaphoneSimple, Bus, Confetti } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
@@ -26,10 +27,12 @@ function CampaignCard({
     >
       {/* Background Campaign Image with Hover transition */}
       <div className="absolute inset-0 overflow-hidden">
-        <img
+        <Image
           src={item.image}
           alt=""
-          className="h-full w-full object-cover transition-all duration-750 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
+          fill
+          sizes="(max-width: 768px) 250px, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover transition-all duration-750 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
         />
         {/* Brand color overlay wash */}
         <div
@@ -64,7 +67,7 @@ function CampaignCard({
         </div>
 
         <div>
-          <p className="text-lg font-semibold leading-tight text-white">{item.brand}</p>
+          <h3 className="text-lg font-semibold leading-tight text-white">{item.brand}</h3>
           <p className="mt-1 text-xs font-medium uppercase tracking-[0.08em] text-amber">
             {item.campaignType} · {item.brief.cities.replace(" +", "")}
           </p>

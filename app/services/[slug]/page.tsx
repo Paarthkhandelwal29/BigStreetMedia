@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeader } from "@/components/ui/Section";
@@ -8,6 +9,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { LeadForm } from "@/components/shared/LeadForm";
 import { FAQ } from "@/components/shared/FAQ";
 import { services, serviceBySlug } from "@/data/services";
+import { BreadcrumbListSchema, ServiceSchema } from "@/components/shared/Schema";
 import { cityTiers } from "@/data/cities";
 import { listPortfolio, getServiceFormatImagesByService } from "@/lib/cms/store";
 import { icons } from "@/lib/icons";
@@ -130,9 +132,54 @@ export async function generateMetadata({
   const { slug } = await params;
   const service = serviceBySlug(slug);
   if (!service) return {};
-  return {
+
+  const seoData: Record<string, { title: string; desc: string }> = {
+    "ooh-media": {
+      title: "PAN India Outdoor Advertising & OOH Agency | Billboard Hoardings",
+      desc: "India's leading outdoor advertising (OOH) agency. Prime billboard, hoarding, and transit media locations in Noida, Delhi NCR, Mumbai, Bengaluru, and PAN India.",
+    },
+    "transit-media": {
+      title: "Transit Media Agency India | Bus, Cab & Metro Advertising",
+      desc: "Reach millions of commuters daily. Turn-key transit media campaigns, bus branding wraps, e-rickshaws, metro, and railway station branding across India.",
+    },
+    "btl-activations": {
+      title: "BTL Activation & Experiential Marketing Agency India",
+      desc: "Drive consumer engagement with on-ground BTL activations, mall events, society roadshows, and experiential marketing across 400+ Indian cities.",
+    },
+    "retail-branding": {
+      title: "Retail Branding Agency India | Shop Front & In-Store Displays",
+      desc: "Dominate retail touchpoints. Expert dealer boards, shop front branding, glow sign boards, and in-store visual merchandising across nationwide retail networks.",
+    },
+    "digital": {
+      title: "Digital Marketing Agency India | Performance Marketing & SEO",
+      desc: "Accelerate business growth online. Premium SEO services, search engine marketing, social media campaigns, and performance marketing.",
+    },
+    "influencer": {
+      title: "Influencer Marketing Agency India | Creator Campaigns",
+      desc: "Build trust with targeted creator partnerships. Collaborations with top Indian tier-1 and regional influencers to amplify your message.",
+    },
+    "cinema": {
+      title: "Cinema Advertising India | Multiplex Screen Ads",
+      desc: "Captivate high-intent audiences on the silver screen. Ad placements across multiplexes and single screen theatres throughout India.",
+    },
+    "events": {
+      title: "Corporate Event Management Agency India | Exhibitions & Shows",
+      desc: "Flawless corporate event execution. Dealer meets, product launches, custom exhibition design, and end-to-end event management.",
+    },
+    "radio": {
+      title: "Radio Advertising India | FM Radio Spots",
+      desc: "Engage local audiences with targeted radio spots on top FM stations, jingle creation, and custom radio integrations.",
+    },
+  };
+
+  const seo = seoData[slug] || {
     title: `${service.title} — ${service.headline}`,
-    description: service.outcome,
+    desc: service.outcome,
+  };
+
+  return {
+    title: seo.title,
+    description: seo.desc,
   };
 }
 
@@ -216,6 +263,19 @@ export default async function ServicePage({
 
   return (
     <>
+      <ServiceSchema
+        name={`${service.title} - PAN India`}
+        description={service.outcome}
+        serviceType={`${service.title} Advertising`}
+      />
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Services", item: "/services" },
+          { name: service.title, item: `/services/${service.slug}` },
+        ]}
+      />
+
       {/* ── Hero: no CTA buttons, stats on right ── */}
       <PageHero
         eyebrow={service.title}
@@ -254,12 +314,20 @@ export default async function ServicePage({
                 >
                   {/* Image area */}
                   <div
-                    className={`relative h-28 xs:h-36 sm:h-52 ${card.imageUrl ? "" : `bg-gradient-to-br ${card.color}`}`}
-                    style={card.imageUrl ? { backgroundImage: `url(${card.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
+                    className={`relative h-28 xs:h-36 sm:h-52 overflow-hidden ${card.imageUrl ? "" : `bg-gradient-to-br ${card.color}`}`}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" />
+                    {card.imageUrl && (
+                      <Image
+                        src={card.imageUrl}
+                        alt={card.label}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40 z-10" />
                     {/* Icon badge */}
-                    <span className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-amber text-ink shadow-md">
+                    <span className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-amber text-ink shadow-md z-10">
                       <CardIcon className="h-4 w-4 sm:h-[22px] sm:w-[22px]" />
                     </span>
                   </div>
@@ -288,7 +356,13 @@ export default async function ServicePage({
                 {recentCampaigns.map((item) => (
                   <div key={item.id} className="overflow-hidden rounded-xl border border-[#f0f0f0]">
                     {item.mediaType === "image" ? (
-                      <img src={item.mediaUrl} alt={item.brandName} className="h-52 w-full object-cover" />
+                      <Image
+                        src={item.mediaUrl}
+                        alt={item.brandName}
+                        width={400}
+                        height={208}
+                        className="h-52 w-full object-cover"
+                      />
                     ) : (
                       <video src={item.mediaUrl} className="h-52 w-full object-cover" muted />
                     )}

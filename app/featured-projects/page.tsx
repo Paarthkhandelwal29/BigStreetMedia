@@ -5,16 +5,23 @@ import { RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { caseStudies } from "@/data/caseStudies";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export const metadata: Metadata = {
-  title: "Featured Projects — Real Campaigns, Real Results",
+  title: "Featured Advertising Campaigns India | Big Street Media",
   description:
-    "How Big Street Media helped India's top brands hit their objectives — strategy, execution, and measured results across OOH, transit, events and retail.",
+    "Browse our portfolio of national and regional advertising campaigns executed across India. Case studies of OOH, Transit, BTL Activations, and Retail Branding.",
 };
 
 export default function CaseStudiesPage() {
   return (
     <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Featured Projects", item: "/featured-projects" },
+        ]}
+      />
       <PageHero
         compact
         eyebrow="Featured Projects"

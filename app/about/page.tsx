@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
+import Image from "next/image";
 import { SectionHeader } from "@/components/ui/Section";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/Reveal";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { site } from "@/lib/site";
 import { Target, Eye, Heart } from "@phosphor-icons/react/dist/ssr";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export const metadata: Metadata = {
-  title: "About — 20 Years, 400 Cities, One Mission",
+  title: "About Us | Outdoor Advertising & Transit Media Agency Noida",
   description:
-    "Big Street Media has executed 1000+ advertising campaigns across 400+ Indian cities since 2004. Meet the execution partner behind India's most visible brands.",
+    "Big Street Media is a premier outdoor advertising (OOH) agency in Noida with 20+ years of expertise. We have executed 1000+ campaigns across 400+ Indian cities since 2004.",
 };
 
 const milestones = [
@@ -45,6 +47,12 @@ const mvv = [
 export default function AboutPage() {
   return (
     <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "About Us", item: "/about" },
+        ]}
+      />
       <PageHero
         compact
         eyebrow="About Us"
@@ -76,11 +84,13 @@ export default function AboutPage() {
         <div className="container-bsm py-12 md:py-24">
           <div className="grid items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <Reveal>
-              <div className="aspect-[4/5] max-w-sm overflow-hidden rounded-[1.5rem] border-2 border-amber">
-                <img
+              <div className="relative aspect-[4/5] max-w-sm overflow-hidden rounded-[1.5rem] border-2 border-amber">
+                <Image
                   src={`${process.env.NEXT_PUBLIC_IMAGEKIT_URL || `https://ik.imagekit.io/${"Paarthkhandelwal" + "29"}/bigstreetmedia`}/Aditya-Khandelwal.png`}
                   alt="Founder & Managing Director, Big Street Media"
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="(max-width: 640px) 100vw, 384px"
+                  className="object-cover"
                 />
               </div>
             </Reveal>

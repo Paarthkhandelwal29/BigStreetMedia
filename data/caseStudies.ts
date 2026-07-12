@@ -66,7 +66,7 @@ export const caseStudies: CaseStudy[] = [
     image: `https://ik.imagekit.io/${"Paarthkhandelwal29"}/bigstreetmedia/WhatsApp_Image_2026-07-02_at_10.28.45_PM_vFPemijpA.jpeg`,
     icon: "ooh",
     gradient: "from-[#ff4e50] to-[#f9d423]",
-    description: "High-impact 360° launch campaign spanning OOH, transit wraps, and signature Varanasi boat branding.",
+    description: "High-impact 360° launch campaign spanning outdoor advertising (OOH), transit wraps, and signature Varanasi boat branding.",
     overview: "For several years, Big Street Media has partnered with V-Mart to execute marketing campaigns across multiple cities in India.\n\nOur role has ranged from launching new retail stores and executing outdoor advertising campaigns to managing transit branding and rural marketing initiatives.\n\nEach campaign required meticulous planning, vendor coordination, field execution and transparent reporting to ensure every activity was delivered according to brand standards.",
     servicesDelivered: [
       {
