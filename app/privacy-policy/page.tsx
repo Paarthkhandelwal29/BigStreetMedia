@@ -1,14 +1,25 @@
 import type { Metadata } from "next";
 import { site } from "@/lib/site";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
+  title: "Privacy Policy | Big Street Media",
   description: "How Big Street Media collects, uses, and protects your information.",
+  alternates: {
+    canonical: "/privacy-policy",
+  },
 };
 
 export default function PrivacyPolicyPage() {
   return (
-    <section className="container-bsm py-16 pt-32">
+    <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Privacy Policy", item: "/privacy-policy" },
+        ]}
+      />
+      <section className="container-bsm py-16 pt-32">
       <div className="mx-auto max-w-3xl">
         <span className="eyebrow">Legal</span>
         <h1 className="mt-5 font-display text-4xl font-extrabold text-ink">Privacy Policy</h1>
@@ -57,5 +68,6 @@ export default function PrivacyPolicyPage() {
         </div>
       </div>
     </section>
+    </>
   );
 }
