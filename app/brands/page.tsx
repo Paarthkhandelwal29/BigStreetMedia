@@ -2,16 +2,26 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { BrandsGrid } from "@/components/brands/BrandsGrid";
 import { FinalCTA } from "@/components/home/FinalCTA";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export const metadata: Metadata = {
-  title: "Brands — Trusted by India's Best",
+  title: "Brands We Serve | National & Retail Advertising Clients",
   description:
-    "From Hero and TVS to V-Mart, LG, P&G and Extramarks — the brands that trust Big Street Media to execute their campaigns across India.",
+    "From Hero and TVS to V-Mart, LG, P&G, and Extramarks — the brands that trust Big Street Media to execute their campaigns across Noida, Delhi NCR, and PAN India.",
+  alternates: {
+    canonical: "/brands",
+  },
 };
 
 export default function BrandsPage() {
   return (
     <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Brands", item: "/brands" },
+        ]}
+      />
       <PageHero
         compact
         eyebrow="Brands"
