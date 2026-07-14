@@ -1,15 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { routeGroups } from "@/lib/routes";
+import { BreadcrumbListSchema } from "@/components/shared/Schema";
 
 export const metadata: Metadata = {
-  title: "Sitemap",
-  description: "Every page on the Big Street Media website, in one place.",
+  title: "Sitemap | Big Street Media",
+  description: "Browse all pages, services, and featured advertising projects of Big Street Media.",
+  alternates: {
+    canonical: "/sitemap",
+  },
 };
 
 export default function SitemapPage() {
   return (
-    <section className="container-bsm py-16 pt-32">
+    <>
+      <BreadcrumbListSchema
+        crumbs={[
+          { name: "Home", item: "/" },
+          { name: "Sitemap", item: "/sitemap" },
+        ]}
+      />
+      <section className="container-bsm py-16 pt-32">
       <span className="eyebrow">Sitemap</span>
       <h1 className="mt-5 font-display text-4xl font-extrabold text-ink">All pages</h1>
 
@@ -30,5 +41,6 @@ export default function SitemapPage() {
         ))}
       </div>
     </section>
+    </>
   );
 }
