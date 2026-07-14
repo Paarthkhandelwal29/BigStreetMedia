@@ -6,7 +6,7 @@ export const site = {
   shortName: "Big Street Media",
   tagline: "Creating Visibility. Building Brands.",
   established: 2004,
-  url: "https://bigstreetmedia.in",
+  url: "https://bigstreetmedia.com",
   email: "bigstreetbly@gmail.com",
   phones: ["+91-6398930211", "+91-9837329698"],
   whatsapp: {

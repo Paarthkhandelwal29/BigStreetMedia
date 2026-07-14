@@ -25,7 +25,7 @@ const sora = Sora({
   display: "swap",
 });
 
-const siteUrl = "https://bigstreetmedia.in";
+const siteUrl = "https://bigstreetmedia.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
